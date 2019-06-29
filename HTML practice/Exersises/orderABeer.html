@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SoftUni Beers</title>
+</head>
+
+<body>
+
+    <nav>
+        <div class="topnav">
+            <a class="logo" href="index.html"><img src="images/logo.png"></a>
+            <a href="index.html">Home</a>
+            <a href="AllBeers.html">See All Beers</a>
+            <a class="active" href="orderABeer.html">Order a Beer</a>
+            <a class="right" href="register.html">Register</a>
+            <a class="right" href="login.html">Log in</a>
+        </div>
+
+    </nav>
+
+    <main>
+        <center>
+            <h1 class="loginHeading"> Order a Beer </h1>
+            <form class="fillForm">
+                <label>Brand</label><br />
+                <select name="brand">
+                    <option selected disabled>Select a brand</option>
+                    <option value="1">Corona Extra 300 ml</option>
+                    <option value="2">Stella Artois 500 ml</option>
+                    <option value="3">Carlsberg 500 ml</option>
+                    <option value="4">Heineken 500 ml</option>
+                </select><br>
+
+                <label>Quantity</label><br />
+                <input type="number" name="quantity" placeholder="Enter Amount Of Beers(1-15)" min="1" max="15"
+                    size="32px"><br />
+
+                <label>Destination</label><br />
+                <select name="town">
+                    <option selected disabled>Select a destination</option>
+                    <option value="1">Sofia</option>
+                    <option value="2">Plovdiv</option>
+                    <option value="3">Bourgas</option>
+                    <option value="4">Ichtiman</option>
+                </select><br>
+
+                <label>Enter your birthdate</label><br />
+                <input type="datetime" name="birthDate" placeholder="mm/dd/yyyy" size="32px"><br />
+
+                <label>Got an opinion,comment,recommendation? <br />Share it with us!</label><br />
+                <input type="text" name="recomendation" placeholder="Share your opinion with us" maxlength="256"
+                    size="32px"><br />
+                <button type="submit" style="margin-top:5px;background-color:#FEAE00;border-radius:5px" size:30px>Submit</button>
+            </form>
+        </center>
+    </main>
+
+    <footer>
+        <hr />
+        <p>&copy; 2017 &ndash; <em>SoftUni Beers</em></p>
+
+    </footer>
+</body>
+
+</html>
