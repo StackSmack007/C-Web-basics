@@ -6,6 +6,7 @@
     using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
     using System;
+    using System.Linq;
 
     public class HomeController : BaseController
     {
@@ -33,6 +34,10 @@
             if (password != verificationPassword)
             {
                 return this.ControllerError("Passwords missmatch", "Register", "Register");
+            }
+            if (db.Users.FirstOrDefault(x=>x.Username==userName)!=null)
+            {
+                return this.ControllerError($"Username {userName} already used", "Register", "Register");
             }
             var user = new User() { Username = userName, Password = password, RegisteredOn = DateTime.UtcNow };
             var userValidator = new UserValidator();

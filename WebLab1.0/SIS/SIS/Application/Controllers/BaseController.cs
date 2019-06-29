@@ -17,7 +17,7 @@
         protected IHttpResponse ControllerError(string message,string redirectAdress= "/", string redirectName= "HomePage")
         {
             string htmlContent = $@"<h1 style=""color: yellow; background:black"">Error: {message} !</h1>
-                                 <h2>Return <a href=""{redirectAdress}"">Back to {redirectName}</a></h2>";
+                                 <h2>Return Back to <a href=""{redirectAdress}"">{redirectName}</a></h2>";
 
             IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
             return htmlResponse;
