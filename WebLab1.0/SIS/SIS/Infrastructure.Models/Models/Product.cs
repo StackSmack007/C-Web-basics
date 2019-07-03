@@ -12,6 +12,9 @@
 
         [Required, MaxLength(32)]
         public string ProductName { get; set; }
+
+        public string ImageURL { get; set; }
+
         public decimal Price { get; set; }
 
         public virtual ICollection<OrderProduct> ProductOrders { get; set; }

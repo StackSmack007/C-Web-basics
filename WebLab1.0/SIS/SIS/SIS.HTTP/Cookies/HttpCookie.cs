@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIS.HTTP.Cookies
+﻿namespace SIS.HTTP.Cookies
 {
+    using System;
     public class HttpCookie
     {
         public const int HttpCookieDefaultExpirationDays = 3;
@@ -13,13 +10,19 @@ namespace SIS.HTTP.Cookies
             this.Value = value;
             this.Expires = DateTime.UtcNow.AddDays(expires);
             this.IsNew = true;//default
+            IsHttpOnly = false;//default
+            this.ForCurrentPathOnly=true;//default
         }
-        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays) : this(key, value, expires)
+        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays, bool isHttpOnly = false,bool forCurrentPathOnly=true) : this(key, value, expires)
         {
             this.IsNew = isNew;
-
+            this.IsHttpOnly = isHttpOnly;
+            this.ForCurrentPathOnly = forCurrentPathOnly;//default
         }
 
+        public bool IsHttpOnly { get; }
+
+        public bool ForCurrentPathOnly { get; }
 
         public string Key { get; }
 
@@ -27,12 +30,13 @@ namespace SIS.HTTP.Cookies
 
         public DateTime Expires { get; }
 
-
         public bool IsNew { get; }
 
         public override string ToString()
         {
-            return $"{Key}={Value}; Expires={this.Expires.ToString("R")}";
+            string HttoOnlySetting = IsHttpOnly ? "; HttpOnly" : "";
+            string pathModiSetting = ForCurrentPathOnly ?  "": "; Path=/";
+            return $"{Key}={Value}; Expires={this.Expires.ToString("R")}{HttoOnlySetting}{pathModiSetting}";
         }
     }
 }

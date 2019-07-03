@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
+    <meta charset="utf-8" />
+    <title>CakeStore</title>
+
+    <style>
+        table, td, th {
+            border: solid 2px;
+        }
+
+        td, th {
+            text-align: left
+        }
+
+        table {
+            width: 40%
+        }
+
+        .longText {
+            width: 50%
+        }
+    </style>
+    </head>
+<body>
+    <h1>By The Cake</h1>
+    <h2>Order Id: @orderId@</h2>
+    <hr>
+    <table>
+        <tr style="background:lightgray">
+            <td class="longText">ProductName</td>
+            <td>Quantity</td>
+            <td>TotalPrice</td>
+        </tr>
+        @ordersList@
+    </table>
+    <br />
+    <p>Total Value Of order: <strong>@totalCost@ (Euro)</strong></p>
+    <br />
+    <hr />
+    <p>Back to <a href="/">Home</a> Page</p>
+</body>
+</html>

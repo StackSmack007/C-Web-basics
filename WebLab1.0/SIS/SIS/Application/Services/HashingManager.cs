@@ -2,7 +2,7 @@
 {
     using System.Security.Cryptography;
     using System.Text;
-    public class EncriptionManager
+    public class HashingManager
     {
 
         public string Encrypt(string text)
@@ -17,9 +17,7 @@
             {
                 s1.Append(b.ToString("x2").ToLower());
             }
-
             return s1.ToString();
-
         }
 
 
