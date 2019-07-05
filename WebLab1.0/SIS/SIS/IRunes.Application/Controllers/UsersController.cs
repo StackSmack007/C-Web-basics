@@ -3,7 +3,6 @@
     using IRunes.Infrastructure.Models.Models;
     using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
-    using System;
     using System.Linq;
     public class UsersController : BaseController
     {

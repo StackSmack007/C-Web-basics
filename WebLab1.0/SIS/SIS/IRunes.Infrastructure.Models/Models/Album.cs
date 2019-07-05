@@ -10,12 +10,14 @@
         public Album()
         {
             AlbumTracks = new HashSet<AlbumTrack>();
+            IsDeleted = false;
         }
 
         public string UserCreatorID { get; set; }
         [ForeignKey(nameof(UserCreatorID))]
         public virtual User UserCreator { get; set; }
 
+        public bool IsDeleted { get; set; }
 
         [Required,MaxLength(64)]
         public string Name { get; set; }

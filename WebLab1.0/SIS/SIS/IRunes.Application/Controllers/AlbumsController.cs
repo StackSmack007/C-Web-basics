@@ -18,13 +18,15 @@
 
             string userId = GetCurrentSessionUserIdandName(request)[0];
 
-            var albumsDTOs = db.Albums.Select(x => new { x.Id, x.Name, IsCreatedByThisUser = userId == x.UserCreatorID }).ToArray();
+            var albumsDTOs = db.Albums.Where(x=>!x.IsDeleted).Select(x => new { x.Id, x.Name, IsCreatedByThisUser = userId == x.UserCreatorID }).ToArray();
             StringBuilder sb = new StringBuilder();
-            foreach (var dto in albumsDTOs.OrderByDescending(x => x.IsCreatedByThisUser))
+            foreach (var dto in albumsDTOs)
             {
                 if (dto.IsCreatedByThisUser)
                 {
-                    sb.Append($"<p><a href=\"/Albums/Details?albumId={dto.Id}\" style=\"color:darkgreen\">{dto.Name}</a></p>");
+                    var deleteOption = $"  <a href=\"/Albums/Delete?albumId={dto.Id}\" style=\"text-decoration:none\"><span style=\"color:red\"><strong> &#10007 </strong></span> </a>";
+
+                    sb.Append($"<p><a href=\"/Albums/Details?albumId={dto.Id}\" style=\"color:darkgreen\">{dto.Name}</a>{deleteOption}</p>");
                 }
                 else
                 {
@@ -34,9 +36,27 @@
             ViewData["albumsList"] = sb.ToString();
 
             return View();
-
         }
 
+        public IHttpResponse Delete(IHttpRequest request)
+        {
+            string albumId = request.QueryData["albumId"].ToString();
+            Album foundAlbum = db.Albums.FirstOrDefault(x => x.Id == albumId);
+            if (foundAlbum is null)
+            {
+                return ResposeErrorMessageAndRedirect("Album not found", "/Albums/All", "View All Albums");
+            }
+            string authorId = foundAlbum.UserCreatorID;
+            string currentUserId = GetCurrentSessionUserIdandName(request)[0];
+            if (authorId!=currentUserId)
+            {
+                return ResposeErrorMessageAndRedirect("Currently loged user has no authority to remove album he is not author of...", "/Albums/All", "View All Albums");
+            }
+            foundAlbum.IsDeleted = true;
+            db.SaveChanges();
+            return All(request);
+        }
+                              
         public IHttpResponse Create(IHttpRequest request)
         {
             if (!this.IsUserLogedIn(request))
@@ -53,7 +73,7 @@
             string creatorId = GetCurrentSessionUserIdandName(request)[0];
             Album newAlbum = new Album() { Name = albumName, CoverImgUrl = coverUrl, UserCreatorID = creatorId };
 
-            if (db.Albums.Any(x => x.Name == albumName))
+            if (db.Albums.Any(x => x.Name == albumName && x.IsDeleted==false))
             {
                 return ResposeErrorMessageAndRedirect("Album name already exists", "/Albums/Create", "Create Album");
             }
@@ -107,6 +127,5 @@
             }
             return View();
         }
-
     }
 }

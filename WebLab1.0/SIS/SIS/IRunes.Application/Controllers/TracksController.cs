@@ -5,7 +5,6 @@
     using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
-    using System;
     using System.Linq;
 
     public class TracksController : BaseController
