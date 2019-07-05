@@ -99,7 +99,8 @@
                 int counter = 0;
                 foreach (Track track in foundAlbum.AlbumTracks.Select(x => x.Track))
                 {
-                    sb.Append($"<li>{++counter}. <a href=\"/Tracks/Details?trackId={track.Id}&albumId={albumId}\">{track.Name}</a></li>");
+                    string deleteOption = IsAuthorOfAlbum ? $"  <a href=\"/Tracks/Detach?trackId={track.Id}&albumId={albumId}\" style=\"text-decoration:none\"><span style=\"color:red\"><strong> &#10007 </strong></span> </a>" : "";
+                    sb.Append($"<li>{++counter}. <a href=\"/Tracks/Details?trackId={track.Id}&albumId={albumId}\">{track.Name}</a>{deleteOption}</li>");
                 }
                 sb.Append("</ul>");
                 ViewData["tracksList"] = sb.ToString();

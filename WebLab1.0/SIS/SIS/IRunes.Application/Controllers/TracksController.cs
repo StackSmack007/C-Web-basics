@@ -5,6 +5,7 @@
     using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
+    using System;
     using System.Linq;
 
     public class TracksController : BaseController
@@ -73,6 +74,7 @@
             return new AlbumsController().Details(request);
         }
 
+
         public IHttpResponse Details(IHttpRequest request)
         {
             string trackId = request.QueryData["trackId"].ToString();
@@ -93,5 +95,42 @@
             ViewData["albumId"] = albumId;
             return View();
         }
+        public IHttpResponse DetachTrackFromAlbum(IHttpRequest request)
+        {
+            string trackId = request.QueryData["trackId"].ToString();
+            string albumId = request.QueryData["albumId"].ToString();
+            if (!IsUserLogedIn(request))
+            {
+                return ResposeErrorMessageAndRedirect("No User loged in. Log in first", $"/Albums/Details?albumId={albumId}", "Album");
+            }
+            string userId = GetCurrentSessionUserIdandName(request)[0];
+            Album foundAlbum = db.Albums.Include(x=>x.AlbumTracks).FirstOrDefault(x=>x.Id==albumId);
+
+            Track foundTrack = db.Tracks.FirstOrDefault(x => x.Id == trackId);
+            if (foundAlbum is null)
+            {
+                return ResposeErrorMessageAndRedirect("No such album in database", $"/Albums/Details?albumId={albumId}", "Album");
+            }
+
+            if (foundTrack is null)
+            {
+                return ResposeErrorMessageAndRedirect("No such track in database", $"/Albums/Details?albumId={albumId}", "Album");
+            }
+
+            if (!foundAlbum.AlbumTracks.Any(x=>x.TrackId==trackId))
+            {
+                return ResposeErrorMessageAndRedirect("This album does not contain the song requested for removal", $"/Albums/Details?albumId={albumId}", "Album");
+            }
+
+            if (foundAlbum.UserCreatorID!=userId)
+            {
+                return ResposeErrorMessageAndRedirect("This user is not authorised to remove tracks from list", $"/Albums/Details?albumId={albumId}", "Album");
+            }
+            var albumTrack = foundTrack.TrackAlbums.First(x => x.AlbumId == albumId);
+            foundTrack.TrackAlbums.Remove(albumTrack);
+            db.SaveChanges();
+            return new AlbumsController().Details(request);
+        }
+
     }
 }

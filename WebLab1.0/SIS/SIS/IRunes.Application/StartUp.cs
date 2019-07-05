@@ -35,6 +35,7 @@
             serverRoutingTable.Routes[HttpRequestMethod.Get][@"/Tracks/Create"] = request => new TracksController().Create(request);
             serverRoutingTable.Routes[HttpRequestMethod.Post][@"/Tracks/CreateData"] = request => new TracksController().CreateData(request);
             serverRoutingTable.Routes[HttpRequestMethod.Get][@"/Tracks/Details"] = request => new TracksController().Details(request);
+            serverRoutingTable.Routes[HttpRequestMethod.Get][@"/Tracks/Detach"] = request => new TracksController().DetachTrackFromAlbum(request);
 
         }
     }
