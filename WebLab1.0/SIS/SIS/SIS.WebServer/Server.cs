@@ -27,7 +27,7 @@
             Console.WriteLine($"Server started at http://{LocalHostIpAddress}:{port}");
 
             var task = Task.Run(ListenLoop);
-                 
+            Console.WriteLine("kur");    
             task.Wait();
         }
 

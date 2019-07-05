@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>IRunes App</title>
+    <style>
+        .field {
+            padding-bottom: 10px
+        }
+    </style>
+</head>
+<body>
+    <h1>IRunes</h1>
+    <ul>
+        <li>
+            <a href="/Home">Home</a>
+        </li>
+        <li>
+            <a href="/Albums/All">Albums</a>
+        </li>
+        <li>
+            <a href="/Users/Logout">Logout</a>
+        </li>
+    </ul>
+    <hr />
+    <h1>Create Track</h1>
+    <hr />
+    <form action="/Tracks/CreateData" method="post">
+        <div class="field">Name: <input type="text" name="name" placeholder="song name..." minlength="3" /></div>
+        <div class="field">Link: <input type="url" name="linkURL" placeholder="song url..." minlength="3"/></div>
+        <div class="field">Price: <input type="number" name="price" placeholder="price (Euro)..." step="0.01" min="1" /></div>
+        <div class="field"><input type="radio" name="overwriteChoise" value="1"> Overwrite If Title Exists<br></div>
+        <div class="field"><input type="radio" name="overwriteChoise" value="2"> Use Existing If Title Exists<br></div>
+        <div class="field"><input type="radio" name="overwriteChoise" value="3"> Make New If Title Exists<br></div>
+        <input type="hidden" name="albumId" value="@albumId@" />
+        <input type="submit" value="Create" />
+    </form>
+
+    <hr />
+    <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p>
+</body>
+</html>
