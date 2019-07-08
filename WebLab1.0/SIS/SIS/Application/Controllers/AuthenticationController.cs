@@ -57,10 +57,10 @@ namespace Application.Controllers
 
         public IHttpResponse LogOf(IHttpRequest request)
         {
-            string cookieValue = request.Cookies.GetCookie(loginCookieName).Value;
+            string cookieValue = request.Cookies.GetCookie(loginCookieName)?.Value;
             if (cookieValue is null)
             {
-                return this.ControllerError($"No user was loged in at the moment", "Home", "Home");
+                return this.ControllerError($"No user was loged in at the moment");
             }
             var cookieDelete = new HttpCookie(loginCookieName, cookieValue,true, -1,true,false);
 

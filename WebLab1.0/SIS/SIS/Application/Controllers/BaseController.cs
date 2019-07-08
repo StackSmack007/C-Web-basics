@@ -23,7 +23,9 @@
         protected CakeContext db;
         private readonly Encrypter encrypter;
         protected readonly HashingManager hasher;
-  
+
+        private static string layout = File.ReadAllText(@"../../../Views/Layouts/_importLayout.html");
+
         protected BaseController()
         {
             hasher = new HashingManager();
@@ -33,9 +35,16 @@
         }
         protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage")
         {
-            string htmlContent = $@"<h1 style=""color: yellow; background:black"">Error: {message} !</h1>
-                                 <h2>Return Back to <a href=""{redirectAdress}"">{redirectName}</a></h2>";
+            string warninghtml = $"<div class=\"alert alert-danger\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
+            string htmlContent = layout.Replace("@BodyContent@", warninghtml);
+            IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
+            return htmlResponse;
+        }
 
+        protected IHttpResponse ControllerSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage")
+        {
+            string warninghtml = $"<div class=\"alert alert-success\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
+            string htmlContent = layout.Replace("@BodyContent@", warninghtml);
             IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
             return htmlResponse;
         }
@@ -52,6 +61,7 @@
             string path = originalDestination + folderName + htmlName;
             string htmlContent = File.ReadAllText(path);
             htmlContent = InsertData(htmlContent);
+            htmlContent = layout.Replace("@BodyContent@", htmlContent);
             IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
             return htmlResponse;
         }

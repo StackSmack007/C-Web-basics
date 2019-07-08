@@ -15,6 +15,8 @@
 
         public string ImageURL { get; set; }
 
+        public string ProviderName { get; set; }
+
         public decimal Price { get; set; }
 
         public virtual ICollection<OrderProduct> ProductOrders { get; set; }

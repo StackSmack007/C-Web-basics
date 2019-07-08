@@ -1,27 +1,38 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <!--<link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
-    <meta charset="utf-8" />
-    <title>CakeStore</title>
-</head>
-<body>
-    <h1>Log In:</h1>
-    <hr>
-    
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron">
+        <h1 style="font-size: 4rem">Log In:</h1>
+    </div>
+</div>
+<hr>
+<div style="padding-left:1.5rem">
     <form action="/Authentication/LogInData" method="post">
+        <div class="form-group row">
+            <label for="username" style="font-size: 2rem" class="text-primary col-sm-3 col-lg-2 col-form-label">User Name:</label>
+            <div class=" col-sm-5 col-lg-4">
+                <input type="text" style="font-size: 2rem; padding-left:10px" class="form-control" placeholder="UserName..." name="username" minlength="6" maxlength="32" />
+            </div>
+        </div>
 
-        User Name <input type="text" placeholder="UserName" name="username" minlength="6" maxlength="32" />
-        <br /><br />
-        Password <input type="password" placeholder="Password" name="password" minlength="6" maxlength="32" />
-        <br /><br />
-        <input type="submit" value="LogIn" />
+        <div class="form-group row">
+            <label for="password" style="font-size: 2rem" class="text-primary col-sm-3  col-lg-2 col-form-label">Password:</label>
+            <div class="col-sm-5 col-lg-4">
+                <input type="password" style="font-size: 2rem; padding-left:10px" class="form-control" placeholder=" Password..." name="password" minlength="6" maxlength="32" />
+            </div>
+        </div>
+        <div style="margin:2rem"></div><input class="btn btn-primary btn-lg" type="submit" value="Log In" />
     </form>
     <br />
-    <form action="/Authentication/Register" method="get">
-        Dont have an account? <input type="submit" value="RegisterNow" />
-    </form>
 
-</body>
-</html>
+    <div class="form-group row">
+        <div class="col-sm-5  col-lg-4">
+            <p style="font-size: 2rem" class="text-info"><em> Dont have an account yet?</em></p>
+        </div>
+        <div class="col-sm-3  col-lg-2">
+            <a class="btn btn-primary btn-lg" href="/Authentication/Register" role="button" style="float:right">Register Now</a>
+        </div>
+    </div>
+</div>
+<div class="col-sm-8 col-lg-6">
+    <hr />
+    <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
+</div>

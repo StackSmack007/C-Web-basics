@@ -8,7 +8,7 @@
     {
         public HtmlResult(string content, HttpStatusCode statusCode) : base(statusCode)
         {
-            this.Headers.Add(new HttpHeader("Content-type", "text/html"));
+            this.Headers.Add(new HttpHeader("Content-type", "text/html; charset=utf-8"));
             this.Content = Encoding.UTF8.GetBytes(content);
         }
     }

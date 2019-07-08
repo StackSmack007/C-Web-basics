@@ -27,7 +27,7 @@
                 .FirstOrDefault(x => x.Username == GetUserNameFromCookie(authenticationCookie));
             if (buyer is null) return ControllerError("User not found in database");
 
-            int quuantity = int.Parse(request.FormData["count"].ToString());
+            int quantity = int.Parse(request.FormData["count"].ToString());
             int cakeId = int.Parse(request.FormData["cakeId"].ToString());
 
             DateTime nowTIme = DateTime.UtcNow;
@@ -36,7 +36,7 @@
 
             if (currentOrder != null && currentOrder.OrderProducts.Any(x => x.ProductID == cakeId))
             {
-                currentOrder.OrderProducts.First(x => x.ProductID == cakeId).Quantity += quuantity;
+                currentOrder.OrderProducts.First(x => x.ProductID == cakeId).Quantity += quantity;
             }
             else if (currentOrder is null)
             {
@@ -48,7 +48,7 @@
                     OrderProducts = new HashSet<OrderProduct> {new OrderProduct()
                 {
                     ProductID = cakeId,
-                    Quantity = quuantity
+                    Quantity = quantity
                 }
                     }
                 };
@@ -59,11 +59,13 @@
                 currentOrder.OrderProducts.Add(new OrderProduct()
                 {
                     ProductID = cakeId,
-                    Quantity = quuantity
+                    Quantity = quantity
                 });
             }
             db.SaveChanges();
-            return new HomeController().Search();
+            string userName = GetUserNameFromCookie(authenticationCookie);
+            string cakeName = db.Products.First(x => x.Id == cakeId).ProductName;
+            return ControllerSuccess($"Success: User {userName} ordered {quantity} pieces of cake {cakeName}", "/Home/Search","Browse Cakes");
         }
 
 
@@ -87,7 +89,7 @@
 
             foreach (var item in userOrders)
             {
-                sb.Append($"<tr><th><a href=\"/Orders/DisplayOrder?id={item.OrderId}\">{item.OrderId}</th><th>{item.CreatedOn}</th><th>{item.TotalPrice:F2} (<strong>Euro</strong>)</th></tr>");
+                sb.Append($"<tr><th><a href=\"/Orders/DisplayOrder?id={item.OrderId}\">Order: {item.OrderId}</th><th>{item.CreatedOn}</th><th>{item.TotalPrice:F2} (<strong>Euro</strong>)</th></tr>");
             }
             ViewData["username"] = username;
             ViewData["tableRows"] = sb.ToString();
@@ -124,9 +126,10 @@
                 string productName = orderproduct.Product.ProductName;
                 int productId = orderproduct.ProductID;
                 int quantity = orderproduct.Quantity;
+                decimal singlePrice = orderproduct.Product.Price;
                 decimal totalPrice = orderproduct.Quantity * orderproduct.Product.Price;
                 totalCost += totalPrice;
-                sb.Append($"<tr><th class=\"longText\"><a href=\"/Home/DisplayCake?id={productId}\">{productName}</a></th><th>{quantity}</th><th>{totalPrice}</th></tr>");
+                sb.Append($"<tr><th class=\"longText\"><a href=\"/Home/DisplayCake?id={productId}\">{productName}</a></th><th>{quantity}</th><th>{singlePrice:F2} &#8364</th><th>{totalPrice:F2} &#8364</th></tr>");
             }
             ViewData["orderId"] = orderId;
             ViewData["totalCost"] = totalCost.ToString("F2");

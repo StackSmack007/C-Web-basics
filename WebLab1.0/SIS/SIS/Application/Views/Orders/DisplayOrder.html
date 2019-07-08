@@ -1,38 +1,16 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <!--<link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
-    <meta charset="utf-8" />
-    <title>CakeStore</title>
-
-    <style>
-        table, td, th {
-            border: solid 2px;
-        }
-
-        td, th {
-            text-align: left
-        }
-
-        table {
-            width: 40%
-        }
-
-        .longText {
-            width: 50%
-        }
-    </style>
-    </head>
-<body>
-    <h1>By The Cake</h1>
-    <h2>Order Id: @orderId@</h2>
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
+        <h1>By The Cake:</h1>
+        <h2>Enjoy our awesome cakes</h2>
+        <h2>Order Id: @orderId@</h2>
+    </div>
     <hr>
-    <table>
-        <tr style="background:lightgray">
-            <td class="longText">ProductName</td>
-            <td>Quantity</td>
-            <td>TotalPrice</td>
+    <table class="table table-striped">
+        <tr>
+            <th scope="col">ProductName</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Single Unit Price</th>
+            <th scope="col">TotalPrice</th>
         </tr>
         @ordersList@
     </table>
@@ -40,6 +18,4 @@
     <p>Total Value Of order: <strong>@totalCost@ (Euro)</strong></p>
     <br />
     <hr />
-    <p>Back to <a href="/">Home</a> Page</p>
-</body>
-</html>
+    <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>

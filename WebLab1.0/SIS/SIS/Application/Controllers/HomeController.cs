@@ -62,7 +62,7 @@
             {
                 return View();
             }
-            return new HomeController().Index(request);
+            return ControllerError("User is not authorised to add cakes! His name must start with admin to do that");
         }
 
         public IHttpResponse AddCakeData(IHttpRequest request)
@@ -70,17 +70,18 @@
             string name = request.FormData["cakeName"].ToString();
             decimal price = decimal.Parse(request.FormData["price"].ToString());
             string imgUrl = request.FormData["imgURL"].ToString();
-
+            string manufacturer = request.FormData["manufacturer"].ToString();
             Product existingProduct = db.Products.FirstOrDefault(x => x.ProductName == name);
             if (existingProduct is null)
             {
-                Product product = new Product() { ProductName = name, Price = price, ImageURL = imgUrl };
+                Product product = new Product() { ProductName = name, Price = price, ImageURL = imgUrl,ProviderName=manufacturer };
                 db.Products.Add(product);
             }
             else
             {
                 existingProduct.Price = price;
                 existingProduct.ImageURL = imgUrl;
+                existingProduct.ProviderName = manufacturer;
             }
             db.SaveChanges();
             return new HomeController().Index(request);
@@ -88,12 +89,17 @@
 
         public IHttpResponse Search()
         {
-            var products = db.Products.Select(x => new { x.Id, x.ProductName, x.Price }).OrderByDescending(x => x.Price).ToArray();
+            var products = db.Products.Select(x => new { x.Id, x.ProductName, x.Price, x.ProviderName }).OrderByDescending(x => x.Price).ToArray();
             StringBuilder sb = new StringBuilder();
 
-            foreach (var product in products)
+            if (products.Any())
             {
-                sb.Append($"<p><a href=\"/Home/DisplayCake?id={product.Id}\" >{ product.ProductName}</a> ${product.Price:F2}</p>");
+                sb.Append("<table class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th scope=\"col\" style=\"width:30%\">Provider</th><th scope=\"col\" style=\"width:40%\">CakeName</th><th scope=\"col\" style=\"width:30%\">Cake Price (<strong>Euro</strong>)</th></tr></thead><tbody>");
+                foreach (var product in products)
+                {
+                    sb.Append($"<tr><td><i class=\"fa fa-birthday-cake\"></i> {product.ProviderName}</td><td><a href=\"/Home/DisplayCake?id={product.Id}\">{product.ProductName}</a></td><td> {product.Price:F2}<strong> &#8364 </strong></td></tr>");
+                }
+                sb.Append("</tbody></table>");
             }
             ViewData["products"] = sb.ToString();
             return View();
@@ -106,7 +112,7 @@
             ViewData["cakeName"] = product.ProductName;
             ViewData["price"] = product.Price;
             ViewData["imgURL"] = this.DecodeUrl(product.ImageURL);
-            ViewData["cakeId"] = product.Id;               
+            ViewData["cakeId"] = product.Id;
             return View();
         }
 
