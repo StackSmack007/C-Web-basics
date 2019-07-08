@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  <link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
+    <meta charset="utf-8" />
+    <title>CakeStore</title>
+</head>
+<body>
+    <h1>Add New Cake:</h1>
+    <hr>
+
+    <form action="/Home/AddCakeData" method="post">
+
+        Cake Name: <input type="text" placeholder="Name of the cake" name="cakeName" minlength="4" maxlength="32" />
+        <br />
+        <br />
+        Price(Euro): <input type="number" placeholder="Price of 1 peace" name="price" min="0" max="300" step="0.01" />
+        <br />
+        <br />
+        Picture URL: <input type="url" placeholder="pasteImageURL" name="imgURL" />
+        <br />
+        <br />
+        <input type="submit" value="Add This Cake" />
+    </form>
+    <a href="/Home/">Back to HomePage</a>
+</body>
+</html>

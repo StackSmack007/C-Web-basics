@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="stylesheet" href="../CSS/Styles.css" type="text/css">
+      <!--<link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
     <meta charset="utf-8" />
     <title>CakeStore</title>
 </head>
@@ -11,28 +11,35 @@
     <h2>Enjoy our awesome cakes</h2>
     <hr>
     <ul>
-        <li>
+        <!--<li>
             <a href="invalidURL1">Home</a>
             <ol>
                 <li><a href="invalidURL2">Our Cakes</a></li>
                 <li><a href="invalidURL3">Our Stores</a></li>
             </ol>
-        </li>
-        <li><a href="invalidURL4">My Profile</a></li>
-        <li><a href="invalidURL5">Add Cake</a></li>
-        <li><a href="invalidURL6">Browse Cakes</a></li>
-        <li><a href="invalidURL7">My Orders</a></li>
-        <li><a href="invalidURL8">About Us</a></li>
+        </li>-->
+        <li><a href="/Home/MyProfile">My Profile</a></li>
+        <li><a href="/Home/AddCake">Add Cake</a></li>
+        <li><a href="/Home/Search">Browse Cakes</a></li>
+        <li><a href="/Orders/DisplayOrders">My Orders</a></li>
+        <li><a href="/Home/AboutUs">About Us</a></li>
     </ul>
     <div>
-        <form action="/Register">
+        <form action="/Authentication/Register">
             <input type="submit" value="Register" />
         </form>
         <br />
-        <form action="/Login">
+        <form action="/Authentication/LogIn">
             <input type="submit" value="Log In" />
         </form>
+        <br />
+        <form action="/Authentication/LogOf">
+            <input type="submit" value="Log Off" />
+        </form>
     </div>
+    <hr />
+    <p><em><strong>Cake store ultimate &#174 </strong> </em><br /> @message@ </p>
+
 
 </body>
 </html>

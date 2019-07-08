@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
+    <meta charset="utf-8" />
+    <title>CakeStore</title>
+</head>
+<body>
+    <h1>Register:</h1>
+    <hr>
+
+    <form action="/Authentication/Register" method="post">
+
+        User Name <input type="text" placeholder="UserName" name="username" minlength="6" maxlength="32" />
+        <br />
+        Password <input type="password" placeholder="Password" name="password" minlength="6" maxlength="32" />
+        <br />
+        Verify Password <input type="password" placeholder="Repeat Password" name="verifyPassword" minlength="6" maxlength="32" />
+        <br />
+        <input type="submit" value="Register" />
+    </form>
+
+</body>
+</html>

@@ -33,7 +33,7 @@
             {
                 string sessionId = SetRequestSession(httpRequest);
 
-                var httpResponse = HandleRequest(httpRequest);
+                IHttpResponse httpResponse = HandleRequest(httpRequest);
 
                 this.SetResponseSession(httpResponse,sessionId);
 

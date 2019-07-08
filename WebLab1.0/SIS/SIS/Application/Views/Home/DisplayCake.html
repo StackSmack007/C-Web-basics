@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--  <link rel="stylesheet" href="../CSS/Styles.css" type="text/css">-->
+        <meta charset="utf-8" />
+        <title>CakeStore</title>
+    </head>
+    <body>
+        <p><a href="/Home/Search">Back to Browse Cakes</a></p>
+
+        <h1>Order a @cakeName@</h1>
+        <p><em>Price (<strong>Euro</strong>): @price@</em></p>
+        <br />
+        <img src="@imgURL@" alt="img of @cakeName@ cake" style="width:50%" />
+        <!--<img src="https://d2z4fd79oscvvx.cloudfront.net/0027672_birthday_chocolate_cake_385.jpeg" alt="img of @cakeName@" style="width:50%" />-->
+        <hr />
+        <form action="/Orders/MakeOrder" method="post">
+            Count: <input type="number" name="count" min="1" max="10" /><input type="hidden" name="cakeId" value="@cakeId@"/>
+            <br />
+            <br />
+            <input type="submit" value="Add To Cart" />
+        </form>
+        <hr />
+        <p><a href="/">Back to Home</a></p>
+    </body>
+    </html>
