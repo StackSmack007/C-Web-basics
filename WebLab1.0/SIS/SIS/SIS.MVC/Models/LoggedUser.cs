@@ -1,4 +1,4 @@
-﻿namespace SIS.MVC.Services
+﻿namespace SIS.MVC.Models
 {
     using System;
     public class LoggedUser
