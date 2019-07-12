@@ -14,5 +14,14 @@
             }
             return View("IndexGuest");
         }
+
+       public IHttpResponse About(IHttpRequest request)
+        {
+            if (IsUserLogedIn(request))
+            {
+                return View("AboutUser");
+            }
+            return View("AboutGuest");
+        }
     }
 }

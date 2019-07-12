@@ -1,40 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@userNav@
+<div class="row">
+    <div class="col-7">
+        <img src="@imgURL@" alt="album cover" class="card-img" style="width:100%" />
+        <h3>Album Name:@albumName@</h3>
+        <h3>Price: @albumPrice@$</h3>
+        <h3>Creator: <span style="color:darkmagenta">@creatorName@</span></h3>
+        <div class="go-left"><a class="btn btn-success" href="/Albums/All"> &#x261C Back To All</a></div>
+        <div class="go-right">@addTrackOrNot@</div>
+    </div>
+    <div>
+        <h3> Tracks</h3>
+        @tracksList@
+    </div>
+</div>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <style>
-        .field {
-            padding-bottom: 10px
-        }
-    </style>
-    <title>IRunes App</title>
-</head>
-<body>
-    <h1>IRunes</h1>
-    <ul>
-        <li>
-            <a href="/Home">Home</a>
-        </li>
-        <li>
-            <a href="/Albums/All">Albums</a>
-        </li>
-        <li>
-            <a href="/Users/Logout">Logout</a>
-        </li>
-    </ul>
-    <hr />
-    <img src="@imgURL@" alt="album cover" style="width:50%" />
-    <h2>Name:@albumName@</h2>
-    <h2>Price: @albumPrice@$</h2>
-    <h2>Creator: <span style="color:darkmagenta">@creatorName@</span></h2>
-    @addTrackOrNot@
-    <h2>Tracks List:</h2>
-    <hr />
-    @tracksList@
-    <hr />
-    <a href="/Albums/All"> &#x261C Back To All Albums</a>
-    <hr />
-    <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p>
-</body>
-</html>
+<div class="green-border-line"></div>
+<footer class="text-center"> <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p></footer>

@@ -1,30 +1,8 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>IRunes App</title>
-</head>
-<body>
-    <h1>IRunes</h1>
-    <ul>
-        <li>
-            <a href="/Home">Home</a>
-        </li>
-        <li>
-            <a href="/Albums/All">Albums</a>
-        </li>
-        <li>
-            <a href="/Users/Logout" >Logout</a>
-        </li>
-    </ul>
-    <hr />
-    <h1>Albums</h1>
-    <hr />
-    <a href="/Albums/Create" style="color:goldenrod">&#x266B Create Album &#x271A </a>
-    <hr />
+﻿@userNav@
+<h1>Albums</h1>
+<div class="green-border-line"></div>
+<a class="btn btn-success" href="/Albums/Create" style="color:white">&#x266B Create Album &#x271A </a>
+<div class="green-border-line"></div>
     @albumsList@
-    <hr />
-    <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p>
-</body>
-</html>
+<div class="green-border-line"></div>
+<footer class="text-center"> <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p></footer>

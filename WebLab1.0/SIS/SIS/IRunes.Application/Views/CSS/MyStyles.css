@@ -1,0 +1,56 @@
+﻿.navbar {
+    background-color: forestgreen
+}
+
+    .navbar .navbar-brand {
+        color: navajowhite
+    }
+
+.navbar-nav .nav-item .nav-link {
+    color: white
+}
+
+    .navbar-nav .nav-item .nav-link:hover {
+        color: yellow
+    }
+
+.green-border-line {
+    border-top: 2px solid forestgreen;
+    margin-top: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.white-border-line {
+    border-top: 2px solid navajowhite;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.green-container {
+    background-color: forestgreen;
+    margin-top: 1rem;
+    margin-bottom: 1.8rem;
+    padding: 0.5rem;
+    padding-left: 1rem;
+    color:white
+}
+
+.green-container a{
+    color:orange
+}
+
+.forest-green{
+    color:forestgreen;
+    }
+
+.go-left{
+    float:left
+}
+.go-right {
+    float:right
+}
+
+.no-hor-pad {
+    padding-left: 0;
+    padding-right: 0;
+}

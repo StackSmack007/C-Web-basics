@@ -60,11 +60,11 @@ namespace Application.Controllers
             string cookieValue = request.Cookies.GetCookie(loginCookieName)?.Value;
             if (cookieValue is null)
             {
-                return this.ControllerError($"No user was loged in at the moment");
+               
+                return this.ControllerError("No user was loged in at the moment");
             }
             var cookieDelete = new HttpCookie(loginCookieName, cookieValue,true, -1,true,false);
-
-            
+       
             IHttpResponse redirectToHome = new RedirectResult("/");
             redirectToHome.AddCookie(cookieDelete);
             return redirectToHome;

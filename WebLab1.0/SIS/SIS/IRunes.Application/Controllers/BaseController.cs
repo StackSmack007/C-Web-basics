@@ -11,12 +11,17 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Net;
     using System.Reflection;
+    using System.Text;
     using System.Text.RegularExpressions;
     using System.Web;
 
     public abstract class BaseController
     {
+
+        private static string _layoutHead = File.ReadAllText(@"../../../Views/Layouts/_importLayout.html");
+
         private const string regexPattern = @"(?<=@).*?(?=@)";
 
         private const string userInfo = "userInfo";
@@ -34,8 +39,11 @@
             hasher = new HashingManager();
 
             db = new IRunesContext();
-
-            ViewData = new Dictionary<string, object>();
+            ViewData = new Dictionary<string, object>()
+            {
+                ["guestNav"] = File.ReadAllText(@"../../../Views/Layouts/guestNavbar.html"),
+                ["userNav"] = File.ReadAllText(@"../../../Views/Layouts/userNavbar.html")
+            };
         }
 
         protected IHttpResponse ResposeErrorMessageAndRedirect(string message, string redirectAdress = "/", string redirectName = "HomePage")
@@ -46,6 +54,21 @@
             IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
             return htmlResponse;
         }
+
+        protected IHttpResponse ResposeMessage(string message, bool redMessage = false)
+        {
+            string type = redMessage ? "Danger" : "Success";
+            string htmlContent = $@"<div class=""alert alert-{type.ToLower()} alert - dismissible fade show"" role=""alert"">
+                                <strong>{type}</strong>{message}
+                                <button type =""button"" class=""close"" data -dismiss=""alert"" aria -label=""Close"">
+                                <span aria-hidden=""true"">&times;</span></button>
+                                </div>";
+
+            var byteContent = Encoding.UTF8.GetBytes(htmlContent);
+            IHttpResponse response = new InlineResourseResult(byteContent, HttpStatusCode.OK);
+            return response;
+        }
+
         /// <summary>
         /// Returns View from a folder with name same as the name of the 
         /// controller and html file with name same as the name of the method 
@@ -68,7 +91,7 @@
             }
             htmlName += ".html";
             string path = originalDestination + folderName + htmlName;
-            string htmlContent = File.ReadAllText(path);
+            string htmlContent = _layoutHead.Replace("@BodyContent@", File.ReadAllText(path));
             htmlContent = InsertData(htmlContent);
             IHttpResponse htmlResponse = new HtmlResult(htmlContent, System.Net.HttpStatusCode.OK);
             return htmlResponse;

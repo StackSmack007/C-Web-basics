@@ -1,26 +1,32 @@
-﻿<!DOCTYPE html>
+﻿  @guestNav@
+<div class="row">
+    <div class="col-lg-3 col-md-2 col-sm-1"></div>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <style>
-        .field {
-            padding-bottom: 10px
-        }
-    </style>
-    <meta charset="utf-8" />
-    <title>IRunes App</title>
-</head>
-<body>
-    <h1>IRunes </h1>
-    <h1>Sign In (Log In):</h1>
-    <hr />
-    <form action="/Users/LoginData" method="post">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="text-center">
+            <h1 class="forest-green">Login</h1>
+        </div>
 
-        <div class="field">UserName/Email: <input type="text" name="usernameOrMail" placeholder="username(mail)..." /></div>
-        <div class="field">Password: <input type="password" name="password" placeholder="password..." /></div>
-        <input type="submit" value="Login" />
-    </form>
-    <hr />
-    <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p>
-</body>
-</html>
+        <div class="green-border-line"></div>
+        <br />
+
+        <form action="/Users/LoginData" method="post">
+            <div class="form-group" >
+                <label>UserName / Email:</label>
+                <input type="text" class="form-control" name="usernameOrMail" placeholder="Username (mail)..." required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Password..." required>
+            </div>
+            <center>
+                <button type="submit" class="btn btn-success">Login</button>
+            </center>
+        </form>
+
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-1"></div>
+</div>
+<br />
+<div class="green-border-line"></div>
+<footer class="text-center"> <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p></footer>

@@ -1,32 +1,25 @@
-﻿<!DOCTYPE html>
+﻿@userNav@
+<div class="row">
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>IRunes App</title>
-</head>
-<body>
-    <h1>IRunes</h1>
-    <ul>
-        <li>
-            <a href="/Home">Home</a>
-        </li>
-        <li>
-            <a href="/Albums/All">Albums</a>
-        </li>
-        <li>
-            <a href="/Users/Logout">Logout</a>
-        </li>
-    </ul>
-    <hr />
-    <iframe width="745" height="420" src="https://www.youtube.com/embed/@trackURL@"></iframe>
-        <h2>Title of song: @trackName@</h2>
-        <h2>Track Price: @trackPrice@$</h2>
-        <hr />
-        <h2>IRunes wishes you a fun experience.</h2>
-        <hr />
-        <a href="/Albums/Details?albumId=@albumId@"> &#x261C Back to the Album</a>
-        <hr />
-        <p> <strong>CopyRight</strong> &#9400 <strong> Sanity Design Studios. All rights reserved.</strong></p>
-</body>
-</html>
+    <div class="col-lg-3 col-md-2 col-sm-1"></div>
+
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <center>
+            <h3>Track Name: @trackName@</h3>
+            <h3>Track price: $@trackPrice@</h3>
+
+            <div class="green-border-line"></div>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/@trackURL@" allowfullscreen></iframe>
+            </div>
+            <div class="green-border-line"></div>
+            <br />
+            <a class="btn btn-success" href="/Albums/Details?albumId=@albumId@"> &#x261C Back To Album</a>
+        </center>
+    </div>
+    <div class="col-lg-3 col-md-2 col-sm-1"></div>
+
+</div>
+<br />
+<div class="green-border-line"></div>
+<footer class="text-center"> <p> <strong>CopyRight</strong> &#9400 <strong>Sanity Design Studios. All rights reserved.</strong></p></footer>

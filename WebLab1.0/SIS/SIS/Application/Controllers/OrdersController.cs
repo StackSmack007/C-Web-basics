@@ -95,7 +95,8 @@
             ViewData["tableRows"] = sb.ToString();
             return View();
         }
-        internal IHttpResponse DisplayOrder(IHttpRequest request)
+
+        public IHttpResponse DisplayOrder(IHttpRequest request)
         {
            
             int orderId;

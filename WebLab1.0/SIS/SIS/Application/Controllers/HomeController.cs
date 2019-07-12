@@ -10,6 +10,7 @@
     public class HomeController : BaseController
     {
         private string specialUserPrefix = "Admin";
+
         public IHttpResponse Index(IHttpRequest request)
         {
             string username = GetUserNameFromCookie(request.Cookies.GetCookie(loginCookieName));
@@ -74,7 +75,7 @@
             Product existingProduct = db.Products.FirstOrDefault(x => x.ProductName == name);
             if (existingProduct is null)
             {
-                Product product = new Product() { ProductName = name, Price = price, ImageURL = imgUrl,ProviderName=manufacturer };
+                Product product = new Product() { ProductName = name, Price = price, ImageURL = imgUrl, ProviderName = manufacturer };
                 db.Products.Add(product);
             }
             else
@@ -120,7 +121,5 @@
         {
             return View();
         }
-
-
     }
 }

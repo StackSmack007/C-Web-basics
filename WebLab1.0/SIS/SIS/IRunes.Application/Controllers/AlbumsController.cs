@@ -22,16 +22,13 @@
             StringBuilder sb = new StringBuilder();
             foreach (var dto in albumsDTOs)
             {
+                var deleteOption = string.Empty;
+                string name = dto.Name.Replace('+', ' ');
                 if (dto.IsCreatedByThisUser)
                 {
-                    var deleteOption = $"  <a href=\"/Albums/Delete?albumId={dto.Id}\" style=\"text-decoration:none\"><span style=\"color:red\"><strong> &#10007 </strong></span> </a>";
-
-                    sb.Append($"<p><a href=\"/Albums/Details?albumId={dto.Id}\" style=\"color:darkgreen\">{dto.Name}</a>{deleteOption}</p>");
+                   deleteOption = $"<a href=\"/Albums/Delete?albumId={dto.Id}\" style=\"text-decoration:none\"><span style=\"color:red\"><strong> &#10007 </strong></span> </a>"; 
                 }
-                else
-                {
-                    sb.Append($"<p><a href=\"/Albums/Details?albumId={dto.Id}\" style=\"color:brown\">{dto.Name}</a></p>");
-                }
+                sb.Append($"<p><a href=\"/Albums/Details?albumId={dto.Id}\" class=\"text-primary font-weight-bold\">{name}</a>{deleteOption}</p>");
             }
             ViewData["albumsList"] = sb.ToString();
 
@@ -87,6 +84,7 @@
             string albumId = request.QueryData["albumId"].ToString();
             Album foundAlbum = db.Albums.Include(a => a.AlbumTracks)
                                         .ThenInclude(at => at.Track)
+                                        .Include(a => a.UserCreator)
                                         .FirstOrDefault(x => x.Id == albumId);
             if (foundAlbum is null)
             {
@@ -100,18 +98,18 @@
             string currentUserId = currentUserInfo[0];
             bool IsAuthorOfAlbum = currentUserId == foundAlbum.UserCreatorID;
 
-            ViewData["albumName"] = foundAlbum.Name;
+            ViewData["albumName"] = DecodeUrl(foundAlbum.Name).Replace('+',' ');
             ViewData["albumPrice"] = foundAlbum.Price.ToString("F2");
             ViewData["imgURL"] = DecodeUrl(foundAlbum.CoverImgUrl);
-            ViewData["creatorName"] = currentUserInfo[1];
+            ViewData["creatorName"] = foundAlbum.UserCreator.UserName;
             ViewData["addTrackOrNot"] = string.Empty;
 
             if (IsAuthorOfAlbum)
             {
-                ViewData["addTrackOrNot"] = $"<hr/><h2><a href=\"/Tracks/Create?albumId={albumId}\" style=\"color:goldenrod\">Create new track &#x266B</a></h2><hr/>";
+                ViewData["addTrackOrNot"] = $"<a class=\"btn btn-success\" href=\"/Tracks/Create?albumId={albumId}\" >Add New Track &#x266B</a>";
             }
 
-            ViewData["tracksList"] = "<p>No songs added yet!</p>";
+            ViewData["tracksList"] = "<p class=\"text-info\">No songs added yet!</p>";
             if (foundAlbum.AlbumTracks.Any())
             {
                 StringBuilder sb = new StringBuilder();
@@ -119,8 +117,9 @@
                 int counter = 0;
                 foreach (Track track in foundAlbum.AlbumTracks.Select(x => x.Track))
                 {
+                    string trackName = DecodeUrl(track.Name).Replace('+', ' ');
                     string deleteOption = IsAuthorOfAlbum ? $"  <a href=\"/Tracks/Detach?trackId={track.Id}&albumId={albumId}\" style=\"text-decoration:none\"><span style=\"color:red\"><strong> &#10007 </strong></span> </a>" : "";
-                    sb.Append($"<li>{++counter}. <a href=\"/Tracks/Details?trackId={track.Id}&albumId={albumId}\">{track.Name}</a>{deleteOption}</li>");
+                    sb.Append($"<li>{++counter}. <a href=\"/Tracks/Details?trackId={track.Id}&albumId={albumId}\">{trackName}</a>{deleteOption}</li>");
                 }
                 sb.Append("</ul>");
                 ViewData["tracksList"] = sb.ToString();
