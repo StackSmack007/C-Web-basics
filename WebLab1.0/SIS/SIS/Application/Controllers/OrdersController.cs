@@ -18,7 +18,7 @@
         {
             HttpCookie authenticationCookie = this.Request.Cookies.GetCookie(loginCookieName);
 
-            if (!VerifyMemberCookie(this.Request))
+            if (!VerifyMemberCookie())
             {
                 return ControllerError("User not authorised to make purchases", @"/Authentication/LogIn", "LogIn");
             }
@@ -31,8 +31,6 @@
 
             DateTime nowTIme = DateTime.UtcNow;
             Order currentOrder = buyer.Orders.FirstOrDefault(x => x.DateOfCreation > nowTIme.AddMinutes(-timeSpanInMinutesToConsiderSameOrder));
-
-
 
             if (currentOrder != null && currentOrder.OrderProducts.Any(x => x.ProductID == cakeId))
             {
@@ -66,7 +64,6 @@
             string cakeName = db.Products.First(x => x.Id == cakeId).ProductName;
             return ControllerSuccess($"Success: User {userName} ordered {quantity} pieces of cake {cakeName}", "/Home/Search","Browse Cakes");
         }
-
 
         public IHttpResponse DisplayOrders()
         {
@@ -136,6 +133,5 @@
             ViewData["ordersList"] = sb.ToString();
             return View();
         }
-
     }
 }

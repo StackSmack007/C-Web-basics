@@ -85,7 +85,8 @@
                 existingProduct.ProviderName = manufacturer;
             }
             db.SaveChanges();
-            return new RedirectResult("/Index");//new HomeController().Index(this.Request);
+            RedirectResult("/Index");
+            return this.Response;
         }
 
         public IHttpResponse Search()

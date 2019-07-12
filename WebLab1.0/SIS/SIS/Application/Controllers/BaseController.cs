@@ -1,26 +1,22 @@
 ﻿namespace Application.Controllers
 {
     using Infrastructure.Data;
-    using SIS.HTTP.Requests.Contracts;
     using SIS.MVC;
     using System;
     using System.Linq;
 
     public abstract class BaseController : Controller
     {
-
         protected CakeContext db;
-
 
         protected BaseController() : base()
         {
             db = new CakeContext();
         }
 
-
-        protected bool VerifyMemberCookie(IHttpRequest request)
+        protected bool VerifyMemberCookie()
         {
-            string cookieValue = request.Cookies.GetCookie(loginCookieName).Value;
+            string cookieValue = this.Request.Cookies.GetCookie(loginCookieName).Value;
 
             string userName = string.Empty;
             try
@@ -33,7 +29,6 @@
             }
             return db.Users.Any(x => x.Username == userName);
         }
-
 
     }
 }

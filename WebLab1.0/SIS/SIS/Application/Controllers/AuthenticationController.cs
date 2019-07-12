@@ -2,7 +2,6 @@
 using Infrastructure.Models.Validators;
 using SIS.HTTP.Cookies;
 using SIS.HTTP.Responses.Contracts;
-using SIS.WebServer.Results;
 using System;
 using System.Linq;
 
@@ -49,9 +48,9 @@ namespace Application.Controllers
 
             var loginCookie = GeLoginCookie(userName);
             this.Request.Cookies.Add(loginCookie);
-            IHttpResponse goToIndex = new RedirectResult("/");
-            goToIndex.AddCookie(loginCookie);
-            return goToIndex;
+            this.RedirectResult("/");
+            this.Response.AddCookie(loginCookie);
+            return this.Response;
         }
 
         public IHttpResponse LogOf()
@@ -59,14 +58,14 @@ namespace Application.Controllers
             string cookieValue = this.Request.Cookies.GetCookie(loginCookieName)?.Value;
             if (cookieValue is null)
             {
-               
+
                 return this.ControllerError("No user was loged in at the moment");
             }
-            var cookieDelete = new HttpCookie(loginCookieName, cookieValue,true, -1,true,false);
-       
-            IHttpResponse redirectToHome = new RedirectResult("/");
-            redirectToHome.AddCookie(cookieDelete);
-            return redirectToHome;
+            var cookieDelete = new HttpCookie(loginCookieName, cookieValue, true, -1, true, false);
+
+            this.RedirectResult("/");
+            this.Response.AddCookie(cookieDelete);
+            return this.Response;
         }
 
         public IHttpResponse LogIn()
@@ -91,9 +90,9 @@ namespace Application.Controllers
             }
             var loginCookie = GeLoginCookie(userName);
             this.Request.Cookies.Add(loginCookie);
-            IHttpResponse goToIndex = new RedirectResult("/");
-            goToIndex.AddCookie(loginCookie);
-            return goToIndex;
+            RedirectResult("/");
+            this.Response.AddCookie(loginCookie);
+            return this.Response;
         }
     }
 }
