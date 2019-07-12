@@ -2,7 +2,6 @@
 {
     using Infrastructure.Models.Models;
     using SIS.HTTP.Responses.Contracts;
-    using SIS.WebServer.Results;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -13,14 +12,13 @@
 
         public IHttpResponse Index()
         {
-            string username = GetUserNameFromCookie(Request.Cookies.GetCookie(loginCookieName));
-            if (username is null)
+            if (this.CurentUser is null)
             {
                 ViewData["message"] = "No curently loged On user!";
             }
             else
             {
-                ViewData["message"] = $"<em>Currently loged on as user: </em><span style=\"color: darkblue\"><strong>{username}</strong></span>";
+                ViewData["message"] = $"<em>Currently loged on as user: </em><span style=\"color: darkblue\"><strong>{this.CurentUser.UserName}</strong></span>";
             }
 
             return View();
@@ -28,20 +26,17 @@
 
         public IHttpResponse MyProfile()
         {
-            string username = GetUserNameFromCookie(Request.Cookies.GetCookie(loginCookieName));
-
-
-            if (username is null)
+            if (this.CurentUser is null)
             {
                 return this.ControllerError($"No user loged in Log in first");
             }
-            User user = db.Users.FirstOrDefault(x => x.Username == username);
+            User user = db.Users.FirstOrDefault(x => x.Username == this.CurentUser.UserName);
             if (user is null)
             {
                 return ControllerError("User not found in the database");
             }
 
-            ViewData["username"] = username;
+            ViewData["username"] = this.CurentUser.UserName;
             ViewData["registrationDate"] = user.RegisteredOn.ToString("dd-MM-yyyy hh:mm:ss", CultureInfo.InvariantCulture);
 
             db.Entry(user).Collection(u => u.Orders).Load();
@@ -59,7 +54,7 @@
             {
                 return ControllerError("Admin must be loged in to add cakes!");
             }
-            if (GetUserNameFromCookie(loginCookie).StartsWith(specialUserPrefix))
+            if (this.CurentUser.UserName.StartsWith(specialUserPrefix))
             {
                 return View();
             }
@@ -85,7 +80,7 @@
                 existingProduct.ProviderName = manufacturer;
             }
             db.SaveChanges();
-            RedirectResult("/Index");
+            RedirectResult("/");
             return this.Response;
         }
 

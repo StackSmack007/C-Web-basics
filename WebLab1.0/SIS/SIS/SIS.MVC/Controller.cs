@@ -1,10 +1,10 @@
 ﻿using SIS.HTTP.Cookies;
+using SIS.HTTP.Exceptions;
 using SIS.HTTP.Headers;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MVC.Services;
-using SIS.WebServer.Results;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +19,10 @@ namespace SIS.MVC
 {
     public abstract class Controller
     {
+        private IHttpRequest request;
+
+        private LoggedUser curentUser;
+
         protected IDictionary<string, object> ViewData;
 
         protected const string loginCookieName = "LOG_IN";
@@ -27,9 +31,31 @@ namespace SIS.MVC
 
         protected readonly HashingManager hasher;
 
-        public IHttpRequest Request { get; set; }//will be set in routing but not in constructor because in constructor other things will be given!
+        protected LoggedUser CurentUser
+        {
+            get
+            {
+                if (curentUser != null && curentUser.CookieExpireDateTime > DateTime.UtcNow)
+                {
+                    return curentUser;
+                }
+                return null;
+            }}
 
         protected IHttpResponse Response { get; set; }
+
+        public IHttpRequest Request  //will be set in routing but not in constructor because in constructor other things will be given!
+        {
+            get
+            {
+                return this.request;
+            }
+            set
+            {
+                InitialiseUser(value);
+                request = value;
+            }
+        }
 
         #region HardcorePathsByConvention
         private static string importLayoutPath = @"../../../Views/Layouts/_importLayout.html";
@@ -48,23 +74,52 @@ namespace SIS.MVC
             Response = new HttpResponse(HttpStatusCode.OK);
         }
 
-        protected HttpCookie GeLoginCookie(string userName)
+        private void InitialiseUser(IHttpRequest newRequestValue)
         {
-            string hashedUserName = encrypter.Encrypt(userName);
-            return new HttpCookie(loginCookieName, hashedUserName, true, 1, true, false);
+            LoggedUser logedUser = null;
+            if (newRequestValue.Cookies.ContainsCookie(loginCookieName))
+            {
+                var loginCookie = newRequestValue.Cookies.GetCookie(loginCookieName);
+                try
+                {
+                string[] nameAndId = encrypter.Decrypt(loginCookie.Value).Split();
+                DateTime expireDate = loginCookie.Expires;
+                logedUser = new LoggedUser(nameAndId[0], int.Parse(nameAndId[1]), expireDate);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Invalid cookie!");
+                    LogOffUser(newRequestValue);
+                }
+            }
+            this.curentUser = logedUser;
         }
 
-        protected string GetUserNameFromCookie(HttpCookie cookie)
+        protected void LogInUser(string userName, int id)
         {
-            try
-            {
-                return encrypter.Decrypt(cookie.Value);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var loginCookie = MakeLoginCookie(userName, id);
+            this.Response.AddCookie(loginCookie);
         }
+
+        protected void LogOffUser(IHttpRequest requestPassed=null)
+        {
+            if (requestPassed is null)
+            {
+                requestPassed = Request;
+            }
+            var logDataCookie = requestPassed.Cookies.GetCookie(loginCookieName);
+            var cookieDelete = new HttpCookie(logDataCookie.Key, logDataCookie.Value, true, -1, true, false);
+            this.Response.AddCookie(cookieDelete);
+        }
+
+        private HttpCookie MakeLoginCookie(string userName, int id)
+        {
+            string nameAndId = userName + " " + id;
+            string hashedUserNameAndId = encrypter.Encrypt(nameAndId);
+            return new HttpCookie(loginCookieName, hashedUserNameAndId, true, 1, true, false);
+        }
+
 
         #region String And URL encoding/decoding
         protected string DecodeUrl(string str)
@@ -153,6 +208,7 @@ namespace SIS.MVC
             }
             return htmlContent;
         }
-    }
 
+
+    }
 }

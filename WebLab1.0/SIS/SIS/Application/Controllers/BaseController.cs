@@ -2,7 +2,6 @@
 {
     using Infrastructure.Data;
     using SIS.MVC;
-    using System;
     using System.Linq;
 
     public abstract class BaseController : Controller
@@ -14,20 +13,9 @@
             db = new CakeContext();
         }
 
-        protected bool VerifyMemberCookie()
+        protected int GetIdOfUserName(string username)
         {
-            string cookieValue = this.Request.Cookies.GetCookie(loginCookieName).Value;
-
-            string userName = string.Empty;
-            try
-            {
-                userName = encrypter.Decrypt(cookieValue);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return db.Users.Any(x => x.Username == userName);
+            return db.Users.FirstOrDefault(x => x.Username == username).Id;
         }
 
     }

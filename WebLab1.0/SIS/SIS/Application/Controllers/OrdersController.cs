@@ -2,7 +2,6 @@
 {
     using Infrastructure.Models.Models;
     using Microsoft.EntityFrameworkCore;
-    using SIS.HTTP.Cookies;
     using SIS.HTTP.Responses.Contracts;
     using System;
     using System.Collections.Generic;
@@ -16,14 +15,12 @@
 
         public IHttpResponse MakeOrder()
         {
-            HttpCookie authenticationCookie = this.Request.Cookies.GetCookie(loginCookieName);
-
-            if (!VerifyMemberCookie())
+            if (this.CurentUser is null)
             {
-                return ControllerError("User not authorised to make purchases", @"/Authentication/LogIn", "LogIn");
+                return ControllerError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");
             }
             User buyer = db.Users.Include(x => x.Orders).ThenInclude(x => x.OrderProducts)
-                .FirstOrDefault(x => x.Username == GetUserNameFromCookie(authenticationCookie));
+                .FirstOrDefault(x => x.Username == this.CurentUser.UserName);
             if (buyer is null) return ControllerError("User not found in database");
 
             int quantity = int.Parse(this.Request.FormData["count"].ToString());
@@ -38,7 +35,7 @@
             }
             else if (currentOrder is null)
             {
-                 currentOrder = new Order()
+                currentOrder = new Order()
                 {
                     UserId = buyer.Id,
                     DateOfCreation = DateTime.UtcNow,
@@ -60,20 +57,19 @@
                 });
             }
             db.SaveChanges();
-            string userName = GetUserNameFromCookie(authenticationCookie);
+            string userName = this.CurentUser.UserName;
             string cakeName = db.Products.First(x => x.Id == cakeId).ProductName;
-            return ControllerSuccess($"Success: User {userName} ordered {quantity} pieces of cake {cakeName}", "/Home/Search","Browse Cakes");
+            return ControllerSuccess($"Success: User {userName} ordered {quantity} pieces of cake {cakeName}", "/Home/Search", "Browse Cakes");
         }
 
         public IHttpResponse DisplayOrders()
         {
-            string username = GetUserNameFromCookie(this.Request.Cookies.GetCookie(loginCookieName));
-            if (username is null)
+            if (this.CurentUser is null)
             {
                 return this.ControllerError($"No user loged in Log in first");
             }
             var userOrders = db.Orders
-                .Where(x => x.User.Username == username)
+                .Where(x => x.User.Username == this.CurentUser.UserName)
                 .OrderByDescending(x => x.DateOfCreation)
                 .Select(x => new
                 {
@@ -87,29 +83,25 @@
             {
                 sb.Append($"<tr><th><a href=\"/Orders/DisplayOrder?id={item.OrderId}\">Order: {item.OrderId}</th><th>{item.CreatedOn}</th><th>{item.TotalPrice:F2} (<strong>Euro</strong>)</th></tr>");
             }
-            ViewData["username"] = username;
+            ViewData["username"] = this.CurentUser.UserName;
             ViewData["tableRows"] = sb.ToString();
             return View();
         }
 
         public IHttpResponse DisplayOrder()
         {
-           
+
             int orderId;
             Order order;
             try
             {
-                var loginCookie = this.Request.Cookies.GetCookie(loginCookieName);
-                string userName = GetUserNameFromCookie(loginCookie);
-
-
                 orderId = int.Parse(this.Request.QueryData["id"].ToString());
-                order = db.Orders.Include(o=>o.User).Include(o => o.OrderProducts)
-                                 .ThenInclude(op => op.Product).First(x=>x.Id==orderId);    
+                order = db.Orders.Include(o => o.User).Include(o => o.OrderProducts)
+                                 .ThenInclude(op => op.Product).First(x => x.Id == orderId);
 
-                if (order.User.Username!=userName)
+                if (order.User.Username != this.CurentUser.UserName)
                 {
-                    return ControllerError($"User {userName} is not outhorised to view another user's orders");
+                    return ControllerError($"User {this.CurentUser.UserName} is not outhorised to view another user's orders");
                 }
             }
             catch (Exception)
@@ -118,7 +110,7 @@
             }
             StringBuilder sb = new StringBuilder();
             decimal totalCost = 0;
-            foreach (var orderproduct in order.OrderProducts.OrderByDescending(x=> x.Quantity * x.Product.Price))
+            foreach (var orderproduct in order.OrderProducts.OrderByDescending(x => x.Quantity * x.Product.Price))
             {
                 string productName = orderproduct.Product.ProductName;
                 int productId = orderproduct.ProductID;
