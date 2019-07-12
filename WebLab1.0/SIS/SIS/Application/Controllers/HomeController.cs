@@ -1,8 +1,8 @@
 ﻿namespace Application.Controllers
 {
     using Infrastructure.Models.Models;
-    using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
+    using SIS.WebServer.Results;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -11,9 +11,9 @@
     {
         private string specialUserPrefix = "Admin";
 
-        public IHttpResponse Index(IHttpRequest request)
+        public IHttpResponse Index()
         {
-            string username = GetUserNameFromCookie(request.Cookies.GetCookie(loginCookieName));
+            string username = GetUserNameFromCookie(Request.Cookies.GetCookie(loginCookieName));
             if (username is null)
             {
                 ViewData["message"] = "No curently loged On user!";
@@ -26,9 +26,9 @@
             return View();
         }
 
-        public IHttpResponse MyProfile(IHttpRequest request)
+        public IHttpResponse MyProfile()
         {
-            string username = GetUserNameFromCookie(request.Cookies.GetCookie(loginCookieName));
+            string username = GetUserNameFromCookie(Request.Cookies.GetCookie(loginCookieName));
 
 
             if (username is null)
@@ -50,11 +50,11 @@
             return View();
         }
 
-        public IHttpResponse AddCake(IHttpRequest request)
+        public IHttpResponse AddCake()
         {
             //Only the usernames starting with Admin can add cakes!
 
-            var loginCookie = request.Cookies.GetCookie(loginCookieName);
+            var loginCookie = Request.Cookies.GetCookie(loginCookieName);
             if (loginCookie is null)
             {
                 return ControllerError("Admin must be loged in to add cakes!");
@@ -66,12 +66,12 @@
             return ControllerError("User is not authorised to add cakes! His name must start with admin to do that");
         }
 
-        public IHttpResponse AddCakeData(IHttpRequest request)
+        public IHttpResponse AddCakeData()
         {
-            string name = request.FormData["cakeName"].ToString();
-            decimal price = decimal.Parse(request.FormData["price"].ToString());
-            string imgUrl = request.FormData["imgURL"].ToString();
-            string manufacturer = request.FormData["manufacturer"].ToString();
+            string name = this.Request.FormData["cakeName"].ToString();
+            decimal price = decimal.Parse(this.Request.FormData["price"].ToString());
+            string imgUrl = this.Request.FormData["imgURL"].ToString();
+            string manufacturer = this.Request.FormData["manufacturer"].ToString();
             Product existingProduct = db.Products.FirstOrDefault(x => x.ProductName == name);
             if (existingProduct is null)
             {
@@ -85,7 +85,7 @@
                 existingProduct.ProviderName = manufacturer;
             }
             db.SaveChanges();
-            return new HomeController().Index(request);
+            return new RedirectResult("/Index");//new HomeController().Index(this.Request);
         }
 
         public IHttpResponse Search()
@@ -106,9 +106,9 @@
             return View();
         }
 
-        public IHttpResponse DisplayCake(IHttpRequest request)
+        public IHttpResponse DisplayCake()
         {
-            int productId = int.Parse(request.QueryData["id"].ToString());
+            int productId = int.Parse(this.Request.QueryData["id"].ToString());
             Product product = db.Products.Find(productId);
             ViewData["cakeName"] = product.ProductName;
             ViewData["price"] = product.Price;

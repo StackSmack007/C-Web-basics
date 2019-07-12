@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Models.Models;
 using Infrastructure.Models.Validators;
 using SIS.HTTP.Cookies;
-using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
 using SIS.WebServer.Results;
 using System;
@@ -16,12 +15,12 @@ namespace Application.Controllers
             return View();
         }
 
-        public IHttpResponse Register(IHttpRequest request)
+        public IHttpResponse RegisterData()
         {
-            string userName = request.FormData["username"].ToString();
-            string password = request.FormData["password"].ToString();
-            string verificationPassword = request.FormData["verifyPassword"].ToString();
-            HttpCookie legitimationCookie = request.Cookies.GetCookie(loginCookieName);
+            string userName = this.Request.FormData["username"].ToString();
+            string password = this.Request.FormData["password"].ToString();
+            string verificationPassword = this.Request.FormData["verifyPassword"].ToString();
+            HttpCookie legitimationCookie = this.Request.Cookies.GetCookie(loginCookieName);
             string userNameLoged = GetUserNameFromCookie(legitimationCookie);
             if (userNameLoged != null && legitimationCookie.Expires > DateTime.UtcNow)
             {
@@ -49,15 +48,15 @@ namespace Application.Controllers
             db.SaveChanges();
 
             var loginCookie = GeLoginCookie(userName);
-            request.Cookies.Add(loginCookie);
-            IHttpResponse goToIndex = new HomeController().Index(request);
+            this.Request.Cookies.Add(loginCookie);
+            IHttpResponse goToIndex = new RedirectResult("/");
             goToIndex.AddCookie(loginCookie);
             return goToIndex;
         }
 
-        public IHttpResponse LogOf(IHttpRequest request)
+        public IHttpResponse LogOf()
         {
-            string cookieValue = request.Cookies.GetCookie(loginCookieName)?.Value;
+            string cookieValue = this.Request.Cookies.GetCookie(loginCookieName)?.Value;
             if (cookieValue is null)
             {
                
@@ -70,9 +69,9 @@ namespace Application.Controllers
             return redirectToHome;
         }
 
-        public IHttpResponse LogIn(IHttpRequest request)
+        public IHttpResponse LogIn()
         {
-            string userName = GetUserNameFromCookie(request.Cookies.GetCookie(loginCookieName));
+            string userName = GetUserNameFromCookie(this.Request.Cookies.GetCookie(loginCookieName));
             if (userName != null)
             {
                 return this.ControllerError($"User with name {userName} is already loged in. Please log out first");
@@ -80,10 +79,10 @@ namespace Application.Controllers
             return View();
         }
 
-        public IHttpResponse LogInData(IHttpRequest request)
+        public IHttpResponse LogInData()
         {
-            string userName = request.FormData["username"].ToString();
-            string password = request.FormData["password"].ToString();
+            string userName = this.Request.FormData["username"].ToString();
+            string password = this.Request.FormData["password"].ToString();
 
             string passwordHashed = hasher.Encrypt(password);
             if (!db.Users.Any(x => x.Username == userName && x.Password == passwordHashed))
@@ -91,8 +90,8 @@ namespace Application.Controllers
                 return this.ControllerError($"Username or password do not match. Please enter correct Data", "LogIn", "Log In");
             }
             var loginCookie = GeLoginCookie(userName);
-            request.Cookies.Add(loginCookie);
-            IHttpResponse goToIndex = new HomeController().Index(request);
+            this.Request.Cookies.Add(loginCookie);
+            IHttpResponse goToIndex = new RedirectResult("/");
             goToIndex.AddCookie(loginCookie);
             return goToIndex;
         }

@@ -3,7 +3,6 @@
     using Infrastructure.Models.Models;
     using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Cookies;
-    using SIS.HTTP.Requests.Contracts;
     using SIS.HTTP.Responses.Contracts;
     using System;
     using System.Collections.Generic;
@@ -15,11 +14,11 @@
     {
         private const int timeSpanInMinutesToConsiderSameOrder = 10;
 
-        public IHttpResponse MakeOrder(IHttpRequest request)
+        public IHttpResponse MakeOrder()
         {
-            HttpCookie authenticationCookie = request.Cookies.GetCookie(loginCookieName);
+            HttpCookie authenticationCookie = this.Request.Cookies.GetCookie(loginCookieName);
 
-            if (!VerifyMemberCookie(request))
+            if (!VerifyMemberCookie(this.Request))
             {
                 return ControllerError("User not authorised to make purchases", @"/Authentication/LogIn", "LogIn");
             }
@@ -27,12 +26,13 @@
                 .FirstOrDefault(x => x.Username == GetUserNameFromCookie(authenticationCookie));
             if (buyer is null) return ControllerError("User not found in database");
 
-            int quantity = int.Parse(request.FormData["count"].ToString());
-            int cakeId = int.Parse(request.FormData["cakeId"].ToString());
+            int quantity = int.Parse(this.Request.FormData["count"].ToString());
+            int cakeId = int.Parse(this.Request.FormData["cakeId"].ToString());
 
             DateTime nowTIme = DateTime.UtcNow;
             Order currentOrder = buyer.Orders.FirstOrDefault(x => x.DateOfCreation > nowTIme.AddMinutes(-timeSpanInMinutesToConsiderSameOrder));
-            bool orderIsNew = false;
+
+
 
             if (currentOrder != null && currentOrder.OrderProducts.Any(x => x.ProductID == cakeId))
             {
@@ -40,8 +40,7 @@
             }
             else if (currentOrder is null)
             {
-                orderIsNew = true;
-                currentOrder = new Order()
+                 currentOrder = new Order()
                 {
                     UserId = buyer.Id,
                     DateOfCreation = DateTime.UtcNow,
@@ -69,9 +68,9 @@
         }
 
 
-        public IHttpResponse DisplayOrders(IHttpRequest request)
+        public IHttpResponse DisplayOrders()
         {
-            string username = GetUserNameFromCookie(request.Cookies.GetCookie(loginCookieName));
+            string username = GetUserNameFromCookie(this.Request.Cookies.GetCookie(loginCookieName));
             if (username is null)
             {
                 return this.ControllerError($"No user loged in Log in first");
@@ -96,18 +95,18 @@
             return View();
         }
 
-        public IHttpResponse DisplayOrder(IHttpRequest request)
+        public IHttpResponse DisplayOrder()
         {
            
             int orderId;
             Order order;
             try
             {
-                var loginCookie = request.Cookies.GetCookie(loginCookieName);
+                var loginCookie = this.Request.Cookies.GetCookie(loginCookieName);
                 string userName = GetUserNameFromCookie(loginCookie);
 
 
-                orderId = int.Parse(request.QueryData["id"].ToString());
+                orderId = int.Parse(this.Request.QueryData["id"].ToString());
                 order = db.Orders.Include(o=>o.User).Include(o => o.OrderProducts)
                                  .ThenInclude(op => op.Product).First(x=>x.Id==orderId);    
 

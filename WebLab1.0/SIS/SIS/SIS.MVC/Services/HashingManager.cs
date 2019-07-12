@@ -1,10 +1,9 @@
-﻿namespace Application.Services
+﻿namespace SIS.MVC.Services
 {
     using System.Security.Cryptography;
     using System.Text;
     public class HashingManager
     {
-
         public string Encrypt(string text)
         {
             SHA256CryptoServiceProvider cryptoSha = new SHA256CryptoServiceProvider();
@@ -19,12 +18,5 @@
             }
             return s1.ToString();
         }
-
-
-
-
-
-
-
     }
 }
