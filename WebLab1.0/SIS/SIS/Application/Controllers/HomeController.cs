@@ -2,6 +2,7 @@
 {
     using Infrastructure.Models.Models;
     using SIS.HTTP.Responses.Contracts;
+    using SIS.MVC.Attributes;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -10,6 +11,8 @@
     {
         private string specialUserPrefix = "Admin";
 
+        [HttpGet("/")]
+        [HttpGet("/Home")]
         public IHttpResponse Index()
         {
             if (this.CurentUser is null)
@@ -24,6 +27,7 @@
             return View();
         }
 
+        [HttpGet("/Home/MyProfile")]
         public IHttpResponse MyProfile()
         {
             if (this.CurentUser is null)
@@ -45,10 +49,10 @@
             return View();
         }
 
+        [HttpGet("/Home/AddCake")]
         public IHttpResponse AddCake()
         {
             //Only the usernames starting with Admin can add cakes!
-
             var loginCookie = Request.Cookies.GetCookie(loginCookieName);
             if (loginCookie is null)
             {
@@ -61,6 +65,7 @@
             return ControllerError("User is not authorised to add cakes! His name must start with admin to do that");
         }
 
+        [HttpPost("/Home/AddCakeData")]
         public IHttpResponse AddCakeData()
         {
             string name = this.Request.FormData["cakeName"].ToString();
@@ -84,6 +89,7 @@
             return this.Response;
         }
 
+        [HttpGet("/Home/Search")]
         public IHttpResponse Search()
         {
             var products = db.Products.Select(x => new { x.Id, x.ProductName, x.Price, x.ProviderName }).OrderByDescending(x => x.Price).ToArray();
@@ -102,6 +108,7 @@
             return View();
         }
 
+        [HttpGet("/Home/DisplayCake")]
         public IHttpResponse DisplayCake()
         {
             int productId = int.Parse(this.Request.QueryData["id"].ToString());
@@ -113,6 +120,7 @@
             return View();
         }
 
+        [HttpGet("/Home/AboutUs")]
         public IHttpResponse AboutUs()
         {
             return View();

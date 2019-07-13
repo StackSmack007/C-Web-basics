@@ -4,10 +4,14 @@
     using Infrastructure.Models.Validators;
     using SIS.HTTP.Cookies;
     using SIS.HTTP.Responses.Contracts;
+    using SIS.MVC.Attributes;
     using System;
     using System.Linq;
+
     public class AuthenticationController : BaseController
     {
+
+        [HttpGet("/Authentication/Register")]
         public IHttpResponse Register()
         {
             if (this.CurentUser != null)
@@ -17,6 +21,7 @@
             return View();
         }
 
+        [HttpPost("/Authentication/RegisterData")]
         public IHttpResponse RegisterData()
         {
             string userName = this.Request.FormData["username"].ToString();
@@ -59,6 +64,7 @@
             return this.Response;
         }
 
+        [HttpGet("/Authentication/LogOf")]
         public IHttpResponse LogOf()
         {
             if (CurentUser is null)
@@ -69,7 +75,7 @@
             this.RedirectResult("/");
             return this.Response;
         }
-
+        [HttpGet("/Authentication/LogIn")]
         public IHttpResponse LogIn()
         {
             if (this.CurentUser != null)
@@ -78,7 +84,7 @@
             }
             return View();
         }
-
+        [HttpPost("/Authentication/LogInData")]
         public IHttpResponse LogInData()
         {
             string userName = this.Request.FormData["username"].ToString();

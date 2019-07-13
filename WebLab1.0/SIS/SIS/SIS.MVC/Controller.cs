@@ -90,6 +90,7 @@ namespace SIS.MVC
             var logDataCookie = Request.Cookies.GetCookie(loginCookieName);
             var cookieDelete = new HttpCookie(logDataCookie.Key, logDataCookie.Value, true, -1, true, false);
             this.Response.AddCookie(cookieDelete);
+           
         }
 
         protected void LogInUser(string userName, int id)

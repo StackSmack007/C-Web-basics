@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIS.MVC.Attributes
+﻿namespace SIS.MVC.Attributes
 {
-    class HttpGETAttribute
+    using SIS.HTTP.Enums;
+    public class HttpGetAttribute : HttpAttribute
+
     {
+        public HttpGetAttribute(string path) : base(path)
+        {
+            MethodType = HttpRequestMethod.Get;
+        }
     }
 }

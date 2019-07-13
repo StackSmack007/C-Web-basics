@@ -3,6 +3,7 @@
     using Infrastructure.Models.Models;
     using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Responses.Contracts;
+    using SIS.MVC.Attributes;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -11,8 +12,9 @@
 
     public class OrdersController : BaseController
     {
-        private const int timeSpanInMinutesToConsiderSameOrder = 10;
+        private static int timeSpanInMinutesToConsiderSameOrder = 10;
 
+        [HttpPost("/Orders/MakeOrder")]
         public IHttpResponse MakeOrder()
         {
             if (this.CurentUser is null)
@@ -62,6 +64,7 @@
             return ControllerSuccess($"Success: User {userName} ordered {quantity} pieces of cake {cakeName}", "/Home/Search", "Browse Cakes");
         }
 
+        [HttpGet("/Orders/DisplayOrders")]
         public IHttpResponse DisplayOrders()
         {
             if (this.CurentUser is null)
@@ -88,11 +91,11 @@
             return View();
         }
 
+        [HttpGet("/Orders/DisplayOrder")]
         public IHttpResponse DisplayOrder()
         {
-
-            int orderId;
-            Order order;
+            int orderId=default(int);
+            Order order=null;
             try
             {
                 orderId = int.Parse(this.Request.QueryData["id"].ToString());
