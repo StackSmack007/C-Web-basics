@@ -3,14 +3,10 @@
     using SIS.HTTP.Cookies;
     using SIS.HTTP.Requests;
     using SIS.HTTP.Requests.Contracts;
-    using SIS.HTTP.Responses;
     using SIS.HTTP.Responses.Contracts;
     using SIS.HTTP.Sessions;
-    using SIS.WebServer.Results;
-    using SIS.WebServer.Routing;
+    using SIS.WebServer.Api.Contracts;
     using System;
-    using System.IO;
-    using System.Net;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
@@ -18,13 +14,14 @@
     public class ConnectionHandler
     {
         private Socket client;
-        private ServerRoutingTable serverRoutingTable;
 
-        public ConnectionHandler(Socket client, ServerRoutingTable serverRoutingTable)
+        private IHttpHandler handler;
+
+        public ConnectionHandler(Socket client, IHttpHandler handler)
         {
             this.client = client;
 
-            this.serverRoutingTable = serverRoutingTable;
+            this.handler = handler;
         }
 
         public async Task ProcessRequestAsync()
@@ -80,25 +77,7 @@
 
         private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
-            if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) ||
-                !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
-            {
-                return ReturnIfResource(httpRequest.Path);
-
-            }
-            return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
-        }
-
-        private IHttpResponse ReturnIfResource(string path)
-        {   /// string currentPath = Assembly.GetExecutingAssembly().Location;
-            path = "../../../.." + path;
-            if (File.Exists(path))
-            {
-                byte[] content = File.ReadAllBytes(path);
-                var response = new InlineResourseResult(content, HttpStatusCode.OK);
-                return response;
-            }
-            return new HttpResponse(HttpStatusCode.NotFound);
+            return handler.Handle(httpRequest);
         }
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
