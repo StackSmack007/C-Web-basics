@@ -9,6 +9,7 @@
     using SIS.MVC.Models;
     using SIS.MVC.Services;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Net;
@@ -52,7 +53,7 @@
                     logedUser = new LoggedUser(nameAndId[0], int.Parse(nameAndId[1]), expireDate);
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid cookie!");
                     LogOffUser();
@@ -61,7 +62,7 @@
             this.curentUser = logedUser;
         }
 
-        protected object ViewModel { get; set; } = null;
+        protected IDictionary<string,object> ViewData { get; set; }
 
         protected IHttpResponse Response { get; set; }
 
@@ -86,6 +87,7 @@
             Response = new HttpResponse(HttpStatusCode.OK);
             cookieService = new CookieService();
             encrypter = new Encrypter();
+            ViewData = new Dictionary<string, object>();
         }
 
         protected void LogOffUser()
@@ -170,7 +172,7 @@
             string path = locationOfViewsFolder + folderName + htmlName;
             string htmlContent = File.ReadAllText(path);
             htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, htmlContent);
-            htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewModel);
+            htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData);
             this.HtmlResult(htmlContent);
             return this.Response;
         }
