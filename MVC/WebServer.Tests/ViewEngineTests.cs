@@ -29,10 +29,12 @@
                 Name = "Todor",
                 Neshta = new string[] { "Qbulki", "Krushi", "Morkovi" }
             };
-
+            IDictionary<string, object> viewData = new Dictionary<string, object>();
+                viewData["id"] = 4;
+            viewData["Prop"] = testModel;
             string inputContent = File.ReadAllText(inputFilePath);
             IViewEngine viewEngine = new View_Engine();
-            string actualResult = viewEngine.GetHtmlImbued(inputContent, testModel);
+            string actualResult = viewEngine.GetHtmlImbued(inputContent, viewData);
             string expectedResult = File.ReadAllText(outputFilePath);
             Assert.Equal(actualResult, expectedResult);
         }
