@@ -1,0 +1,6 @@
+﻿<p>Az se kazvam @model.Name</p>
+<p>Razpolagam sus:</p>
+@for (int i = 0; i < model.Neshta.ToArray().Length; i++)
+    {
+    <p><span>@(i+1)</span>.@model.Neshta[i]</p>
+    }

@@ -1,0 +1,33 @@
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
+        <h1>By The Cake</h1>
+        <h2>Enjoy our awesome cakes</h2>
+    </div>
+    <hr>
+    <ul class="fa-ul" style="font-size: 1.8rem">
+        <li><span class="fa-li"><i class="fa fa-address-card"></i></span><a href="/Home/MyProfile">My Profile</a></li>
+        <li><span class="fa-li"><i class="fa fa-plus-square"></i></span><a href="/Home/AddCake">Add Cake</a></li>
+        <li><span class="fa-li"><i class="fa fa-search"></i></span><a href="/Home/Search">Browse Cakes</a></li>
+        <li><span class="fa-li"><i class="fa fa-cart-arrow-down"></i></span><a href="/Orders/DisplayOrders">My Orders</a></li>
+        <li><span class="fa-li"><i class="fa fa-info-circle"></i></span><a href="/Home/AboutUs">About Us</a></li>
+    </ul>
+    <div>
+        <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/Register" role="button">Register</a>
+        <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogIn" role="button">Log In</a>
+        <a style="margin-right:10px; margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogOf" role="button">Log Off</a>
+    </div>
+    <hr />
+    <p>
+        <em>
+            <strong>Cake store ultimate &#174 </strong>
+            @if (model is null)
+            {
+            No curently loged On user!
+            }
+            @else
+            {
+            <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model</strong></span>
+            }
+        </em>
+    </p>
+</div>

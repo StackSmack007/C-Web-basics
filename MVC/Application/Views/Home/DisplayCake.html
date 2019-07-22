@@ -1,0 +1,31 @@
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
+        <h1>By The Cake:</h1>
+        <h2>Enjoy our awesome cakes</h2>
+    </div>
+    <hr />
+
+    <h1 class="text-info">Order a @model.CakeName</h1>
+    <h3><em>Price (<strong>Euro</strong>): @model.Price.ToString("F2")</em></h3>
+    <hr />
+    <br />
+    <div class="container">
+        <div class="row">
+
+            <img src="@model.ImgUrl" alt="img of @model.CakeName cake" class="col-sm-8 col-lg-8" />
+
+            <div class="col-sm-4 col-lg-4">
+                <form class="form" action="/Orders/MakeOrder" method="post">
+                    Count: <input type="number" name="count" min="1" max="10" class="form-control" required />
+                    <input type="hidden" name="cakeId" value="@model.CakeId" />
+                    <br />
+                    <br />
+                    <input class="btn btn-primary" type="submit" value="Add To Cart" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
+    <p><a class="btn btn-success btn-sm" href="/Home/Search"><i class="fa fa-arrow-circle-left"></i> Back To Browse Cakes</a></p>
+</div>
