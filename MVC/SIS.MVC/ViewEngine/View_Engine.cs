@@ -18,82 +18,109 @@
         string GetView();
     }
 
-    public class nothing
-    {
-        //for the usecase when modelView is null and is checked in html by if (model is null) statement
-    }
-
     public class View_Engine : IViewEngine
     {
         private Assembly newAssembly;
         private static HashSet<string> usedClassNames = new HashSet<string>();
 
-        public string GetHtmlImbued(string htmlNotRendered, object model)
+        public string GetHtmlImbued(string htmlNotRendered, IDictionary<string, object> viewData)
         {
-            IView instance = MakeViewInstance(htmlNotRendered, model);
+            IView instance = MakeViewInstance(htmlNotRendered, viewData);
             return instance.GetView();
         }
 
-        private IView MakeViewInstance(string htmlNotRendered, object model)
+        private IView MakeViewInstance(string htmlNotRendered, IDictionary<string, object> viewData)
         {
-            string className = GetNewUnusedName(model);
-            model = model is null ? new nothing() : model;
-            string modelTypeFullName = model.GetType().FullName.Replace("+", ".");
+            string className = GetNewUnusedName();
+            string ViewModelClassName = className.Replace('a', 'b');
 
             string classContent =
             #region C#ClassAsString implementing IViewEngine 
 @"namespace SIS.MVC.ViewEngine.GeneratedModels
 {
-   using System;
-   using System.Linq;
-   using System.Collections.Generic;
-   using System.IO;
-   using System.Reflection;
-   using System.Text;
-   using System.Text.RegularExpressions;
-   class " + $"{className}" + @" : IView
-   {
-       private " + modelTypeFullName + @" model;
+     using System.Linq;
+     using System.Text;"
+    
+    + $"{GenerateViewDataClassString(ViewModelClassName, viewData)}" + @"
+    
+    class " + $"{className}" + @" : IView
+    {
+       private " + ViewModelClassName + @" model;
        
-       public " + $"{className}" + @"(object model)
+       public " + $"{className}" + @"(System.Collections.Generic.IDictionary<string, object> viewData)
        {
-           this.model = (" + modelTypeFullName + @")model;
+           this.model =new "+ViewModelClassName+@"(viewData);
        }
-       private " + modelTypeFullName + @" Model =>this.model;
+
+       private " + ViewModelClassName + @" Model =>this.model;
+
        public string GetView()
        {
            StringBuilder sb = new StringBuilder();
            " + ConvertRawHTMLToCode(htmlNotRendered) + @"
            return sb.ToString().Trim();
-       }
-    }
-}";
+}   }  }}";
             #endregion
 
-            ConjureClass(classContent, className, model.GetType());
+            ConjureClass(classContent, className, viewData);
 
             var type = newAssembly.GetTypes().FirstOrDefault(x => x.Name == className);
 
-            return (IView)Activator.CreateInstance(type, new object[] { model });
+            return (IView)Activator.CreateInstance(type, new object[] { viewData });
         }
 
-        private void ConjureClass(string classContent, string className, Type modelType)
+        private string GenerateViewDataClassString(string modelClassName, IDictionary<string, object> viewData)
+        {
+            if (viewData is null)
+            {
+                return $"internal class {modelClassName}"+"{}";
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"internal class {modelClassName}");
+            sb.AppendLine("{");
+            foreach (var kvp in viewData)
+            {
+                string propertyName = kvp.Key;
+                string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
+                sb.AppendLine($"internal {propertyType} {propertyName} " + "{get;set;}");
+            }
+            sb.AppendLine($"internal {modelClassName} (System.Collections.Generic.IDictionary<string, object> modelData)");
+            sb.AppendLine("{");
+            foreach (var kvp in viewData)
+            {
+                string propertyName = kvp.Key;
+                string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
+                sb.AppendLine($"this.{propertyName}=({propertyType}) modelData[\"{propertyName}\"];");
+            }
+            sb.AppendLine("}");
+            return sb.ToString().Trim();
+        }
+
+        private void ConjureClass(string classContent, string className, IDictionary<string, object> viewData)
         {
             var dotnetCoreDirectory = Path.GetDirectoryName(typeof(object).GetTypeInfo().Assembly.Location);
 
+            #region Configuring new class's references
             CSharpCompilation compilation = CSharpCompilation.Create(className)
-                              .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                              .AddReferences(
-                                  MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
+                                  .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                                  .AddReferences(
                                   MetadataReference.CreateFromFile(typeof(IView).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
-                                  MetadataReference.CreateFromFile(modelType.GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Runtime.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Collections.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Text.RegularExpressions.dll")),
-                                  MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Linq.dll")))
-                                 .AddSyntaxTrees(CSharpSyntaxTree.ParseText(classContent));
+                                  MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Linq.dll")));
 
+            foreach (object obj in viewData.Values)
+            {
+                compilation = compilation
+                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddReferences(MetadataReference.CreateFromFile(obj.GetType().GetTypeInfo().Assembly.Location));
+            }
+
+            compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(classContent));
+            #endregion
+  
             string fullPath = GetPathOfTempFile(Assembly.GetAssembly(typeof(View_Engine)).Location, @"SIS.MVC/ViewEngine/GeneratedModels", className + ".dll");
 
             EmitResult emitResult = compilation.Emit(fullPath);
@@ -139,7 +166,7 @@
             return result;
         }
 
-        private static string GetNewUnusedName(object model)
+        private static string GetNewUnusedName()
         {
             string className = ("TempClass" + Guid.NewGuid()).Replace("-", "");
             while (usedClassNames.Contains(className))
