@@ -2,7 +2,7 @@
     <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
         <h1>By The Cake:</h1>
         <h2>Enjoy our awesome cakes</h2>
-        <h2>Order Id: @model.OrderId</h2>
+        <h2>Order Id: @model.Order.OrderId</h2>
     </div>
     <hr>
     <table class="table table-striped">
@@ -12,14 +12,14 @@
             <th scope="col">Single Unit Price</th>
             <th scope="col">TotalPrice</th>
         </tr>
-        @foreach (var product in model.Products)
+        @foreach (var product in model.Order.Products)
         {
         <tr><th class="longText"><a href="/Home/DisplayCake?id=@product.ProductId">@product.ProductName</a></th><th>@product.Quantity</th><th>@product.SinglePrice.ToString("F2") &#8364</th><th>@product.TotalPrice.ToString("F2") &#8364</th></tr>
-        
+
         }
     </table>
     <br />
-    <p>Total value of all orders: <strong>@model.TotalCost (Euro)</strong></p>
+    <p>Total value of all orders: <strong>@model.Order.TotalCost (Euro)</strong></p>
     <br />
     <hr />
     <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>

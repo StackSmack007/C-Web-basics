@@ -3,7 +3,7 @@
         <h1>By The Cake:</h1>
         <h2>Enjoy our awesome cakes</h2>
     </div>
-    <h2>Orders of user:<strong><span class="text-info"> @model.First().Username</span></strong></h2>
+    <h2>Orders of user:<strong><span class="text-info"> @model.Username</span></strong></h2>
     <hr>
     <table class="table table-dark">
         <tr>
@@ -11,7 +11,7 @@
             <th scope="col">Created On</th>
             <th scope="col">Sum</th>
         </tr>
-        @foreach (var order in model)
+        @foreach (var order in model.Orders)
         {
         <tr>
             <th><a href="/Orders/DisplayOrder?id=@order.OrderId">Order: @order.OrderId</a></th>

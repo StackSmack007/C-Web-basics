@@ -71,14 +71,13 @@
                 .Where(x => x.User.Username == this.CurentUser.UserName)
                 .OrderByDescending(x => x.DateOfCreation)
                 .Select(x => new OrderDto_exp
-                {
-                    Username = this.CurentUser.UserName,
+                {            
                     OrderId = x.Id,
                     CreatedOn = x.DateOfCreation,  
                     Products=x.OrderProducts.Select(y=>new ProductDto() {SinglePrice=y.Product.Price,Quantity=y.Quantity }).ToList()
                 }).ToArray();
-
-            ViewModel = userOrders;
+            ViewData["Username"] = this.CurentUser.UserName;
+            ViewData["Orders"] = userOrders;
 
             return View();
         }
@@ -103,7 +102,7 @@
                 return ControllerError("Invalid OrderId in the link");
             }
 
-            ViewModel = new OrderDto_exp
+            ViewData["Order"] = new OrderDto_exp
                 ()
             {
                 OrderId = orderId,

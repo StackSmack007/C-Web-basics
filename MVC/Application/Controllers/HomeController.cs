@@ -15,7 +15,7 @@
         [HttpGet("/Home")]
         public IHttpResponse Index()
         {
-            ViewModel = this.CurentUser is null ? null : this.CurentUser.UserName;
+            ViewData["Username"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             return View();
         }
 
@@ -32,7 +32,7 @@
                 return ControllerError("User not found in the database");
             }
             db.Entry(user).Collection(u => u.Orders).Load();
-            this.ViewModel = new ProfileDto_exp()
+            this.ViewData["Profile"] = new ProfileDto_exp()
             {
                 Username = this.CurentUser.UserName,
                 RegisteredOn = user.RegisteredOn.ToString("dd-MM-yyyy hh:mm:ss", CultureInfo.InvariantCulture),
@@ -59,6 +59,7 @@
         [HttpPost("/Home/AddCakeData")]
         public IHttpResponse AddCakeData(CakeDto newCake)
         {
+          
             Product existingProduct = db.Products.FirstOrDefault(x => x.ProductName == newCake.CakeName);
            
             if (existingProduct is null)
@@ -88,7 +89,7 @@
                 Manufacturer = x.ProviderName.Replace("+", " ")
             }).OrderByDescending(x => x.Price).ToArray();
 
-            ViewModel = products;
+            ViewData["Products"] = products;
 
             return View();
         }
@@ -104,7 +105,7 @@
                 product.ProviderName.Replace("+", " "),
                 product.Id
                 );
-            ViewModel = resultDto;
+            ViewData["Cake"] = resultDto;
             return View();
         }
 

@@ -20,13 +20,13 @@
     <p>
         <em>
             <strong>Cake store ultimate &#174 </strong>
-            @if (model is null)
+            @if (model.Username is null)
             {
             No curently loged On user!
             }
             @else
             {
-            <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model</strong></span>
+            <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model.Username</strong></span>
             }
         </em>
     </p>

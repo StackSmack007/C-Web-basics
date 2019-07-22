@@ -33,23 +33,23 @@
             serverRoutingTable = new ServerRoutingTable();
             serviceContainer = new ServiceCollection();
             logger = new ConsoleLogger();
-            ClearAllTemps();
+          //  ClearAllTemps();
         }
         public static IServiceCollection ServiceContainer => serviceContainer;
 
-        private static void ClearAllTemps()
-        {
-            DirectoryInfo di = new DirectoryInfo(@"C:\Users\ZEVS\source\Web Basics\MVC Lections\MVC\SIS.MVC\ViewEngine\GeneratedModels\");
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
-            }
-        }
+     //  private static void ClearAllTemps()
+     //  {
+     //      DirectoryInfo di = new DirectoryInfo(@"C:\Users\ZEVS\source\Web Basics\MVC Lections\MVC\SIS.MVC\ViewEngine\GeneratedModels\");
+     //
+     //      foreach (FileInfo file in di.GetFiles())
+     //      {
+     //          file.Delete();
+     //      }
+     //      foreach (DirectoryInfo dir in di.GetDirectories())
+     //      {
+     //          dir.Delete(true);
+     //      }
+     //  }
 
         public static void Start(int port, IMvcApplication application)
         {
@@ -132,15 +132,15 @@
                     if (!providedParameters.ContainsKey(requiredParam.Name))
                     {
                         logger.Log($"parameter {requiredParam.Name} was not provided. The value in method is set to null!");
-                        parametersData.Add(null);
+                       parametersData.Add(null);
                         continue;
                     }
-
                     else if (providedParameters[requiredParam.Name].GetType() != requiredParam.ParameterType)
                     {
                         try
                         {
                             parametersData.Add(Convert.ChangeType(providedParameters[requiredParam.Name], requiredParam.ParameterType));
+
                         }
                         catch (Exception)
                         {
@@ -151,14 +151,14 @@
                     }
 
                     parametersData.Add(providedParameters[requiredParam.Name]);
-                    providedParameters.Remove(requiredParam.Name);
                     continue;
                 }
-
+       
                 ConstructorInfo subClassConstructor = requiredParam.ParameterType.GetConstructors()
                                                          .Where(x => x.GetParameters().All(p => providedParameters.ContainsKey(p.Name)))
                                                          .OrderByDescending(x => x.GetParameters().Count())
                                                          .FirstOrDefault();
+      
                 if (subClassConstructor is null)
                 {
                     logger.Log($"Parameter {requiredParam.Name} was a class and had not all parameters provided.The value in method is set to null!");
@@ -168,6 +168,7 @@
                 List<object> subParametersData = new List<object>();
                 Queue<ParameterInfo> subRequestParameters = new Queue<ParameterInfo>(subClassConstructor.GetParameters());
                 FillData(subParametersData, subRequestParameters, providedParameters);
+
                 var subInstance = subClassConstructor.Invoke(subParametersData.ToArray());
                 parametersData.Add(subInstance);
             }

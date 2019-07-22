@@ -5,19 +5,19 @@
     </div>
     <hr />
 
-    <h1 class="text-info">Order a @model.CakeName</h1>
-    <h3><em>Price (<strong>Euro</strong>): @model.Price.ToString("F2")</em></h3>
+    <h1 class="text-info">Order a @model.Cake.CakeName</h1>
+    <h3><em>Price (<strong>Euro</strong>): @model.Cake.Price.ToString("F2")</em></h3>
     <hr />
     <br />
     <div class="container">
         <div class="row">
 
-            <img src="@model.ImgUrl" alt="img of @model.CakeName cake" class="col-sm-8 col-lg-8" />
+            <img src="@model.Cake.ImgUrl" alt="img of @model.Cake.CakeName cake" class="col-sm-8 col-lg-8" />
 
             <div class="col-sm-4 col-lg-4">
                 <form class="form" action="/Orders/MakeOrder" method="post">
                     Count: <input type="number" name="count" min="1" max="10" class="form-control" required />
-                    <input type="hidden" name="cakeId" value="@model.CakeId" />
+                    <input type="hidden" name="cakeId" value="@model.Cake.CakeId" />
                     <br />
                     <br />
                     <input class="btn btn-primary" type="submit" value="Add To Cart" />

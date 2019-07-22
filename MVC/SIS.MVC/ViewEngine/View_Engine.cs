@@ -40,7 +40,7 @@
 {
      using System.Linq;
      using System.Text;"
-    
+
     + $"{GenerateViewDataClassString(ViewModelClassName, viewData)}" + @"
     
     class " + $"{className}" + @" : IView
@@ -49,7 +49,7 @@
        
        public " + $"{className}" + @"(System.Collections.Generic.IDictionary<string, object> viewData)
        {
-           this.model =new "+ViewModelClassName+@"(viewData);
+           this.model =new " + ViewModelClassName + @"(viewData);
        }
 
        private " + ViewModelClassName + @" Model =>this.model;
@@ -71,17 +71,13 @@
 
         private string GenerateViewDataClassString(string modelClassName, IDictionary<string, object> viewData)
         {
-            if (viewData is null)
-            {
-                return $"internal class {modelClassName}"+"{}";
-            }
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"internal class {modelClassName}");
             sb.AppendLine("{");
             foreach (var kvp in viewData)
             {
                 string propertyName = kvp.Key;
-                string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
+                string propertyType = kvp.Value is null ? typeof(string).FullName : kvp.Value.GetType().FullName.Replace("+", ".");
                 sb.AppendLine($"internal {propertyType} {propertyName} " + "{get;set;}");
             }
             sb.AppendLine($"internal {modelClassName} (System.Collections.Generic.IDictionary<string, object> modelData)");
@@ -89,6 +85,11 @@
             foreach (var kvp in viewData)
             {
                 string propertyName = kvp.Key;
+                if (kvp.Value is null)
+                {
+                    sb.AppendLine($"this.{propertyName}= null;");
+                    continue;
+                }
                 string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
                 sb.AppendLine($"this.{propertyName}=({propertyType}) modelData[\"{propertyName}\"];");
             }
@@ -106,12 +107,14 @@
                                   .AddReferences(
                                   MetadataReference.CreateFromFile(typeof(IView).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
+                                  MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
+                                  MetadataReference.CreateFromFile(typeof(string).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Runtime.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Collections.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Text.RegularExpressions.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Linq.dll")));
 
-            foreach (object obj in viewData.Values)
+            foreach (object obj in viewData.Values.Where(x=>x!=null))
             {
                 compilation = compilation
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
@@ -120,7 +123,7 @@
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(classContent));
             #endregion
-  
+
             string fullPath = GetPathOfTempFile(Assembly.GetAssembly(typeof(View_Engine)).Location, @"SIS.MVC/ViewEngine/GeneratedModels", className + ".dll");
 
             EmitResult emitResult = compilation.Emit(fullPath);
@@ -194,7 +197,7 @@
             {
                 if (commandsPosibleRow.Any(x => rawHtmlRows[i].StartsWith(x)))
                 {
-                    sb.AppendLine(RemoveAtFirst(rawHtmlRows[i]).Replace(" null", " nothing"));
+                    sb.AppendLine(RemoveAtFirst(rawHtmlRows[i]));
                 }
                 else
                 {
