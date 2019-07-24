@@ -15,7 +15,6 @@
         [HttpGet("/Home")]
         public IHttpResponse Index()
         {
-            ViewData["Username"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             return View();
         }
 

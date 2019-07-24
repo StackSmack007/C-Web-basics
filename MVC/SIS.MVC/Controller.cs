@@ -143,6 +143,7 @@
         }
         #endregion
 
+        #region MessagesForUser
         protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
             string layoutPath = layoutsFolderPath + layoutName;
@@ -162,9 +163,11 @@
             this.HtmlResult(htmlContent);
             return this.Response;
         }
+        #endregion
 
         protected IHttpResponse View(string layoutName = "_importLayout.html")
         {
+            ViewData["USERNAME"] = this.curentUser?.UserName ?? null;
             string layoutPath = layoutsFolderPath + layoutName;
             bool fileExist = File.Exists(layoutPath);
             string layout = File.ReadAllText(layoutPath);
