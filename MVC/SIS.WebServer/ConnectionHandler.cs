@@ -98,7 +98,7 @@
                 var response = new InlineResourseResult(content, HttpStatusCode.OK);
                 return response;
             }
-            return new HttpResponse(HttpStatusCode.NotFound);
+            return new TextResult($"Error: The page at [{path.Replace("../../../..","")}] is not found",HttpStatusCode.NotFound);
         }
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
