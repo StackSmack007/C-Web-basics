@@ -15,12 +15,14 @@
             <img src="@model.Cake.ImgUrl" alt="img of @model.Cake.CakeName cake" class="col-sm-8 col-lg-8" />
 
             <div class="col-sm-4 col-lg-4">
+                {string ifAuthorised = model.USERNAME is null?"disabled":"";}
+                {string placeholderValue = model.USERNAME is null?"LogIn To Buy !":"  1~10  ";}
                 <form class="form" action="/Orders/MakeOrder" method="post">
-                    Count: <input type="number" name="count" min="1" max="10" class="form-control" required />
+                    Count: <input type="number" name="count" min="1" max="10" placeholder="@placeholderValue" class="form-control" required @ifAuthorised />
                     <input type="hidden" name="cakeId" value="@model.Cake.CakeId" />
                     <br />
                     <br />
-                    <input class="btn btn-primary" type="submit" value="Add To Cart" />
+                    <input class="btn btn-primary" type="submit" value="Add To Cart" @ifAuthorised />
                 </form>
             </div>
         </div>

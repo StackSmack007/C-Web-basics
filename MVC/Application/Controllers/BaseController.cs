@@ -11,7 +11,7 @@
         protected BaseController() : base()
         {
             db = new CakeContext();
-        }
+                   }
 
         protected int GetIdOfUserName(string username)
         {

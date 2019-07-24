@@ -69,8 +69,8 @@
             return this.Response;
         }
 
-        [HttpGet("/Authentication/LogOf")]
-        public IHttpResponse LogOf()
+        [HttpGet("/Authentication/LogOff")]
+        public IHttpResponse LogOff()
         {
             if (CurentUser is null)
             {

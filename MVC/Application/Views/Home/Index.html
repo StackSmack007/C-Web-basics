@@ -12,9 +12,15 @@
         <li><span class="fa-li"><i class="fa fa-info-circle"></i></span><a href="/Home/AboutUs">About Us</a></li>
     </ul>
     <div>
-        <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/Register" role="button">Register</a>
+        @if(model.USERNAME is null)
+        {
         <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogIn" role="button">Log In</a>
-        <a style="margin-right:10px; margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogOf" role="button">Log Off</a>
+        <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/Register" role="button">Register</a>
+        }
+        @else
+        {
+        <a style="margin-right:10px; margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogOff" role="button">Log Off</a>
+        }
     </div>
     <hr />
     <p>
@@ -28,7 +34,6 @@
             {
             <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model.USERNAME</strong></span>
             }
-
         </em>
     </p>
 </div>
