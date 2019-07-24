@@ -1,0 +1,35 @@
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
+        <h1>Add New Cake:</h1>
+        <h2>Enjoy our awesome cakes</h2>
+    </div>
+
+
+    <h1>Add New Cake:</h1>
+    <hr>
+
+    <form action="/Cakes/AddCakeData" method="post">
+        <div class="form-group">
+            <label for="cakeName">Cake Name:</label>
+            <input type="text" class="form-control" id="cakeName" aria-describedby="cakeNameInfo" name="cakeName" placeholder="Name of the cake" minlength="4" maxlength="32" required>
+            <small id="cakeNameInfo" class="form-text text-muted">Descriptive name of the cake!</small>
+        </div>
+        <div class="form-group">
+            <label for="priceOfCake">Price(Euro)</label>
+            <input type="number" class="form-control" id="priceOfCake" aria-describedby="priceInfo" name="price" placeholder="price of 1 peace" min="0" max="300" step="0.01" required>
+            <small id="priceInfo" class="form-text text-muted">Price in Euro must be positive!</small>
+        </div>
+        <div class="form-group">
+            <label for="manufacturer">Provider Company</label>
+            <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="name of manufactorer" required>
+        </div>
+        <div class="form-group">
+            <label for="imgURL">Picture URL</label>
+            <input type="url" class="form-control" id="imgURL" name="imgURL" placeholder="pasteImageURL" required>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Add This Cake" />
+
+    </form>
+    <hr />
+    <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
+</div>

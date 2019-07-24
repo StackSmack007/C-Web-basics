@@ -10,6 +10,13 @@
         <li><span class="fa-li"><i class="fa fa-search"></i></span><a href="/Cakes/Browse">Browse Cakes</a></li>
         <li><span class="fa-li"><i class="fa fa-cart-arrow-down"></i></span><a href="/Orders/DisplayOrders">My Orders</a></li>
         <li><span class="fa-li"><i class="fa fa-info-circle"></i></span><a href="/Home/AboutUs">About Us</a></li>
+        <li>
+            <form class="form-inline my-2 my-lg-0" method="get" action="/Cakes/Search">
+               
+                <input style="margin-top:10px" class="form-control mr-sm-2" type="search" name="searchPhrase" placeholder="Piece Of CakeName..." aria-label="Search" required>
+                <button type="submit" class="btn btn-default" style="font-size:26px"><span class="fa-li text-danger"><i class="fa fa-search"></i></span>
+         </button>   </form>
+        </li>
     </ul>
     <div>
         @if(model.USERNAME is null)

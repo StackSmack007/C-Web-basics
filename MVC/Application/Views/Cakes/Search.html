@@ -1,0 +1,33 @@
+﻿<div class="col-sm-8 col-lg-6">
+    <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
+        <h1>By The Cake:</h1>
+        <h2>Enjoy our awesome cakes</h2>
+    </div>
+    <h2>Search of cakes: <strong><span class="text-info">Found: @model.Products.Length matches</span></strong></h2>
+    <h3>Search phrase: <strong><span class="text-info"> @model.SearchPhrase</span></strong></h3>
+    <hr>
+    @if (model.Products.Any())
+    {
+    <table class="table table-light table-bordered table-hover table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">CakeName </th>
+                <th scope="col">Cake Price</th>
+                <th scope="col">Cake Manufacturer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cake in model.Products)
+            {
+            <tr>
+                <th><a href="/Cakes/DisplayCake?id=@cake.CakeId">@cake.CakeName</a></th>
+                <th>@cake.Price.ToString("F2") (<strong>Euro</strong>)</th>
+                <th>@cake.Manufacturer</th>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }
+    <hr />
+    <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
+</div>
