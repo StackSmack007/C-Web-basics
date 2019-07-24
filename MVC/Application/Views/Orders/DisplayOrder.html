@@ -14,7 +14,7 @@
         </tr>
         @foreach (var product in model.Order.Products)
         {
-        <tr><th class="longText"><a href="/Home/DisplayCake?id=@product.ProductId">@product.ProductName</a></th><th>@product.Quantity</th><th>@product.SinglePrice.ToString("F2") &#8364</th><th>@product.TotalPrice.ToString("F2") &#8364</th></tr>
+        <tr><th class="longText"><a href="/Cakes/DisplayCake?id=@product.ProductId">@product.ProductName</a></th><th>@product.Quantity</th><th>@product.SinglePrice.ToString("F2") &#8364</th><th>@product.TotalPrice.ToString("F2") &#8364</th></tr>
 
         }
     </table>

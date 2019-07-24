@@ -57,7 +57,7 @@
             db.SaveChanges();
             string userName = this.CurentUser.UserName;
             string cakeName = db.Products.First(x => x.Id == product.ProductId).ProductName;
-            return ControllerSuccess($"Success: User {userName} ordered {product.Quantity} pieces of cake {cakeName}", "/Home/Search", "Browse Cakes");
+            return ControllerSuccess($"Success: User {userName} ordered {product.Quantity} pieces of cake {cakeName}", "/Cakes/Browse", "Browse Cakes");
         }
 
         [HttpGet("/Orders/DisplayOrders")]
