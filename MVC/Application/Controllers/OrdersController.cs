@@ -67,9 +67,6 @@
             {
                 return this.ControllerError($"No user loged in Log in first");
             }
-            var tempData=new string[] { "uno", "dos", "tres" };
-            ViewData["Testing"] = new SortedSet<string>(tempData);
-            ViewData["TestDictionary"] = new Dictionary<string, string> { ["raz"] = "dva" };
 
             var userOrders = db.Orders
                 .Where(x => x.User.Username == this.CurentUser.UserName)
@@ -79,7 +76,7 @@
                     OrderId = x.Id,
                     CreatedOn = x.DateOfCreation,
                     Products = x.OrderProducts.Select(y => new ProductDto() { SinglePrice = y.Product.Price, Quantity = y.Quantity }).ToList()
-                }).ToArray();//TODO
+                }).ToArray();
             ViewData["Username"] = this.CurentUser.UserName;
             ViewData["Orders"] = userOrders;
 
