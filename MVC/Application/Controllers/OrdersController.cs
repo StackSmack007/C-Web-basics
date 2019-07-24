@@ -68,7 +68,8 @@
                 return this.ControllerError($"No user loged in Log in first");
             }
             var tempData=new string[] { "uno", "dos", "tres" };
-            ViewData["Testing"] = new List<string>(tempData);
+            ViewData["Testing"] = new SortedSet<string>(tempData);
+            ViewData["TestDictionary"] = new Dictionary<string, string> { ["raz"] = "dva" };
 
             var userOrders = db.Orders
                 .Where(x => x.User.Username == this.CurentUser.UserName)

@@ -72,6 +72,12 @@
             return (IView)Activator.CreateInstance(type, new object[] { viewData });
         }
 
+        private string GetGenericCollectionTypeName(object collection)
+        {
+            return $"{collection.GetType().Name.Split('`')[0]}<{string.Join(", ", collection.GetType().GenericTypeArguments.Select(x => x.FullName).ToArray())}> "
+                .Replace("+", ".");
+        }
+
         private string GenerateViewDataClassString(string modelClassName, IDictionary<string, object> viewData)
         {
             StringBuilder sb = new StringBuilder();
@@ -81,15 +87,16 @@
             {
                 string propertyName = kvp.Key;
                 string propertyType = kvp.Value is null ? typeof(string).FullName : kvp.Value.GetType().FullName.Replace("+", ".");
-                if (kvp.Value is IEnumerable && !(kvp.Value.GetType().IsArray||kvp.Value is string))
+                if (kvp.Value is IEnumerable && !(kvp.Value.GetType().IsArray || kvp.Value is string))
                 {
-                    propertyType = kvp.Value.GetType().GetGenericArguments().Single().FullName.Replace("+", ".") + "[]";
+                    propertyType = GetGenericCollectionTypeName(kvp.Value);
                 }
                 sb.AppendLine($"internal {propertyType} {propertyName} " + "{get;set;}");
             }
             sb.AppendLine($"internal {modelClassName} (System.Collections.Generic.IDictionary<string, object> modelData)");
             sb.AppendLine("{");
-            foreach (var kvp in viewData)//ctor
+
+            foreach (var kvp in viewData)//ctor Declaration
             {
                 string propertyName = kvp.Key;
                 if (kvp.Value is null)
@@ -100,9 +107,7 @@
                 string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
                 if (kvp.Value is IEnumerable && !(kvp.Value.GetType().IsArray || kvp.Value is string))
                 {
-                    propertyType = kvp.Value.GetType().GetGenericArguments().Single().FullName.Replace("+", ".");
-                    sb.AppendLine($"this.{propertyName}=((IEnumerable<{propertyType}>) modelData[\"{propertyName}\"]).ToArray();");
-                    continue;
+                    propertyType = GetGenericCollectionTypeName(kvp.Value);
                 }
                 sb.AppendLine($"this.{propertyName}=({propertyType}) modelData[\"{propertyName}\"];");
             }
@@ -206,25 +211,30 @@
                                                   .Select(x => x.Replace("\"", "\\\"").Trim()).ToArray();
 
             StringBuilder sb = new StringBuilder();
+
             for (int i = 0; i < rawHtmlRows.Length; i++)
             {
-                if (commandsPosibleRow.Any(x => rawHtmlRows[i].StartsWith(x)))
+                string currentRow = rawHtmlRows[i];
+                if (currentRow.StartsWith('{') && currentRow.EndsWith('}'))
                 {
-                    sb.AppendLine(RemoveAtFirst(rawHtmlRows[i]));
+                    currentRow = currentRow.Substring(1, currentRow.Length - 2);
+                }
+                else if (commandsPosibleRow.Any(x => currentRow.StartsWith(x)))
+                {
+                    currentRow = RemoveAtFirst(currentRow);
                 }
                 else
                 {
-                    string row = rawHtmlRows[i];
-
-                    MatchCollection matchCollection = Regex.Matches(rawHtmlRows[i], patternOfInnerDataCode);
+                    MatchCollection matchCollection = Regex.Matches(currentRow, patternOfInnerDataCode);
 
                     foreach (Match match in matchCollection)
                     {
                         string replacement = $"\"+{RemoveAtFirst(match.Value)}+\"";
-                        rawHtmlRows[i] = rawHtmlRows[i].Replace(match.Value, replacement);
+                        currentRow = currentRow.Replace(match.Value, replacement);
                     }
-                    sb.AppendLine("sb.AppendLine(\"" + rawHtmlRows[i] + "\");");
+                    currentRow = "sb.AppendLine(\"" + currentRow + "\");";
                 }
+                sb.AppendLine(currentRow);
             }
             return sb.ToString().Trim();
         }
