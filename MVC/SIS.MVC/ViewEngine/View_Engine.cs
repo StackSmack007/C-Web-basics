@@ -5,6 +5,7 @@
     using Microsoft.CodeAnalysis.Emit;
     using SIS.MVC.Contracts;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -39,7 +40,9 @@
 @"namespace SIS.MVC.ViewEngine.GeneratedModels
 {
      using System.Linq;
-     using System.Text;"
+     using System.Text;
+    using System.Collections;
+    using System.Collections.Generic;"
 
     + $"{GenerateViewDataClassString(ViewModelClassName, viewData)}" + @"
     
@@ -74,15 +77,19 @@
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"internal class {modelClassName}");
             sb.AppendLine("{");
-            foreach (var kvp in viewData)
+            foreach (var kvp in viewData)//propertiesDeclaration
             {
                 string propertyName = kvp.Key;
                 string propertyType = kvp.Value is null ? typeof(string).FullName : kvp.Value.GetType().FullName.Replace("+", ".");
+                if (kvp.Value is IEnumerable && !(kvp.Value.GetType().IsArray||kvp.Value is string))
+                {
+                    propertyType = kvp.Value.GetType().GetGenericArguments().Single().FullName.Replace("+", ".") + "[]";
+                }
                 sb.AppendLine($"internal {propertyType} {propertyName} " + "{get;set;}");
             }
             sb.AppendLine($"internal {modelClassName} (System.Collections.Generic.IDictionary<string, object> modelData)");
             sb.AppendLine("{");
-            foreach (var kvp in viewData)
+            foreach (var kvp in viewData)//ctor
             {
                 string propertyName = kvp.Key;
                 if (kvp.Value is null)
@@ -91,6 +98,12 @@
                     continue;
                 }
                 string propertyType = kvp.Value.GetType().FullName.Replace("+", ".");
+                if (kvp.Value is IEnumerable && !(kvp.Value.GetType().IsArray || kvp.Value is string))
+                {
+                    propertyType = kvp.Value.GetType().GetGenericArguments().Single().FullName.Replace("+", ".");
+                    sb.AppendLine($"this.{propertyName}=((IEnumerable<{propertyType}>) modelData[\"{propertyName}\"]).ToArray();");
+                    continue;
+                }
                 sb.AppendLine($"this.{propertyName}=({propertyType}) modelData[\"{propertyName}\"];");
             }
             sb.AppendLine("}");
@@ -114,7 +127,7 @@
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Text.RegularExpressions.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Linq.dll")));
 
-            foreach (object obj in viewData.Values.Where(x=>x!=null))
+            foreach (object obj in viewData.Values.Where(x => x != null))
             {
                 compilation = compilation
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))

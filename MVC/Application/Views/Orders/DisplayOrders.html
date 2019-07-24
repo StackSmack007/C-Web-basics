@@ -20,6 +20,10 @@
         </tr>
         }
     </table>
+    @foreach  (string item in model.Testing)
+    {
+    <p>@item</p>
+    }
     <hr />
     <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
 </div>

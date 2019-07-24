@@ -22,7 +22,7 @@
             }
             User buyer = db.Users.Include(x => x.Orders).ThenInclude(x => x.OrderProducts)
                 .FirstOrDefault(x => x.Username == this.CurentUser.UserName);
-            if (buyer is null) return ControllerError("User not found in database");        
+            if (buyer is null) return ControllerError("User not found in database");
 
             DateTime nowTIme = DateTime.UtcNow;
             Order currentOrder = buyer.Orders.FirstOrDefault(x => x.DateOfCreation > nowTIme.AddMinutes(-timeSpanInMinutesToConsiderSameOrder));
@@ -67,15 +67,18 @@
             {
                 return this.ControllerError($"No user loged in Log in first");
             }
+            var tempData=new string[] { "uno", "dos", "tres" };
+            ViewData["Testing"] = new List<string>(tempData);
+
             var userOrders = db.Orders
                 .Where(x => x.User.Username == this.CurentUser.UserName)
                 .OrderByDescending(x => x.DateOfCreation)
                 .Select(x => new OrderDto_exp
-                {            
+                {
                     OrderId = x.Id,
-                    CreatedOn = x.DateOfCreation,  
-                    Products=x.OrderProducts.Select(y=>new ProductDto() {SinglePrice=y.Product.Price,Quantity=y.Quantity }).ToList()
-                }).ToArray();
+                    CreatedOn = x.DateOfCreation,
+                    Products = x.OrderProducts.Select(y => new ProductDto() { SinglePrice = y.Product.Price, Quantity = y.Quantity }).ToList()
+                }).ToArray();//TODO
             ViewData["Username"] = this.CurentUser.UserName;
             ViewData["Orders"] = userOrders;
 
@@ -101,7 +104,7 @@
             {
                 return ControllerError("Invalid OrderId in the link");
             }
-
+           
             ViewData["Order"] = new OrderDto_exp
                 ()
             {
@@ -109,10 +112,10 @@
                 Products = order.OrderProducts.OrderByDescending(x => x.Quantity * x.Product.Price).Select(x => new ProductDto()
                 {
                     ProductId = x.ProductID,
-                    ProductName = x.Product.ProductName.Replace("+"," "),
+                    ProductName = x.Product.ProductName.Replace("+", " "),
                     Quantity = x.Quantity,
                     SinglePrice = x.Product.Price
-                }).ToList()
+                }).ToArray()
 
             };
             return View();
