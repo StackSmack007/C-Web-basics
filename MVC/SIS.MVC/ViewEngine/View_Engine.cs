@@ -217,7 +217,8 @@
                 string currentRow = rawHtmlRows[i];
                 if (currentRow.StartsWith('{') && currentRow.EndsWith('}'))
                 {
-                    currentRow = currentRow.Substring(1, currentRow.Length - 2);
+                    currentRow = currentRow.Replace("\\\"", "\"");
+                    currentRow = currentRow.Replace("\\\"","\"").Substring(1, currentRow.Length - 2);
                 }
                 else if (commandsPosibleRow.Any(x => currentRow.StartsWith(x)))
                 {
