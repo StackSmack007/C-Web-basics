@@ -167,7 +167,7 @@
 
         protected IHttpResponse View(string layoutName = "_importLayout.html")
         {
-            ViewData["USERNAME"] = this.curentUser?.UserName ?? null;
+            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             string layoutPath = layoutsFolderPath + layoutName;
             bool fileExist = File.Exists(layoutPath);
             string layout = File.ReadAllText(layoutPath);
