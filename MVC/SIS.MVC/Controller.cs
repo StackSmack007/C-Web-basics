@@ -62,20 +62,18 @@
             this.curentUser = logedUser;
         }
 
-        protected IDictionary<string,object> ViewData { get; set; }
+        protected IDictionary<string, object> ViewData { get; set; }
 
         protected IHttpResponse Response { get; set; }
 
         public IHttpRequest Request { get; set; } //will be set in routing but not in constructor because in constructor other things will be given!
 
         #region HardcorePathsByConvention NeedTo Outsourse to Config Class;
-        private static string importLayoutPath = @"../../../Views/Layouts/_importLayout.html";
+        private static string layoutsFolderPath = @"../../../Views/Layouts/";
         private static string keywordForInsertingBodyInImportLayout = "@BodyContent@";
         private static string regexPattern = @"(?<=@).*?(?=@)";
         private static string locationOfViewsFolder = @"../../../Views/";
         #endregion
-
-        private static string layout = File.ReadAllText(importLayoutPath);
 
         protected static ICookieService cookieService;
 
@@ -145,28 +143,36 @@
         }
         #endregion
 
-        protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage")
+        protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
+            string layoutPath = layoutsFolderPath + layoutName;
+            string layout = File.ReadAllText(layoutPath);
             string warninghtml = $"<div class=\"alert alert-danger\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
             string htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, warninghtml);
             this.HtmlResult(htmlContent);
             return this.Response;
         }
 
-        protected IHttpResponse ControllerSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage")
+        protected IHttpResponse ControllerSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
+            string layoutPath = layoutsFolderPath + layoutName;
+            string layout = File.ReadAllText(layoutPath);
             string warninghtml = $"<div class=\"alert alert-success\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
             string htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, warninghtml);
             this.HtmlResult(htmlContent);
             return this.Response;
         }
 
-        protected IHttpResponse View()
+        protected IHttpResponse View(string layoutName = "_importLayout.html")
         {
+            string layoutPath = layoutsFolderPath + layoutName;
+            bool fileExist = File.Exists(layoutPath);
+            string layout = File.ReadAllText(layoutPath);
+
             StackTrace stackTrace = new StackTrace();
             MethodBase methodBase = stackTrace.GetFrame(1).GetMethod();
             string actionMethodName = methodBase.Name;
-            string className = methodBase.ReflectedType.Name;
+            string className = this.GetType().Name;
             string folderName = className.Replace("Controller", "/");
             string htmlName = actionMethodName + ".html";
             string path = locationOfViewsFolder + folderName + htmlName;

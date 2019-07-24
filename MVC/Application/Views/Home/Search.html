@@ -6,7 +6,10 @@
     @if (model.Products.Any())
     {
     <table class="table table-striped">
-        <thead class="thead-dark"><tr><th scope="col" style="width:30%">Provider</th><th scope="col" style="width:40%">CakeName</th><th scope="col" style="width:30%">Cake Price (<strong>Euro</strong>)</th></tr></thead>
+        <thead class="thead-dark"><tr>
+            <th scope="col" style="width:38%">Provider</th>
+            <th scope="col" style="width:40%">CakeName</th>
+            <th scope="col" style="width:22%">Cake Price (<strong>Euro</strong>)</th></tr></thead>
         <tbody>
             @foreach (var product in model.Products)
             {
