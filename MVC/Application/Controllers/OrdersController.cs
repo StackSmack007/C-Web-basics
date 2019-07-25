@@ -11,21 +11,22 @@
 
     public class OrdersController : BaseController
     {
-        private static int timeSpanInMinutesToConsiderSameOrder = 10;
 
-        [HttpPost("/Orders/MakeOrder")]
-        public IHttpResponse MakeOrder(ProductDto product)
+        [HttpPost("/Orders/AddToOrder")]
+        public IHttpResponse AddToOrder(ProductDto product)
         {
+            int productId = product.ProductId;
+            int quantity = product.Quantity;
+
             if (this.CurentUser is null)
             {
-                return ControllerError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");
+                return ControllerError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");//Redundant but still
             }
             User buyer = db.Users.Include(x => x.Orders).ThenInclude(x => x.OrderProducts)
                 .FirstOrDefault(x => x.Username == this.CurentUser.UserName);
-            if (buyer is null) return ControllerError("User not found in database");
+            if (buyer is null) return ControllerError("User not found in database");//Redundant but still
 
-            DateTime nowTIme = DateTime.UtcNow;
-            Order currentOrder = buyer.Orders.FirstOrDefault(x => x.DateOfCreation > nowTIme.AddMinutes(-timeSpanInMinutesToConsiderSameOrder));
+            Order currentOrder = buyer.Orders.OrderBy(x => x.Id).LastOrDefault();
 
             if (currentOrder != null && currentOrder.OrderProducts.Any(x => x.ProductID == product.ProductId))
             {
@@ -33,20 +34,19 @@
             }
             else if (currentOrder is null)
             {
-                currentOrder = new Order()
+                currentOrder = new Order
                 {
                     UserId = buyer.Id,
                     DateOfCreation = DateTime.UtcNow,
-                    OrderProducts = new HashSet<OrderProduct> {new OrderProduct()
-                {
-                    ProductID = product.ProductId,
-                    Quantity = product.Quantity
-                }
-                    }
+                    OrderProducts = new HashSet<OrderProduct> {new OrderProduct
+                                                                              {
+                                                                                  ProductID = product.ProductId,
+                                                                                  Quantity = product.Quantity
+                                                                              } }
                 };
                 db.Orders.Add(currentOrder);
             }
-            else
+            else//there is current order but there are no such products in it
             {
                 currentOrder.OrderProducts.Add(new OrderProduct()
                 {
@@ -69,7 +69,7 @@
             }
 
             var userOrders = db.Orders
-                .Where(x => x.User.Username == this.CurentUser.UserName)
+                .Where(x => x.UserId == this.CurentUser.Id)
                 .OrderBy(x => x.Id)
                 .Select(x => new OrderDto_exp
                 {
@@ -81,11 +81,36 @@
             ViewData["Orders"] = userOrders;
 
             return View();
+        }
 
+        [HttpPost("/Orders/FinaliseOrder")]
+        public IHttpResponse FinaliseOrder(int orderId)
+        {
+            var order = db.Orders.Include(x => x.OrderProducts).Last();
+            if (order.Id != orderId)
+            {
+                return ControllerError("Order is not cart it is finished!");
+            }
+            if (order.UserId != this.CurentUser.Id)
+            {
+                return ControllerError("This User is not authorised to complete this order!");
+            }
+            if (!order.OrderProducts.Any())
+            {
+                return ControllerError("You can not submit empty Order!");//redundant but still
+            }
+            order.DateOfCreation = DateTime.UtcNow;
+            db.Orders.Add(new Order
+            {
+                UserId = CurentUser.Id,
+                DateOfCreation = DateTime.UtcNow
+            });
+            db.SaveChanges();
+            return ControllerSuccess($"Successfully added new order to user {CurentUser.UserName}", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
         }
 
         [HttpGet("/Orders/DisplayOrder")]
-        public IHttpResponse DisplayOrder(string id,bool isCart)
+        public IHttpResponse DisplayOrder(string id, bool isCart)
         {
             int orderId = int.Parse(id);
             Order order = null;
@@ -104,7 +129,7 @@
                 return ControllerError("Invalid OrderId in the link");
             }
             ViewData["IsCart"] = isCart;
-             ViewData["Order"] = new OrderDto_exp()
+            ViewData["Order"] = new OrderDto_exp()
             {
                 OrderId = orderId,
                 Products = order.OrderProducts.OrderByDescending(x => x.Quantity * x.Product.Price).Select(x => new ProductDto()
@@ -117,6 +142,27 @@
 
             };
             return View();
+        }
+
+        [HttpPost("/Orders/DeleteOrderProducts")]
+        public IHttpResponse DeleteOrderProducts(int orderId)
+        {
+            var order = db.Orders.Include(x => x.OrderProducts).Last();
+            if (order.Id != orderId)
+            {
+                return ControllerError("Order is not cart it is finished!");
+            }
+            if (order.UserId != this.CurentUser.Id)
+            {
+                return ControllerError("This User is not authorised to complete this order!");
+            }
+            if (!order.OrderProducts.Any())
+            {
+                return ControllerError("You can not delete products empty Order!");//redundant but still
+            }
+            db.OrdersProducts.RemoveRange(db.OrdersProducts.Where(x => x.OrderID == orderId));
+            db.SaveChanges();
+            return ControllerSuccess($"Successfully cleared all products from {CurentUser.UserName}'s cart", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
         }
     }
 }

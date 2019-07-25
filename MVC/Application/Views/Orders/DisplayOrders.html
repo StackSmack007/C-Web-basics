@@ -16,7 +16,7 @@
         <thead class="thead-dark">
             <tr>
                 <th scope="col">OrderId </th>
-                <th scope="col">Created On</th>
+                <th scope="col">Created/Finalized On</th>
                 <th scope="col">Sum</th>
                 <th scope="col">Status</th>
             </tr>
@@ -27,7 +27,7 @@
           @if(i==model.Orders.ToArray().Length-1)
           {
           @if(!order.Products.Any()){ continue; }
-          @else {status="<strong><span class=\" text-success\">In Progress... <a href=\"/Orders/DisplayOrder?id =" +order.OrderId+"&isCart=true\"></span></strong> <i style=\"font-size:28px\" class=\"fa fa-cart-arrow-down \"></i></a>";isCart=true;}
+          @else {status="<strong><span class=\" text-success\">In Progress... <a href=\"/Orders/DisplayOrder?id=" + order.OrderId + "&isCart=true\"></span></strong> <i style=\"font-size:28px\" class=\"fa fa-cart-arrow-down \"></i></a>";isCart=true;}
     }
 
     <tr>
