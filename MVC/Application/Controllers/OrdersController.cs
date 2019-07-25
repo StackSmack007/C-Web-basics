@@ -70,7 +70,7 @@
 
             var userOrders = db.Orders
                 .Where(x => x.User.Username == this.CurentUser.UserName)
-                .OrderByDescending(x => x.DateOfCreation)
+                .OrderBy(x => x.Id)
                 .Select(x => new OrderDto_exp
                 {
                     OrderId = x.Id,
@@ -81,10 +81,11 @@
             ViewData["Orders"] = userOrders;
 
             return View();
+
         }
 
         [HttpGet("/Orders/DisplayOrder")]
-        public IHttpResponse DisplayOrder(string id)
+        public IHttpResponse DisplayOrder(string id,bool isCart)
         {
             int orderId = int.Parse(id);
             Order order = null;
@@ -102,9 +103,8 @@
             {
                 return ControllerError("Invalid OrderId in the link");
             }
-           
-            ViewData["Order"] = new OrderDto_exp
-                ()
+            ViewData["IsCart"] = isCart;
+             ViewData["Order"] = new OrderDto_exp()
             {
                 OrderId = orderId,
                 Products = order.OrderProducts.OrderByDescending(x => x.Quantity * x.Product.Price).Select(x => new ProductDto()

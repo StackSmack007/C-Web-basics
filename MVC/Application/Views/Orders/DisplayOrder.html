@@ -2,7 +2,15 @@
     <div style="padding-left:35px" class="jumbotron jumbotron-fluid">
         <h1>By The Cake:</h1>
         <h2>Enjoy our awesome cakes</h2>
-        <h2>Order Id: @model.Order.OrderId</h2>
+        @if(model.IsCart)
+        {
+        <h2> CurrentCart <i class="fa fa-cart-arrow-down"></i></h2>
+        }
+        @else
+        {
+        <h2>Finished Order ( Id: @model.Order.OrderId )</h2>
+        }
+        <h2> Of User: @model.USERNAME</h2>
     </div>
     <hr>
     <table class="table table-striped">
@@ -18,9 +26,24 @@
 
         }
     </table>
-    <br />
-    <p>Total value of all orders: <strong>@model.Order.TotalCost (Euro)</strong></p>
-    <br />
+    <p>Total value of all products in the order: <strong>@model.Order.TotalCost (Euro)</strong></p>
+    @if(model.IsCart)
+    {
+    <div class="row">
+        <div class="col-3">
+            <form method="post" action="Orders/FinaliseOrder" class="float-left">
+                <input type="hidden" name="orderId" value="@model.Order.OrderId" />
+                <button type="submit" class="btn btn-success btn-sm">Submit Order!</button>
+            </form>
+        </div>
+        <div class="col-3">
+            <form method="post" action="Orders/DeleteOrder" class="float-right">
+                <input type="hidden" name="orderId" value="@model.Order.OrderId" />
+                <button type="submit" class="btn btn-danger btn-sm">Delete Order!</button>
+            </form>
+        </div>
+    </div>
+    }
     <hr />
     <p><a class="btn btn-success btn-sm" href="/"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></p>
 </div>

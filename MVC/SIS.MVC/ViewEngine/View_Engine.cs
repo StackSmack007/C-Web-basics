@@ -204,7 +204,7 @@
             htmlNotRendered = htmlNotRendered.Replace("\n\n", "\r\n");
             htmlNotRendered = htmlNotRendered.Replace("\n", "\r\n");
 
-            string patternOfInnerDataCode = @"@[^><\""\\\s]+\.ToString\(\\\"".+?\\\""\)|@[^><\""\\\s]+";
+            string patternOfInnerDataCode = @"@[^><\""\\\s]+\.ToString\(\\\"".+?\\\""\)|@[^><\""\\\s\?\&]+";
             string[] commandsPosibleRow = { "{", "}", "@if", "@else", "@for", "@while", "@when" };
             string[] rawHtmlRows = htmlNotRendered.Split(Environment.NewLine)
                                                   .Where(x => !string.IsNullOrEmpty(x) && !string.IsNullOrWhiteSpace(x))
