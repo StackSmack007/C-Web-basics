@@ -9,6 +9,7 @@
 
     public class HomeController : BaseController
     {
+        [HttpGet]
         [HttpGet("/")]
         [HttpGet("/Home")]
         public IHttpResponse Index()
@@ -16,7 +17,6 @@
             return View();
         }
 
-        [HttpGet("/Home/MyProfile")]
         public IHttpResponse MyProfile()
         {
             if (this.CurentUser is null)
@@ -38,8 +38,6 @@
             return View();
         }
 
-
-        [HttpGet("/Home/AboutUs")]
         public IHttpResponse AboutUs()
         {
             return View();
