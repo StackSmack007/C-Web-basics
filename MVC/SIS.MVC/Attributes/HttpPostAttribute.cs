@@ -7,5 +7,7 @@
         {
             MethodType = HttpRequestMethod.Post;
         }
+        public HttpPostAttribute():base(null)
+        {}
     }
 }

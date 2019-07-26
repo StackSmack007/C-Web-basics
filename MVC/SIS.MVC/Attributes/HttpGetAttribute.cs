@@ -8,5 +8,6 @@
         {
             MethodType = HttpRequestMethod.Get;
         }
+        public HttpGetAttribute() : base(null) { }
     }
 }
