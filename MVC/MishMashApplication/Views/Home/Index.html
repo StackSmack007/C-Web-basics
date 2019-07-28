@@ -1,0 +1,25 @@
+﻿    <main>
+      
+       @if(model.USERNAME is null)
+        { 
+        <div class="jumbotron mt-3 bg-mishmash">
+            <h1 class="text-white" >Welcome to Mish-Mash Media Channels</h1>
+            <hr class="bg-white hr-2" />
+            <h3 ><span class="text-white"><a href="/Users/Login">Login</a> if you have an account.</span></h3>
+            <h3 class="text-white"><a href="/Users/Register">Register</a> if you don't.</h3>
+        </div>
+        }
+        @else
+        {
+        <div class="text-mishmash">
+            <center >
+                <div>   <h2 >Welcome, @model.USERNAME<span>!</span></h2>       </div>
+            </center>
+            <br />
+            <div><h3>Your channels</h3></div>
+   
+         <hr class="bg-mishmash hr-2" />
+          </div>
+
+            }
+</main>
