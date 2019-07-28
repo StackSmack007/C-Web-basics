@@ -35,8 +35,6 @@ namespace SIS.HTTP.Headers
             {
                 throw new InvalidOperationException("key can not be null!");
             }
-
-
             return headers.ContainsKey(key);
         }
 
