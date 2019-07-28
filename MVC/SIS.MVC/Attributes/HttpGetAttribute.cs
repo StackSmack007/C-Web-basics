@@ -5,9 +5,9 @@
 
     {
         public HttpGetAttribute(string path) : base(path)
-        {
-            MethodType = HttpRequestMethod.Get;
-        }
-        public HttpGetAttribute() : base(null) { }
+        { MethodType = HttpRequestMethod.Get;}
+
+        public HttpGetAttribute() : base(null)
+        { MethodType = HttpRequestMethod.Get; }
     }
 }
