@@ -66,16 +66,20 @@
                 {//case of no HttpAttribute
                     HttpRequestMethod defaultMethod = HttpRequestMethod.Get;
                     string path = "/" + viewFolderName + "/" + methodInfo.Name;
-                    if (serverRoutingTable.Routes.SelectMany(x => x.Value.Keys).Any(x => x == path)) continue; //the route is registered manually so it is skipped!
+                    if (serverRoutingTable.Routes[defaultMethod].Keys.Any(x => x == path)) continue; //the route is registered manually so it is skipped!
 
                     EnlistRoute(defaultMethod, path, controllerType, methodInfo);
                 }
+
                 foreach (MethodInfo methodInfo in controllerType.GetMethods().Where(m => m.ReturnType == typeof(IHttpResponse) && m.GetCustomAttributes<HttpAttribute>().Any(x=>x.Path == null)))
                 {//case of pathless HttpAttribute (HttpPostMost likely)
-                    string path = "/" + viewFolderName + "/" + methodInfo.Name;
-                    if (serverRoutingTable.Routes.SelectMany(x => x.Value.Keys).Any(x => x == path)) continue; //the route is registered manually so it is skipped!
+                    string path = "/" + viewFolderName + "/" + methodInfo.Name;               
                     foreach (var methodType in methodInfo.GetCustomAttributes<HttpAttribute>().Where(x => x.Path == null).Select(x=>x.MethodType))
                     {
+                        if (serverRoutingTable.Routes[methodType].Keys.Any(x => x == path))
+                        {
+                            continue;
+                        } //the route is registered manually so it is skipped!
                         EnlistRoute(methodType, path, controllerType, methodInfo);
                     }
                 }
