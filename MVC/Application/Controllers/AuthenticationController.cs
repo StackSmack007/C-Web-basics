@@ -62,7 +62,7 @@
             db.Users.Add(user);
             db.SaveChanges();
 
-            int userId = GetIdOfUserName(newUser.UserName);
+            int userId = db.Users.FirstOrDefault(x=>x.Username== newUser.UserName).Id;
             this.LogInUser(newUser.UserName, userId);
 
             this.RedirectResult("/");
@@ -80,6 +80,7 @@
             this.RedirectResult("/");
             return this.Response;
         }
+
         [HttpGet("/Authentication/LogIn")]
         public IHttpResponse LogIn()
         {
@@ -98,7 +99,7 @@
             {
                 return this.ControllerError($"Username or password do not match. Please enter correct Data", "LogIn", "Log In");
             }
-            int userId = GetIdOfUserName(user.UserName);
+            int userId = db.Users.FirstOrDefault(x => x.Username == user.UserName).Id;
             this.LogInUser(user.UserName, userId);
             this.RedirectResult("/");
             logger.Log($"User {user.UserName} loged in at {DateTime.Now.ToString("R")}");
