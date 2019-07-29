@@ -2,6 +2,7 @@
 {
     using MishMashApplication.DTO.Users;
     using MishMashApplication.Models;
+    using MishMashApplication.Models.Enumerations;
     using SIS.HTTP.Cookies;
     using SIS.HTTP.Responses.Contracts;
     using SIS.MVC.Attributes;

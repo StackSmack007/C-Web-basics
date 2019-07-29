@@ -1,0 +1,49 @@
+﻿<main class="mt-3">
+    <h1 class="text-center text-mishmash">Create Channel</h1>
+    <hr class="bg-mishmash w-50 hr-2" />
+    <form class="mx-auto w-50" method="post" action="/Channels/Create">
+        <div class="form-group">
+            <label for="name" class="text-mishmash">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Name..." name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description" class="text-mishmash">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Description..."></textarea>
+        </div>
+        <div class="form-group">
+            <div class="text-center"><label for="tags" class="text-mishmash">Tags</label></div>
+            <input type="text" class="form-control" id="tags" placeholder="Tag1, Tag2, Tag3..." name="tags" required>
+        </div>
+
+        <h3 class="text-center text-mishmash">Channel Type</h3>
+        <hr class="bg-mishmash w-50 hr-2" />
+       
+        <div class="row">
+            <div class="form-check col text-center">
+                <input class="form-check-input" type="radio" name="channelType" id="game" value="Game">
+                <label class="form-check-label text-mishmash" for="exampleRadios2"><strong>Game</strong></label>
+            </div>
+            <div class="form-check col text-center">
+                <input class="form-check-input" type="radio" name="channelType" id="motivation" value="Motivation">
+                <label class="form-check-label text-mishmash" for="motivation"><strong>Motivation</strong></label>
+            </div>
+            <div class="form-check col text-center">
+                <input class="form-check-input" type="radio" name="channelType" id="lessons" value="Lessons">
+                <label class="form-check-label text-mishmash" for="lessons"><strong>Lessons</strong></label>
+            </div>
+            <div class="form-check col text-center">
+                <input class="form-check-input" type="radio" name="channelType" id="radio" value="Radio">
+                <label class="form-check-label text-mishmash" for="radio"><strong>Radio</strong></label>
+            </div>
+            <div class="form-check col text-center">
+                <input class="form-check-input" type="radio" name="channelType" id="other" value="Other" checked>
+                <label class="form-check-label text-mishmash" for="other"><strong>Other</strong></label>
+            </div>
+        </div>
+
+        <hr class="bg-mishmash w-50 hr-2" />
+        <div class="button-holder mt-4 d-flex justify-content-center">
+            <button type="submit" class="btn bg-mishmash text-white">Create</button>
+        </div>
+    </form>
+</main>

@@ -3,13 +3,13 @@
     using MishMashApplication.Models.Enumerations;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
-    public  class User:BaseEntity<int>
+    public class User : BaseEntity<int>
     {
         public User()
         {
             UserChannels = new HashSet<ChannelUser>();
+            Role = UserRole.User;
         }
         [Required, MaxLength(32)]
         public string Username { get; set; }

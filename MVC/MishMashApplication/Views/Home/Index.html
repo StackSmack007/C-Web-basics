@@ -1,25 +1,139 @@
-﻿    <main>
-      
-       @if(model.USERNAME is null)
-        { 
-        <div class="jumbotron mt-3 bg-mishmash">
-            <h1 class="text-white" >Welcome to Mish-Mash Media Channels</h1>
-            <hr class="bg-white hr-2" />
-            <h3 ><span class="text-white"><a href="/Users/Login">Login</a> if you have an account.</span></h3>
-            <h3 class="text-white"><a href="/Users/Register">Register</a> if you don't.</h3>
-        </div>
-        }
-        @else
-        {
-        <div class="text-mishmash">
-            <center >
-                <div>   <h2 >Welcome, @model.USERNAME<span>!</span></h2>       </div>
-            </center>
-            <br />
-            <div><h3>Your channels</h3></div>
-   
-         <hr class="bg-mishmash hr-2" />
-          </div>
+﻿<main>
 
-            }
+    @if(model.USERNAME is null)
+    {
+    <div class="jumbotron mt-3 bg-mishmash">
+        <h1 class="text-white">Welcome to Mish-Mash Media Channels</h1>
+        <hr class="bg-white hr-2" />
+        <h3><span class="text-white"><a href="/Users/Login">Login</a> if you have an account.</span></h3>
+        <h3 class="text-white"><a href="/Users/Register">Register</a> if you don't.</h3>
+    </div>
+    }
+    @else
+    {
+    <div class="text-mishmash">
+        <center>
+            {string role=model.UserRole=="Admin"?"Admin-":"";}
+            <div>
+                <h2>Welcome, @role<span>@model.USERNAME</span>!</h2>
+            </div>
+        </center>
+
+        <br />
+
+        <div><h3>Your channels</h3></div>
+        <hr class="bg-mishmash hr-2" />
+        <div class="align-items-left">
+            @for (int i = 1; i<=model.ChannelsYour.Count(); i++ )
+            {
+            {var channel=model.ChannelsYour[i-1];}
+            @if(i%5==1||i%5==0)
+            {
+            <div class="ch-fit-b ">
+                }
+                @else
+                {
+                <div class="ch-fit-m">
+                    }
+                    <div class="pt-3 pb-2  bg-mishmash text-white text-center rounded">
+                        <h5> @channel.Name</h5>
+                        <hr class="bg-white w-75 hr-2" />
+                        <h5> @channel.ChannelType.ToString() Channel</h5>
+                        <hr class="bg-white w-75 hr-2" />
+                        <h5> @channel.FollowersCount Following</h5>
+                        <hr class="bg-white w-75 hr-2" />
+                        <div class="row">
+                            <div class="col-5 text-right p-1"><a href="/Channels/Follow?id=@channel.ChannelId" class="text-white "><h6>Follow</h6></a></div>
+                            <div class="col-2 "></div>
+                            <div class="col-5 text-left p-1"><a href="/Channels/Details?id=@channel.ChannelId" class="text-white"><h6>Details</h6></a></div>
+                        </div>
+                    </div>
+                </div>
+                @if(i%5==0)
+                {
+                <br />  <br />
+                }
+                }
+            </div>
+            <hr class="bg-mishmash hr-2" />
+
+
+
+            <div><h3>Suggested</h3></div>
+            <hr class="bg-mishmash hr-2" />
+            <div class="align-items-left">
+                @for (int i = 1; i<=model.ChannelsSuggested.Count(); i++ )
+                {
+                {var channel=model.ChannelsSuggested[i-1];}
+                @if(i%5==1||i%5==0)
+                {
+                <div class="ch-fit-b ">
+                    }
+                    @else
+                    {
+                    <div class="ch-fit-m">
+                        }
+                        <div class="pt-3 pb-2  bg-mishmash text-white text-center rounded">
+                            <h5> @channel.Name</h5>
+                            <hr class="bg-white w-75 hr-2" />
+                            <h5> @channel.ChannelType.ToString() Channel</h5>
+                            <hr class="bg-white w-75 hr-2" />
+                            <h5> @channel.FollowersCount Following</h5>
+                            <hr class="bg-white w-75 hr-2" />
+                            <div class="row">
+                                <div class="col-5 text-right p-1"><a href="/Channels/Follow?id=@channel.ChannelId" class="text-white "><h6>Follow</h6></a></div>
+                                <div class="col-2 "></div>
+                                <div class="col-5 text-left p-1"><a href="/Channels/Details?id=@channel.ChannelId" class="text-white"><h6>Details</h6></a></div>
+                            </div>
+                        </div>
+                    </div>
+                    @if(i%5==0)
+                    {
+                    <br />  <br />
+                    }
+                    }
+                </div>
+                <hr class="bg-mishmash hr-2" />
+
+
+
+                <h3>See Other</h3>
+                <hr class="bg-mishmash hr-2" />
+                <div class="align-items-left">
+                    @for (int i = 1; i<=model.ChannelsSeeOther.Count(); i++ )
+                    {
+                    {var channel=model.ChannelsSeeOther[i-1];}
+                    @if(i%5==1||i%5==0||i%5==3)
+                    {
+                    <div class="ch-fit-b ">
+                        }
+                        @else
+                        {
+                        <div class="ch-fit-m">
+                            }
+                            <div class="pt-3 pb-2  bg-mishmash text-white text-center rounded">
+                                <h5> @channel.Name</h5>
+                                <hr class="bg-white w-75 hr-2" />
+                                <h5> @channel.ChannelType.ToString() Channel</h5>
+                                <hr class="bg-white w-75 hr-2" />
+                                <h5> @channel.FollowersCount Following</h5>
+                                <hr class="bg-white w-75 hr-2" />
+                                <div class="row">
+                                    <div class="col-5 text-right p-1"><a href="/Channels/Follow?id=@channel.ChannelId" class="text-white "><h6>Follow</h6></a></div>
+                                    <div class="col-2 "></div>
+                                    <div class="col-5 text-left p-1"><a href="/Channels/Details?id=@channel.ChannelId" class="text-white"><h6>Details</h6></a></div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(i%5==0)
+                        {
+                        <br />  <br />
+                        }
+                        }
+                    </div>
+                    <hr class="bg-mishmash hr-2" />
+
+                    }
+                </div>
+
 </main>
