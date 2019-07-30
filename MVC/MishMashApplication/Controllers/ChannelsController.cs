@@ -12,7 +12,7 @@
         [HttpGet("/Channels/Details")]
         public IHttpResponse Details(int id)
         {
-            var channel = db.Channels.Where(x => x.Id == id).Select(x => new ChannelDTO()
+            var channel = Db.Channels.Where(x => x.Id == id).Select(x => new ChannelDTO()
             {
                 Name = x.Name,
                 Description = x.Description,
@@ -39,7 +39,7 @@
         [HttpPost()]
         public IHttpResponse Create(ChannelDTO newChannel)
         {
-            if (db.Channels.Any(x => x.Name == newChannel.Name))
+            if (Db.Channels.Any(x => x.Name == newChannel.Name))
             {
                 return this.ControllerError($"Channel with name {newChannel.Name} already exists", "/Home/Index", "Home");
             }
@@ -49,19 +49,21 @@
                 Description = newChannel.Description,
                 Type = newChannel.ChannelType,
             };
-            var tagsInDb = db.Tags.Select(x => new { x.Id, x.Name });
+            var tagsInDb = Db.Tags.Select(x => new { x.Id, x.Name }).ToList();
             foreach (string tagName in newChannel.Tags)
             {
                 if (!tagsInDb.Select(t => t.Name.ToLower()).Contains(tagName.ToLower()))
                 {
                     channel.ChannelTags.Add(new ChannelTag { Channel = channel, Tag = new Tag { Name = tagName } });
+                    tagsInDb.Add(new { Id = -1, Name = tagName });
                     continue;
                 }
                 int tagId = tagsInDb.First(x => x.Name.ToLower() == tagName.ToLower()).Id;
+                if (tagId == -1) continue;
                 channel.ChannelTags.Add(new ChannelTag { Channel = channel, TagId = tagId });
             }
-            db.Channels.Add(channel);
-            db.SaveChanges();
+            Db.Channels.Add(channel);
+            Db.SaveChanges();
             return this.ControllerSuccess($"Channel with name {newChannel.Name} was successfully added in Database", "/Home/Index", "Home");
         }
 
@@ -72,7 +74,7 @@
                 return this.ControllerError($"No logged user", "/Home/Index", "Home");
             }
 
-            ChannelDTO[] channels = db.Channels.Where(x => x.ChannelUsers.Any(cu => cu.UserId == CurentUser.Id))
+            ChannelDTO[] channels = Db.Channels.Where(x => x.ChannelUsers.Any(cu => cu.UserId == CurentUser.Id))
                 .Select(x => new ChannelDTO
                 {
                     ChannelId=x.Id,
@@ -92,16 +94,15 @@
                 return this.ControllerError($"No logged user", "/Home/Index", "Home");
             }
 
-            User foundUser = db.Users.Include(x=>x.UserChannels).FirstOrDefault(x => x.Id == CurentUser.Id);
+            User foundUser = Db.Users.Include(x=>x.UserChannels).FirstOrDefault(x => x.Id == CurentUser.Id);
             ChannelUser channelUser = foundUser.UserChannels.FirstOrDefault(x => x.ChannelId == id);
             if (channelUser is null)
             {
                 return this.ControllerError($"Channel not followed", "/Home/Index", "Home");
             }
             foundUser.UserChannels.Remove(channelUser);
-            db.SaveChanges();
-            RedirectResult("/Channels/MyChannels");
-            return this.Response;
+            Db.SaveChanges();
+            return RedirectResult("/Channels/MyChannels");
         }
 
         [HttpGet()]
@@ -112,22 +113,20 @@
                 return this.ControllerError($"No logged user", "/Home/Index", "Home");
             }
 
-            if (!db.Channels.Any(x=>x.Id==id))
+            if (!Db.Channels.Any(x=>x.Id==id))
             {
                 return this.ControllerError($"Non existin channel", "/Home/Index", "Home");
             }
 
-            User foundUser = db.Users.Include(x=>x.UserChannels).FirstOrDefault(x => x.Id == CurentUser.Id);
+            User foundUser = Db.Users.Include(x=>x.UserChannels).FirstOrDefault(x => x.Id == CurentUser.Id);
             if (foundUser.UserChannels.Any(x=>x.ChannelId==id))
             {
                 return this.ControllerError($"This channel is folowed already", "/Home/Index", "Home");
             }
 
             foundUser.UserChannels.Add(new ChannelUser { ChannelId = id });
-            db.SaveChanges();
-            RedirectResult("/Home/Index");
-            return Response;
+            Db.SaveChanges();
+            return RedirectResult("/Home/Index");
         }
-
     }
 }

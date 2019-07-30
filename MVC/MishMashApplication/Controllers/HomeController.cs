@@ -24,10 +24,10 @@ namespace MishMashApplication.Controllers
                 return this.View();
             }
 
-            User foundUser = db.Users.FirstOrDefault(x => x.Id == CurentUser.Id);
+            User foundUser = Db.Users.FirstOrDefault(x => x.Id == CurentUser.Id);
             ViewData["UserRole"] = foundUser.Role.ToString();
 
-            ChannelDTO[] allChannelsDtos = db.Channels.Select(x => new ChannelDTO
+            ChannelDTO[] allChannelsDtos = Db.Channels.Select(x => new ChannelDTO
             {
                 ChannelId = x.Id,
                 Name = x.Name,

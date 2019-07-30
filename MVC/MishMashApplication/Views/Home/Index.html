@@ -18,7 +18,6 @@
                 <h2>Welcome, @role<span>@model.USERNAME</span>!</h2>
             </div>
         </center>
-
         <br />
 
         <div><h3>Your channels</h3></div>
@@ -27,7 +26,7 @@
             @for (int i = 1; i<=model.ChannelsYour.Count(); i++ )
             {
             {var channel=model.ChannelsYour[i-1];}
-            @if(i%5==1||i%5==0)
+            @if(i%2==1)
             {
             <div class="ch-fit-b ">
                 }
@@ -42,11 +41,8 @@
                         <hr class="bg-white w-75 hr-2" />
                         <h5> @channel.FollowersCount Following</h5>
                         <hr class="bg-white w-75 hr-2" />
-                        <div class="row">
-                            <div class="col-5 text-right p-1"><a href="/Channels/Follow?id=@channel.ChannelId" class="text-white "><h6>Follow</h6></a></div>
-                            <div class="col-2 "></div>
-                            <div class="col-5 text-left p-1"><a href="/Channels/Details?id=@channel.ChannelId" class="text-white"><h6>Details</h6></a></div>
-                        </div>
+                        <h5>Following</h5>
+         
                     </div>
                 </div>
                 @if(i%5==0)
@@ -57,15 +53,13 @@
             </div>
             <hr class="bg-mishmash hr-2" />
 
-
-
             <div><h3>Suggested</h3></div>
             <hr class="bg-mishmash hr-2" />
             <div class="align-items-left">
                 @for (int i = 1; i<=model.ChannelsSuggested.Count(); i++ )
                 {
                 {var channel=model.ChannelsSuggested[i-1];}
-                @if(i%5==1||i%5==0)
+                @if(i%2==1)
                 {
                 <div class="ch-fit-b ">
                     }
@@ -95,15 +89,13 @@
                 </div>
                 <hr class="bg-mishmash hr-2" />
 
-
-
                 <h3>See Other</h3>
                 <hr class="bg-mishmash hr-2" />
                 <div class="align-items-left">
                     @for (int i = 1; i<=model.ChannelsSeeOther.Count(); i++ )
                     {
                     {var channel=model.ChannelsSeeOther[i-1];}
-                    @if(i%5==1||i%5==0||i%5==3)
+                    @if(i%2==1)
                     {
                     <div class="ch-fit-b ">
                         }

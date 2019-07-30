@@ -40,16 +40,16 @@
         [HttpPost()]
         public IHttpResponse Login(UserDTO user)
         {
-            var FoundUser = db.Users.FirstOrDefault(x => x.Username == user.Username);
+            var FoundUser = Db.Users.FirstOrDefault(x => x.Username == user.Username);
 
 
             string passwordHashed = hasher.Encrypt(user.Password);
-            if (!db.Users.Any(x => x.Username == user.Username && x.Password == passwordHashed))
+            if (!Db.Users.Any(x => x.Username == user.Username && x.Password == passwordHashed))
             {
                 return this.ControllerError($"Username or password do not match. Please enter correct Data", "/Users/Login", "Log In");
             }
 
-            int userId = db.Users.FirstOrDefault(x => x.Username == user.Username).Id;
+            int userId = Db.Users.FirstOrDefault(x => x.Username == user.Username).Id;
             this.LogInUser(user.Username, userId);
 
             logger.Log($"User {user.Username} loged in at {DateTime.Now.ToString("R")}");
@@ -76,13 +76,17 @@
             }
             newUser.Password = hasher.Encrypt(newUser.Password);
 
-            if (db.Users.FirstOrDefault(x => x.Username == newUser.Username) != null)
+            if (Db.Users.FirstOrDefault(x => x.Username == newUser.Username) != null)
             {
                 return this.ControllerError($"Username {newUser.Username} already used", "/Users/Register", "Register");
             }
             User user = newUser.MapTo<User>();
-            db.Users.Add(user);
-            db.SaveChanges();
+            if (!Db.Users.Any())
+            {
+                user.Role = UserRole.Admin;
+            }
+            Db.Users.Add(user);
+            Db.SaveChanges();
             this.LogInUser(user.Username, user.Id);
             return ControllerSuccess($"User {user.Username} was successfully registered and logged in!", "/Home/Index", "HomePage");
         }
@@ -94,8 +98,7 @@
                 return this.ControllerError($"No User is loged in, unloging not possible!");
             }
             this.LogOffUser();
-            RedirectResult("/Home/Index");
-            return Response;
+            return RedirectResult("/Home/Index");
         }
     }
 }
