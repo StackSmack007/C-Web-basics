@@ -8,25 +8,34 @@
 
     public abstract class BaseController : Controller
     {
-        protected MishMashContext db;
+        protected MishMashContext Db;
 
         protected BaseController() : base()
         {
-            db = new MishMashContext();
+            Db = new MishMashContext();
         }
 
-        protected override IHttpResponse View(string layoutName = "_importLayout.html")
+        protected sealed override IHttpResponse View(string layoutName = "_importLayout.html")
         {
-            if (CurentUser !=null && IsAdmin())
+            if (CurentUser != null && IsAdmin() && layoutName == "_importLayout.html")
             {
                 layoutName = "_adminLayout.html";
             }
             return base.View(layoutName);
         }
 
+        protected sealed override IHttpResponse ViewFilePath(string subPath, string layoutName = "_importLayout.html")
+        {
+            if (CurentUser != null && IsAdmin() && layoutName == "_importLayout.html")
+            {
+                layoutName = "_adminLayout.html";
+            }
+            return base.ViewFilePath(subPath, layoutName);
+        }
+
         protected bool IsAdmin()
         {
-            if (db.Users.First(x => x.Id == CurentUser.Id).Role == UserRole.Admin)
+            if (Db.Users.First(x => x.Id == CurentUser.Id).Role == UserRole.Admin)
             {
                 return true;
             }

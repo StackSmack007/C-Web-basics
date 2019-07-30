@@ -12,6 +12,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Reflection;
     using System.Text;
@@ -71,7 +72,7 @@
         #region HardcorePathsByConvention NeedTo Outsourse to Config Class;
         private static string layoutsFolderPath = @"../../../Views/Layouts/";
         private static string keywordForInsertingBodyInImportLayout = "@BodyContent@";
-      //  private static string regexPattern = @"(?<=@).*?(?=@)";
+        //  private static string regexPattern = @"(?<=@).*?(?=@)";
         private static string locationOfViewsFolder = @"../../../Views/";
         #endregion
 
@@ -98,7 +99,7 @@
 
         protected void LogInUser(string userName, int id)
         {
-            curentUser = new LoggedUser(userName, id,DateTime.UtcNow.AddDays(1));
+            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1));
             var loginCookie = cookieService.MakeLoginCookie(userName, id, encrypter);
             this.Response.AddCookie(loginCookie);
         }
@@ -126,22 +127,25 @@
         #endregion
 
         #region Response Manipulator Methods
-        protected void HtmlResult(string content)
+        protected IHttpResponse HtmlResult(string content)
         {
             this.Response.Headers.Add(new HttpHeader("Content-type", "text/html; charset=utf-8"));
             this.Response.Content = Encoding.UTF8.GetBytes(content);
+            return this.Response;
         }
 
-        protected void RedirectResult(string location)
+        protected IHttpResponse RedirectResult(string location)
         {
             this.Response.Headers.Add(new HttpHeader("Location", location));
             this.Response.StatusCode = HttpStatusCode.Redirect;
+            return this.Response;
         }
 
-        protected void TextResult(string content)
+        protected IHttpResponse TextResult(string content)
         {
             this.Response.Headers.Add(new HttpHeader("Content-type", "text/plain"));
             this.Response.Content = Encoding.UTF8.GetBytes(content);
+            return this.Response;
         }
         #endregion
 
@@ -172,25 +176,39 @@
 
         #endregion
 
-        protected IHttpResponse View(string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse View(string layoutName = "_importLayout.html")
         {
-            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
-            string layoutPath = layoutsFolderPath + layoutName;
-            bool fileExist = File.Exists(layoutPath);
-            string layout = File.ReadAllText(layoutPath);
-
             StackTrace stackTrace = new StackTrace();
-            MethodBase methodBase = stackTrace.GetFrame(1).GetMethod();
-            string actionMethodName = methodBase.Name;
+            string actionMethodName = stackTrace.GetFrames()
+                .Select(x => x.GetMethod().Name)
+                .Where(x => x != "View").FirstOrDefault();
             string className = this.GetType().Name;
             string folderName = className.Replace("Controller", "/");
             string htmlName = actionMethodName + ".html";
-            string path = locationOfViewsFolder + folderName + htmlName;
+            string subPath = folderName + htmlName;
+            return ViewFilePath(subPath, layoutName);
+        }
+
+        protected virtual IHttpResponse ViewFilePath(string subPath, string layoutName = "_importLayout.html")
+        {
+            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
+            if (subPath.StartsWith("/"))
+            {
+                subPath = subPath.Substring(1).Replace(".html", "") + ".html";
+            }
+            string layout = GetLayoutContent(layoutName);
+            string path = locationOfViewsFolder + subPath;
             string htmlContent = File.ReadAllText(path);
             htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, htmlContent);
             htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData);
             this.HtmlResult(htmlContent);
             return this.Response;
+        }
+
+        private string GetLayoutContent(string layoutName)
+        {
+            string layoutPath = layoutsFolderPath + layoutName;
+            return File.ReadAllText(layoutPath);
         }
     }
 }
