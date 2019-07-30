@@ -14,7 +14,6 @@
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Reflection;
     using System.Text;
     using System.Web;
 
@@ -70,10 +69,11 @@
         public IHttpRequest Request { get; set; } //will be set in routing but not in constructor because in constructor other things will be given!
 
         #region HardcorePathsByConvention NeedTo Outsourse to Config Class;
-        private static string layoutsFolderPath = @"../../../Views/Layouts/";
-        private static string keywordForInsertingBodyInImportLayout = "@BodyContent@";
-        //  private static string regexPattern = @"(?<=@).*?(?=@)";
-        private static string locationOfViewsFolder = @"../../../Views/";
+        //Set in ctor of inheritants abstract classes:
+        protected static string defaultAuthorisedRedirectAdress = "/Users/Login";
+        protected static string layoutsFolderPath = @"../../../Views/Layouts/";
+        protected static string keywordForInsertingBodyInImportLayout = "@BodyContent@";
+        protected static string locationOfViewsFolder = @"../../../Views/";
         #endregion
 
         protected static ICookieService cookieService;
