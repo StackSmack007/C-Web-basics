@@ -4,6 +4,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
     using SIS.MVC.Contracts;
+    using SIS.MVC.Services;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -141,9 +142,8 @@
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(classContent));
             #endregion
-
-            string fullPath = GetPathOfTempFile(Assembly.GetAssembly(typeof(View_Engine)).Location, @"SIS.MVC/ViewEngine/GeneratedModels", className + ".dll");
-
+    
+            string fullPath = Locator.GetPathOfFile(@"SIS.MVC/ViewEngine/GeneratedModels", className + ".dll");
             EmitResult emitResult = compilation.Emit(fullPath);
             if (emitResult.Success)
             {
@@ -158,35 +158,6 @@
             }
         }
 
-        private string GetPathOfTempFile(string innerPath, string destination, string filename)
-        {
-            string[] foldersToBeContained = destination.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            string currentPath = Path.GetFullPath(Path.Combine(innerPath, $"../"));
-
-            while (!FoldersAreContained(currentPath, foldersToBeContained))
-            {
-                currentPath = Path.GetFullPath(Path.Combine(currentPath, $"../"));
-            }
-            currentPath = Path.GetFullPath(Path.Combine(currentPath, destination)) + "\\" + filename;
-            return currentPath;
-        }
-
-        #region Obtaining TempFolder
-        private bool FoldersAreContained(string path, string[] foldersToBeContained)
-        {
-            bool result = foldersToBeContained.Any();
-            foreach (string folder in foldersToBeContained)
-            {
-                path = Path.GetFullPath(Path.Combine(path, $"./{folder}"));
-                if (!Directory.Exists(path))
-                {
-                    result = false;
-                    break;
-                }
-            }
-            return result;
-        }
-
         private static string GetNewUnusedName()
         {
             string className = ("TempClass" + Guid.NewGuid()).Replace("-", "");
@@ -197,7 +168,6 @@
             usedClassNames.Add(className);
             return className;
         }
-        #endregion
 
         private string ConvertRawHTMLToCode(string htmlNotRendered)
         {
