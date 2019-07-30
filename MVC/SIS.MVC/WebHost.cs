@@ -30,15 +30,30 @@
 
         static WebHost()
         {
+            ClearTempFolder(@"SIS.MVC/ViewEngine/GeneratedModels");
             serverRoutingTable = new ServerRoutingTable();
             serviceContainer = new ServiceCollection();
             logger = new ConsoleLogger();
         }
+
+        private static void ClearTempFolder(string subPath)
+        {
+            string destinationFolderPath = Locator.GetPathOfFolder(subPath);
+
+            if (Directory.Exists(destinationFolderPath))
+            {
+                var files = Directory.EnumerateFiles(destinationFolderPath).ToHashSet();
+                foreach (var filePath in files)
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
         public static IServiceCollection ServiceContainer => serviceContainer;
 
         public static void Start(int port, IMvcApplication application)
         {
-
             ConfigureRoutingFromAttributes();
             application.ConfigureRouting(serverRoutingTable);
             ConfigureRoutesByNamesConvention();
