@@ -7,14 +7,14 @@
     using SIS.MVC.Contracts;
     using SIS.MVC.Loggers;
     using SIS.MVC.Services;
+    using SIS.MVC.ViewEngine;
     using SIS.WebServer;
     using SIS.WebServer.Routing;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
-    using SIS.MVC.ViewEngine;
-    using System.IO;
 
     /// <summary>
     ///  Every DTO must have constructor (Non empty!) accepting parameters exact number,
@@ -86,10 +86,10 @@
                     EnlistRoute(defaultMethod, path, controllerType, methodInfo);
                 }
 
-                foreach (MethodInfo methodInfo in controllerType.GetMethods().Where(m => m.ReturnType == typeof(IHttpResponse) && m.GetCustomAttributes<HttpAttribute>().Any(x=>x.Path == null)))
+                foreach (MethodInfo methodInfo in controllerType.GetMethods().Where(m => m.ReturnType == typeof(IHttpResponse) && m.GetCustomAttributes<HttpAttribute>().Any(x => x.Path == null)))
                 {//case of pathless HttpAttribute (HttpPostMost likely)
-                    string path = "/" + viewFolderName + "/" + methodInfo.Name;               
-                    foreach (var methodType in methodInfo.GetCustomAttributes<HttpAttribute>().Where(x => x.Path == null).Select(x=>x.MethodType))
+                    string path = "/" + viewFolderName + "/" + methodInfo.Name;
+                    foreach (var methodType in methodInfo.GetCustomAttributes<HttpAttribute>().Where(x => x.Path == null).Select(x => x.MethodType))
                     {
                         if (serverRoutingTable.Routes[methodType].Keys.Any(x => x == path))
                         {
@@ -108,7 +108,7 @@
             foreach (Type controller in controllerClasses)
             {
                 MethodInfo[] actionMethods = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                                                       .Where(x => x.GetCustomAttributes<HttpAttribute>().Where(at=>at.Path!=null).Any()).ToArray();
+                                                       .Where(x => x.GetCustomAttributes<HttpAttribute>().Where(at => at.Path != null).Any()).ToArray();
 
                 foreach (MethodInfo methodInfo in actionMethods)
                 {
@@ -129,9 +129,24 @@
             serverRoutingTable.Routes[methodType][path] = (IHttpRequest request) =>
             {
                 var controllerInstance = serviceContainer.CreateInstance(controllerType);
-
                 PropertyInfo requestProperty = controllerType.GetProperty("Request");
                 requestProperty.SetValue(controllerInstance, request);
+
+                #region AuthorisedAttributeCheckAndRedirect
+                Type baseControllerType = typeof(Controller);
+                AuthorisedAttribute attributeFound = methodInfo.GetCustomAttributes<AuthorisedAttribute>().FirstOrDefault();
+                bool noLoggedInUser = baseControllerType.GetProperty("CurentUser", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(controllerInstance) is null;
+                if (attributeFound != null && noLoggedInUser)
+                {
+                    string redirectString = attributeFound.AltPath;
+                    if (redirectString is null)
+                    {
+                        redirectString = baseControllerType.GetField("defaultAuthorisedRedirectAdress", BindingFlags.Static | BindingFlags.NonPublic).GetValue(controllerInstance) as string;
+                    }
+                    MethodInfo redirectMethod = controllerType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(x => x.Name == "RedirectResult");
+                    return (IHttpResponse)redirectMethod.Invoke(controllerInstance, new object[] { redirectString });
+                }
+                #endregion
 
                 #region ModelBinding
                 Queue<ParameterInfo> actionParameters = new Queue<ParameterInfo>(methodInfo.GetParameters());
