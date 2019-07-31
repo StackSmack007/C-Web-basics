@@ -68,14 +68,6 @@
 
         public IHttpRequest Request { get; set; } //will be set in routing but not in constructor because in constructor other things will be given!
 
-        #region HardcorePathsByConvention NeedTo Outsourse to Config Class;
-        //Set in ctor of inheritants abstract classes:
-        protected static string defaultAuthorisedRedirectAdress = "/Users/Login";
-        protected static string layoutsFolderPath = @"../../../Views/Layouts/";
-        protected static string keywordForInsertingBodyInImportLayout = "@BodyContent@";
-        protected static string locationOfViewsFolder = @"../../../Views/";
-        #endregion
-
         protected static ICookieService cookieService;
 
         protected Controller()
@@ -152,28 +144,25 @@
         #region MessagesForUser
         protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
-            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
-            string layoutPath = layoutsFolderPath + layoutName;
-            string layout = File.ReadAllText(layoutPath);
-            string warninghtml = $"<div class=\"alert alert-danger\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
-            string htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, warninghtml);
-            htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData);
-            this.HtmlResult(htmlContent);
-            return this.Response;
+            return ControllerMessage("danger", message, redirectAdress, redirectName, layoutName);
         }
 
         protected IHttpResponse ControllerSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
+            return ControllerMessage("success", message, redirectAdress, redirectName, layoutName);
+        }
+
+        private IHttpResponse ControllerMessage(string alertType, string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        {
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
-            string layoutPath = layoutsFolderPath + layoutName;
+            string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             string layout = File.ReadAllText(layoutPath);
-            string warninghtml = $"<div class=\"alert alert-success\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
-            string htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, warninghtml);
+            string warninghtml = $"<div class=\"alert alert-{alertType}\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
+            string htmlContent = layout.Replace(WebHost.Configurations.KeywordForInsertingBodyInImportLayout, warninghtml);
             htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData);
             this.HtmlResult(htmlContent);
             return this.Response;
         }
-
         #endregion
 
         protected virtual IHttpResponse View(string layoutName = "_importLayout.html")
@@ -197,9 +186,9 @@
                 subPath = subPath.Substring(1).Replace(".html", "") + ".html";
             }
             string layout = GetLayoutContent(layoutName);
-            string path = locationOfViewsFolder + subPath;
+            string path = Locator.GetPathOfFile(WebHost.Configurations.LocationOfViewsFolder + subPath);
             string htmlContent = File.ReadAllText(path);
-            htmlContent = layout.Replace(keywordForInsertingBodyInImportLayout, htmlContent);
+            htmlContent = layout.Replace(WebHost.Configurations.KeywordForInsertingBodyInImportLayout, htmlContent);
             htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData);
             this.HtmlResult(htmlContent);
             return this.Response;
@@ -207,7 +196,7 @@
 
         private string GetLayoutContent(string layoutName)
         {
-            string layoutPath = layoutsFolderPath + layoutName;
+            string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             return File.ReadAllText(layoutPath);
         }
     }
