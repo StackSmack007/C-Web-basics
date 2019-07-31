@@ -36,7 +36,7 @@
             return View();
         }
 
-        [HttpPost()]
+        [HttpPost]
         public IHttpResponse Create(ChannelDTO newChannel)
         {
             if (Db.Channels.Any(x => x.Name == newChannel.Name))
@@ -86,7 +86,7 @@
             return View();
         }
 
-        [HttpPost()]
+        [HttpPost]
         public IHttpResponse Unfollow(int id)
         {
             if (CurentUser is null)
@@ -105,7 +105,7 @@
             return RedirectResult("/Channels/MyChannels");
         }
 
-        [HttpGet()]
+        [HttpGet]
         public IHttpResponse Follow(int id)
         {
             if (CurentUser is null)

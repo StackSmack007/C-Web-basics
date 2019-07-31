@@ -86,7 +86,8 @@
                     EnlistRoute(defaultMethod, path, controllerType, methodInfo);
                 }
 
-                foreach (MethodInfo methodInfo in controllerType.GetMethods().Where(m => m.ReturnType == typeof(IHttpResponse) && m.GetCustomAttributes<HttpAttribute>().Any(x => x.Path == null)))
+                foreach (MethodInfo methodInfo in controllerType.GetMethods(BindingFlags.Instance|BindingFlags.Public|BindingFlags.DeclaredOnly)
+                    .Where(m => m.ReturnType == typeof(IHttpResponse) && m.GetCustomAttributes<HttpAttribute>().Any(x => x.Path == null)))
                 {//case of pathless HttpAttribute (HttpPostMost likely)
                     string path = "/" + viewFolderName + "/" + methodInfo.Name;
                     foreach (var methodType in methodInfo.GetCustomAttributes<HttpAttribute>().Where(x => x.Path == null).Select(x => x.MethodType))

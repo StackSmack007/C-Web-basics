@@ -3,9 +3,7 @@
     using SIS.HTTP.Enums;
     public class HttpPostAttribute : HttpAttribute
     {
-        public HttpPostAttribute(string path) : base(path)
-        { MethodType = HttpRequestMethod.Post; }
-        public HttpPostAttribute() : base(null)
+        public HttpPostAttribute(string path=null) : base(path)
         { MethodType = HttpRequestMethod.Post; }
     }
 }

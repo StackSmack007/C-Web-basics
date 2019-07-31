@@ -37,7 +37,7 @@
             return this.View();
         }
 
-        [HttpPost()]
+        [HttpPost]
         public IHttpResponse Login(UserDTO user)
         {
             var FoundUser = Db.Users.FirstOrDefault(x => x.Username == user.Username);
@@ -56,7 +56,7 @@
             return this.ControllerSuccess($"User {user.Username} was successfully logged in!", "/Home/Index", "HomePage");
         }
 
-        [HttpPost()]
+        [HttpPost]
         public IHttpResponse Register(UserDTO newUser)
         {
             if (string.IsNullOrEmpty(newUser.Username)) return this.ControllerError($"Username cant be empty", "/Users/Register", "Register");
