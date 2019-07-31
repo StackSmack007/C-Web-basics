@@ -142,12 +142,12 @@
         #endregion
 
         #region MessagesForUser
-        protected IHttpResponse ControllerError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
             return ControllerMessage("danger", message, redirectAdress, redirectName, layoutName);
         }
 
-        protected IHttpResponse ControllerSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
             return ControllerMessage("success", message, redirectAdress, redirectName, layoutName);
         }
@@ -163,6 +163,40 @@
             this.HtmlResult(htmlContent);
             return this.Response;
         }
+
+        protected IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "ByConvention", string layoutName = "_importLayout.html")
+        {
+            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
+            var alertType = "danger";
+            if (!isError) alertType = "success";
+            string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
+            string layout = File.ReadAllText(layoutPath);
+
+            string warninghtml = $@"<div class=""alert alert-{alertType} alert - dismissible fade show"" role=""alert"">
+                                    <strong> {message}</strong>
+                                    <button type = ""button"" class=""close"" data -dismiss=""alert"" aria -label=""Close"">
+                                    <span aria-hidden=""true""> &times;</span>
+                                    </button>
+                                    </div>";
+
+            string htmlContent = layout.Replace(WebHost.Configurations.KeywordForInsertingBodyInImportLayout, warninghtml);
+            htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData)
+                + Environment.NewLine + WebHost.Configurations.KeywordForInsertingBodyInImportLayout; ;
+
+            if (viewSubPath == "ByConvention")
+            {
+                View("void");
+            }
+            else
+            {
+                ViewFilePath(viewSubPath, "void");
+            }
+            string viewContent = Encoding.UTF8.GetString(Response.Content);
+            htmlContent = htmlContent.Replace(WebHost.Configurations.KeywordForInsertingBodyInImportLayout, viewContent);
+            Response.Content = Encoding.UTF8.GetBytes(htmlContent);
+            return this.Response;
+        }
+
         #endregion
 
         protected virtual IHttpResponse View(string layoutName = "_importLayout.html")
@@ -170,7 +204,7 @@
             StackTrace stackTrace = new StackTrace();
             string actionMethodName = stackTrace.GetFrames()
                 .Select(x => x.GetMethod().Name)
-                .Where(x => x != "View").FirstOrDefault();
+                .Where(x => x != "View" && x != "MessageWithView").FirstOrDefault();
             string className = this.GetType().Name;
             string folderName = className.Replace("Controller", "/");
             string htmlName = actionMethodName + ".html";
@@ -185,7 +219,13 @@
             {
                 subPath = subPath.Substring(1).Replace(".html", "") + ".html";
             }
-            string layout = GetLayoutContent(layoutName);
+
+            string layout = WebHost.Configurations.KeywordForInsertingBodyInImportLayout;
+            if (layoutName.ToLower() != "void")
+            {
+                layout = GetLayoutContent(layoutName);
+            }
+
             string path = Locator.GetPathOfFile(WebHost.Configurations.LocationOfViewsFolder + subPath);
             string htmlContent = File.ReadAllText(path);
             htmlContent = layout.Replace(WebHost.Configurations.KeywordForInsertingBodyInImportLayout, htmlContent);
