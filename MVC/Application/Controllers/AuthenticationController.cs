@@ -24,7 +24,7 @@
         {
             if (this.CurentUser != null)
             {
-                return this.ControllerError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
+                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
             }
             return View();
         }
@@ -36,17 +36,17 @@
 
             if (CurentUser != null)
             {
-                return this.ControllerError($"User with name {CurentUser.UserName} is already loged in. Please log out first before registering new user!");
+                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first before registering new user!");
             }
 
             if (newUser.Password != newUser.PasswordVerify)
             {
-                return this.ControllerError("Passwords missmatch", "Register", "Register");
+                return this.MessageError("Passwords missmatch", "Register", "Register");
             }
 
             if (db.Users.FirstOrDefault(x => x.Username == newUser.UserName) != null)
             {
-                return this.ControllerError($"Username {newUser.UserName} already used", "Register", "Register");
+                return this.MessageError($"Username {newUser.UserName} already used", "Register", "Register");
             }
 
             var user = new User() { Username = newUser.UserName, Password = newUser.Password, RegisteredOn = DateTime.UtcNow };//password is entered to pass validation only!
@@ -55,7 +55,7 @@
 
             if (!validationResult.IsValid)
             {
-                return this.ControllerError(string.Join(Environment.NewLine, validationResult.Errors), "Register", "Register");
+                return this.MessageError(string.Join(Environment.NewLine, validationResult.Errors), "Register", "Register");
             }
 
             user.Password = hasher.Encrypt(newUser.Password);
@@ -74,7 +74,7 @@
         {
             if (CurentUser is null)
             {
-                return this.ControllerError("No user was loged in at the moment");
+                return this.MessageError("No user was loged in at the moment");
             }
             LogOffUser();
             this.RedirectResult("/");
@@ -86,7 +86,7 @@
         {
             if (this.CurentUser != null)
             {
-                return this.ControllerError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
+                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
             }
             return View();
         }
@@ -97,7 +97,7 @@
             string passwordHashed = hasher.Encrypt(user.Password);
             if (!db.Users.Any(x => x.Username == user.UserName && x.Password == passwordHashed))
             {
-                return this.ControllerError($"Username or password do not match. Please enter correct Data", "LogIn", "Log In");
+                return this.MessageError($"Username or password do not match. Please enter correct Data", "LogIn", "Log In");
             }
             int userId = db.Users.FirstOrDefault(x => x.Username == user.UserName).Id;
             this.LogInUser(user.UserName, userId);

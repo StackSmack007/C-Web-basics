@@ -20,11 +20,11 @@
 
             if (this.CurentUser is null)
             {
-                return ControllerError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");//Redundant but still
+                return MessageError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");//Redundant but still
             }
             User buyer = db.Users.Include(x => x.Orders).ThenInclude(x => x.OrderProducts)
                 .FirstOrDefault(x => x.Username == this.CurentUser.UserName);
-            if (buyer is null) return ControllerError("User not found in database");//Redundant but still
+            if (buyer is null) return MessageError("User not found in database");//Redundant but still
 
             Order currentOrder = buyer.Orders.OrderBy(x => x.Id).LastOrDefault();
 
@@ -57,7 +57,7 @@
             db.SaveChanges();
             string userName = this.CurentUser.UserName;
             string cakeName = db.Products.First(x => x.Id == product.ProductId).ProductName;
-            return ControllerSuccess($"Success: User {userName} ordered {product.Quantity} pieces of cake {cakeName}", "/Cakes/Browse", "Browse Cakes");
+            return MessageSuccess($"Success: User {userName} ordered {product.Quantity} pieces of cake {cakeName}", "/Cakes/Browse", "Browse Cakes");
         }
 
         [HttpGet("/Orders/DisplayOrders")]
@@ -65,7 +65,7 @@
         {
             if (this.CurentUser is null)
             {
-                return this.ControllerError($"No user loged in Log in first");
+                return this.MessageError($"No user loged in Log in first");
             }
 
             var userOrders = db.Orders
@@ -89,15 +89,15 @@
             var order = db.Orders.Include(x => x.OrderProducts).Last();
             if (order.Id != orderId)
             {
-                return ControllerError("Order is not cart it is finished!");
+                return MessageError("Order is not cart it is finished!");
             }
             if (order.UserId != this.CurentUser.Id)
             {
-                return ControllerError("This User is not authorised to complete this order!");
+                return MessageError("This User is not authorised to complete this order!");
             }
             if (!order.OrderProducts.Any())
             {
-                return ControllerError("You can not submit empty Order!");//redundant but still
+                return MessageError("You can not submit empty Order!");//redundant but still
             }
             order.DateOfCreation = DateTime.UtcNow;
             db.Orders.Add(new Order
@@ -106,7 +106,7 @@
                 DateOfCreation = DateTime.UtcNow
             });
             db.SaveChanges();
-            return ControllerSuccess($"Successfully added new order to user {CurentUser.UserName}", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
+            return MessageSuccess($"Successfully added new order to user {CurentUser.UserName}", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
         }
 
         [HttpGet("/Orders/DisplayOrder")]
@@ -121,12 +121,12 @@
 
                 if (order.User.Username != this.CurentUser.UserName)
                 {
-                    return ControllerError($"User {this.CurentUser.UserName} is not outhorised to view another user's orders");
+                    return MessageError($"User {this.CurentUser.UserName} is not outhorised to view another user's orders");
                 }
             }
             catch (Exception)
             {
-                return ControllerError("Invalid OrderId in the link");
+                return MessageError("Invalid OrderId in the link");
             }
             ViewData["IsCart"] = isCart;
             ViewData["Order"] = new OrderDto_exp()
@@ -150,19 +150,19 @@
             var order = db.Orders.Include(x => x.OrderProducts).Last();
             if (order.Id != orderId)
             {
-                return ControllerError("Order is not cart it is finished!");
+                return MessageError("Order is not cart it is finished!");
             }
             if (order.UserId != this.CurentUser.Id)
             {
-                return ControllerError("This User is not authorised to complete this order!");
+                return MessageError("This User is not authorised to complete this order!");
             }
             if (!order.OrderProducts.Any())
             {
-                return ControllerError("You can not delete products empty Order!");//redundant but still
+                return MessageError("You can not delete products empty Order!");//redundant but still
             }
             db.OrdersProducts.RemoveRange(db.OrdersProducts.Where(x => x.OrderID == orderId));
             db.SaveChanges();
-            return ControllerSuccess($"Successfully cleared all products from {CurentUser.UserName}'s cart", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
+            return MessageSuccess($"Successfully cleared all products from {CurentUser.UserName}'s cart", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
         }
     }
 }

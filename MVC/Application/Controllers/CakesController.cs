@@ -31,13 +31,13 @@
             //Only the usernames starting with Admin can add cakes!
             if (CurentUser is null)
             {
-                return ControllerError("Admin must be loged in to add cakes!");
+                return MessageError("Admin must be loged in to add cakes!");
             }
             if (this.CurentUser.UserName.StartsWith(specialUserPrefix))
             {
                 return View();
             }
-            return ControllerError("User is not authorised to add cakes! His name must start with admin to do that");
+            return MessageError("User is not authorised to add cakes! His name must start with admin to do that");
         }
 
         [HttpPost("/Cakes/AddCakeData")]
