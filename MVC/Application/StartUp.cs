@@ -8,11 +8,15 @@
     {
         public void ConfigureRouting(ServerRoutingTable serverRoutingTable)  { }
       
-
         public void ConfigureServices(IServiceCollection servicecollection)
         {
             servicecollection.AddService<IEncrypter, Encrypter>();
             servicecollection.AddService<ILogger, ConsoleLogger>();
+        }
+
+        public IConfiguration SetConfigurations()
+        {
+            return new Configuration();
         }
     }
 }

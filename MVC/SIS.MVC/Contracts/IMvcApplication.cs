@@ -12,5 +12,7 @@
         void ConfigureRouting(ServerRoutingTable serverRoutingTable);
 
         void ConfigureServices(IServiceCollection servicecollection);
+
+        IConfiguration SetConfigurations();
     }
 }
