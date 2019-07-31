@@ -16,21 +16,33 @@
 
         public static string GetPathOfFile(string destination, string filename)
         {
-            return GetPathOfFolder(destination) + "\\" + filename;
+            return GetPathOfFolder(destination) + "/" + filename;
+        }
+
+        public static string GetPathOfFile(string subPath)
+        {
+            subPath = subPath.Replace("\\", "/");
+            int indexOfLastLine = subPath.LastIndexOf("/");
+            if (indexOfLastLine==-1)
+            {
+                return GetPathOfFile("/", subPath);
+            }
+            string path = subPath.Substring(0, indexOfLastLine + 1);
+            string fileName = subPath.Replace(path, "");
+            return GetPathOfFile(path, fileName);
         }
 
         public static string GetPathOfFolder(string destination)
         {
-            destination = destination.TrimEnd('\\', '/');
-            string[] foldersToBeContained = destination.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            destination = destination.Trim('\\', '/');
+            string[] foldersToBeContained = destination.Split('/', StringSplitOptions.RemoveEmptyEntries);
             string currentPath = Path.GetFullPath(Path.Combine(CurrentLocation, $"../"));
 
             while (!FoldersAreContained(currentPath, foldersToBeContained))
             {
                 currentPath = Path.GetFullPath(Path.Combine(currentPath, $"../"));
             }
-            currentPath = Path.GetFullPath(Path.Combine(currentPath, destination));
-            return currentPath;
+            return Path.Combine(currentPath, destination);
         }
 
         private static bool FoldersAreContained(string path, string[] foldersToBeContained)
