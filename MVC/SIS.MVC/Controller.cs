@@ -140,14 +140,14 @@
             return this.Response;
         }
         #endregion
-
+  
         #region MessagesForUser
-        protected IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
             return ControllerMessage("danger", message, redirectAdress, redirectName, layoutName);
         }
 
-        protected IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
         {
             return ControllerMessage("success", message, redirectAdress, redirectName, layoutName);
         }
@@ -164,7 +164,7 @@
             return this.Response;
         }
 
-        protected IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "ByConvention", string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "ByConvention", string layoutName = "_importLayout.html")
         {
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             var alertType = "danger";
