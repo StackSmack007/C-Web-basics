@@ -29,6 +29,7 @@
         {
             serverRoutingTable = new ServerRoutingTable();
             serviceContainer = new ServiceCollection();
+            serviceContainer.AddService<ILogger, ConsoleLogger>();
             logger = new ConsoleLogger();
             RouterEngine.Logger = logger;
             ClearTempFolder(tempLocation);
