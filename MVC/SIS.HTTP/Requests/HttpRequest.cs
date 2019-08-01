@@ -100,8 +100,6 @@
 
         private void ParseQueryParameters()
         {
-
-            // string queriesAll = this.Url.Split(new[] { '?', '#' }).Skip(1).First();
             string queriesAll = this.Url.Split(new[] { '?', '#' }).Skip(1).FirstOrDefault();
 
             if (string.IsNullOrEmpty(queriesAll))
@@ -120,11 +118,28 @@
         private void AddRequestKVPtoDictionary(Dictionary<string, object> target, string query, bool overwrite = false)
         {
             string[] kvp = query.Split('=');
-            if (kvp.Length != 2 || kvp.Any(x => string.IsNullOrEmpty(x)))
+            if (kvp.Length !=2)
             {
                 throw new BadRequestException();
             }
-            if (overwrite = false & this.QueryData.ContainsKey(kvp[0]))
+            if (string.IsNullOrEmpty(kvp[0]))
+            {
+                 return;
+            }
+            if (kvp[0].EndsWith("[]")||kvp[0].EndsWith("%5B%5D"))
+            {
+                string keyName = kvp[0].Replace("[]", "").Replace("%5B%5D","");
+                if (!target.ContainsKey(keyName))
+                {
+                    target[keyName] =new List<string> { kvp[1] };
+                }
+                else
+                {
+                    ((List<string>)target[keyName]).Add(kvp[1]);
+                }
+                return;
+            }
+            if (overwrite != false & this.QueryData.ContainsKey(kvp[0]))
             {
                 throw new InvalidOperationException($"a kvp with key {kvp[0]} is already used!");
             }

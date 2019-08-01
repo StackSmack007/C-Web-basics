@@ -91,14 +91,14 @@
                     Logger.Log($"File with name <{fileName}> occures more than once in the root folder. If content of it differs change its name!");
                 }
 
-                serverRoutingTable.Routes[HttpRequestMethod.Get]["/"+fileName] = (request) =>
-                {
-                    IHttpResponse response = new HttpResponse(System.Net.HttpStatusCode.OK);
-                    response.Content = File.ReadAllBytes(file);
-                    response.Headers.Add(new HttpHeader(HttpHeader.ContentLengthKey, response.Content.Length.ToString()));
-                    response.Headers.Add(new HttpHeader(HttpHeader.ContentDispositionKey, "inline"));
-                    return response;
-                };
+                serverRoutingTable.Routes[HttpRequestMethod.Get]["/" + fileName] = (request) =>
+                  {
+                      IHttpResponse response = new HttpResponse(System.Net.HttpStatusCode.OK);
+                      response.Content = File.ReadAllBytes(file);
+                      response.Headers.Add(new HttpHeader(HttpHeader.ContentLengthKey, response.Content.Length.ToString()));
+                      response.Headers.Add(new HttpHeader(HttpHeader.ContentDispositionKey, "inline"));
+                      return response;
+                  };
             }
         }
 
@@ -158,8 +158,22 @@
             while (requiredParametersByMethod.Any())
             {
                 ParameterInfo requiredParam = requiredParametersByMethod.Dequeue();
+                Console.WriteLine();
 
-                if (requiredParam.ParameterType.IsValueType || requiredParam.ParameterType == typeof(string))
+                if (requiredParam.ParameterType.GetInterfaces().Contains(typeof(IEnumerable<string>)))
+                {
+                    if (!providedParameters.ContainsKey(requiredParam.Name))
+                    {
+                        parametersData.Add(new string[0]);
+                    }
+                    else
+                    {
+                        parametersData.Add(providedParameters[requiredParam.Name]);
+                    }
+                    continue;
+                }
+
+                else if (requiredParam.ParameterType.IsValueType || requiredParam.ParameterType == typeof(string))
                 {
                     if (!providedParameters.ContainsKey(requiredParam.Name))
                     {
@@ -167,7 +181,7 @@
                         parametersData.Add(null);
                         continue;
                     }
-                    else if (providedParameters[requiredParam.Name].GetType() != requiredParam.ParameterType)
+                    else if (providedParameters[requiredParam.Name] is null || providedParameters[requiredParam.Name].GetType() != requiredParam.ParameterType)
                     {
                         try
                         {
@@ -181,13 +195,11 @@
                         }
                         continue;
                     }
-
                     parametersData.Add(providedParameters[requiredParam.Name]);
                     continue;
                 }
-
                 ConstructorInfo subClassConstructor = requiredParam.ParameterType.GetConstructors()
-                                                         .Where(x => x.GetParameters().All(p => providedParameters.ContainsKey(p.Name)))
+                                                         .Where(x => x.GetParameters().All(p => providedParameters.ContainsKey(p.Name) || p.ParameterType.GetInterfaces().Contains(typeof(IEnumerable<string>))))
                                                          .OrderByDescending(x => x.GetParameters().Count())
                                                          .FirstOrDefault();
 
