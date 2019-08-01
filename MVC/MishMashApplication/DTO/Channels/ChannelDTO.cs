@@ -29,6 +29,5 @@ namespace MishMashApplication.DTO.Channels
             Tags = new HashSet<string>(tags.Replace("+", " ").Replace("%2C",",").Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries));
             ChannelType = Enum.Parse<ChannelType>(channelType);            
         }
-    //    public string ChannelString => ChannelType.ToString();
     }
 }
