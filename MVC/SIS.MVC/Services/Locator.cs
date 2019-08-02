@@ -40,7 +40,12 @@
 
             while (!FoldersAreContained(currentPath, foldersToBeContained))
             {
+                string pathBefore = currentPath;
                 currentPath = Path.GetFullPath(Path.Combine(currentPath, $"../"));
+                if (pathBefore==currentPath)
+                {
+                    return null;
+                }
             }
             return Path.Combine(currentPath, destination);
         }
