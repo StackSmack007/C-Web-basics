@@ -1,15 +1,40 @@
 ﻿<main>
-    <div class="jumbotron mt-3 bg-torshia">
-        <h1 class="text-white">Welcome to TORSHIA Task Management.</h1>
-        <hr class="bg-white hr-2" />
-        <h3 class="text-white"><a href="/login">Login</a> if you have an account.</h3>
-        <h3 class="text-white"><a href="/register">Register</a> if you don't.</h3>
+    <div class="text-torshia text-center">
+        @if(model.UserStatus=="Admin")
+        {
+        <h2>Welcome, <span class="text-danger">@model.UserStatus</span>- @model.USERNAME<span>!</span></h2>
+        }
+        @else
+        {
+        <h2>Welcome, @model.USERNAME<span>!</span></h2>
+        }
+        <h2>Have a nice tasking experience</h2>
     </div>
 
+    <hr class="hr-2 bg-torshia" />
+   
+        <div class="row container-fluid justify-content-between">
 
-    <p>ForLoged folk</p>
-
-
-
+            @for (int i = 0; i<model.Tasks.Count(); i++)
+             {
+             {var currentTask=model.Tasks[i];}         
+                                                    
+             @if(i>0 & i%5==0)
+             {
+            </div><div class="row container-fluid justify-content-between mt-5">
+    }
+    <div class="col-2 rounded bg-torshia  text-white text-center pt-3 pb-2">
+        <h5>@currentTask.Title</h5>
+        <hr class="hr-2 hr-white w-75" />
+        <h5>Level: @currentTask.Level</h5>
+        <hr class="hr-2 hr-white w-75" />
+        <h5>  <a class="nav-link-white" href="/Report/Create?id=@currentTask.Id">Report</a> &nbsp &nbsp <a class="nav-link-white" href="/Task/Details?id=@currentTask.Id">Details</a></h5>
+    </div>
+    }
+    @for (int i = 0; i<(model.Tasks.Count()%5!=0?(5-model.Tasks.Count()%5):0); i++)
+          {
+            <div class="col-2"></div>
+          }
+</div>                            
 
 </main>

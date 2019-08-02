@@ -1,7 +1,9 @@
 ﻿namespace TorshiaApp.Controllers
 {
+    using Microsoft.EntityFrameworkCore;
     using SIS.HTTP.Responses.Contracts;
     using SIS.MVC.Attributes;
+    using System.Globalization;
     using System.Linq;
 
     using TorshiaApp.DTO.Tasks;
@@ -17,14 +19,14 @@
             {
                 return MessageError("Only Admins can add tasks");
             }
-        return View();
+            return View();
         }
 
         [Authorised]
         [HttpPost]
         public IHttpResponse Create(CreateTaskDTO dto)
         {
-            if (DB.Tasks.Any(x=>x.Title==dto.TaskName))
+            if (DB.Tasks.Any(x => x.Title == dto.TaskName))
             {
                 return MessageWithView("Task already exists in Database");
             }
@@ -62,6 +64,27 @@
             return RedirectResult("/");
         }
 
+        [Authorised]
+        public IHttpResponse Details(int id)
+        {
+            var taskFound = DB.Tasks.FirstOrDefault(x => x.Id == id);
 
+
+            TaskDetailsDTO foundTask = DB.Tasks.Where(x => x.Id == id).Select(x => new TaskDetailsDTO
+            {
+                Name = x.Title,
+                DueDate = x.DueDate == null ? "" : x.DueDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                Level = x.AffectedSectors.Count(),
+                Participants = string.Join(", ", x.TaskParticipants.Select(tp => tp.Participant.Name).ToArray()),
+                AffectedSectors = string.Join(", ", x.AffectedSectors.Select(ts => ts.Sector.Name).ToArray()),
+                Description = x.Description
+            }).FirstOrDefault();
+            if (foundTask is null)
+            {
+                return MessageError("Non existing Task");
+            }
+            ViewData["Task"] = foundTask;
+            return View();
+        }
     }
 }

@@ -1,5 +1,9 @@
-﻿using SIS.HTTP.Responses.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using SIS.HTTP.Responses.Contracts;
 using SIS.MVC.Attributes;
+using SIS.MVC.Extensions;
+using System.Linq;
+using TorshiaApp.DTO.Home;
 using TorshiaApp.Models.Enumerations;
 
 namespace TorshiaApp.Controllers
@@ -16,7 +20,12 @@ namespace TorshiaApp.Controllers
             {
                 return ViewFilePath("/Home/IndexGuest.html");
             }
-            ViewData["Status"] = curentRole.ToString();                 
+            ViewData["UserStatus"] = curentRole.ToString();
+
+            int currentUserId = CurentUser.Id;
+            HomeTaskDTO[] tasksDTO = DB.Tasks.Include(x=>x.AffectedSectors).Where(x => !x.Reports.Any(r => r.reporterId == CurentUser.Id))
+                                                                    .Select(x => x.MapTo<HomeTaskDTO>()).ToArray();
+            ViewData["Tasks"] = tasksDTO;
 
             return ViewFilePath("/Home/IndexAdminUser.html");
         }

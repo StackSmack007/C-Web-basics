@@ -31,5 +31,7 @@ using System.Linq;
 
         public virtual ICollection<TaskSector> AffectedSectors { get; set; }
 
+        [NotMapped]
+        public int Level => AffectedSectors.Count;
     }
 }
