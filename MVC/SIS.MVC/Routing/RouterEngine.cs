@@ -82,6 +82,11 @@
         internal static void RegisterStaticFiles(ServerRoutingTable serverRoutingTable)
         {
             string location = Locator.GetPathOfFolder(WebHost.Configurations.LocationOfRootFolder);
+            if (location is null)
+            {
+                Logger.Log("StaticFolder not fownd!");
+                return;
+            }
             var filePaths = Directory.EnumerateFiles(location, "*.*", SearchOption.AllDirectories).ToArray();
             foreach (var file in filePaths)
             {
