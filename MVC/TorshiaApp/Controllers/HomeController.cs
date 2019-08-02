@@ -15,6 +15,7 @@ namespace TorshiaApp.Controllers
         [HttpGet("/Home/Index")]
         public IHttpResponse Index()
         {
+            var request = Request;
             UserRole curentRole = GetRole();
             if (curentRole is UserRole.Guest)
             {
@@ -23,7 +24,7 @@ namespace TorshiaApp.Controllers
             ViewData["UserStatus"] = curentRole.ToString();
 
             int currentUserId = CurentUser.Id;
-            HomeTaskDTO[] tasksDTO = DB.Tasks.Include(x=>x.AffectedSectors).Where(x => !x.Reports.Any(r => r.reporterId == CurentUser.Id))
+            HomeTaskDTO[] tasksDTO = DB.Tasks.Include(x=>x.AffectedSectors).Where(x => !x.Reports.Any())
                                                                     .Select(x => x.MapTo<HomeTaskDTO>()).ToArray();
             ViewData["Tasks"] = tasksDTO;
 
