@@ -154,6 +154,7 @@
             if (layoutName == "DefaultLayout")   layoutName = WebHost.Configurations.DefaultLayoutName;
 
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
+            ViewData["ROLE"] = this.CurentUser is null ? null : this.CurentUser.Role;
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             string layout = File.ReadAllText(layoutPath);
             string warninghtml = $"<div class=\"alert alert-{alertType}\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
@@ -225,6 +226,7 @@
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
+            ViewData["ROLE"] = this.CurentUser is null ? null : this.CurentUser.Role;
             if (subPath.StartsWith("/"))
             {
                 subPath = subPath.Substring(1).Replace(".html", "") + ".html";
