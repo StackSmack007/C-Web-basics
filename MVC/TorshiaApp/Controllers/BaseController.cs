@@ -38,35 +38,35 @@ namespace TorshiaApp.Controllers
             return layoutName;
         }
 
-        protected override IHttpResponse View(string layoutName = "_importLayout.html")
+        protected override IHttpResponse View(string layoutName = "DefaultLayout")
         {
-            if (layoutName == "_importLayout.html")
+            if (layoutName == "DefaultLayout")
             {
                 return base.View(ChooseLayout());
             }
             return base.View(layoutName);
         }
 
-        protected override IHttpResponse ViewFilePath(string subPath, string layoutName = "_importLayout.html")
+        protected override IHttpResponse ViewFilePath(string subPath, string layoutName = "DefaultLayout")
         {
-            if (layoutName == "_importLayout.html")
+            if (layoutName == "DefaultLayout")
             {
                 return base.ViewFilePath(subPath, ChooseLayout());
             }
             return base.ViewFilePath(subPath, layoutName);
         }
 
-        protected override IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected override IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
             return base.MessageError(message, redirectAdress, redirectName, ChooseLayout());
         }
 
-        protected override IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected override IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
             return base.MessageSuccess(message, redirectAdress, redirectName, ChooseLayout());
         }
 
-        protected override IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "ByConvention", string layoutName = "_importLayout.html")
+        protected override IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "Default", string layoutName = "DefaultLayout")
         {
             return base.MessageWithView(message, isError, viewSubPath, ChooseLayout());
         }

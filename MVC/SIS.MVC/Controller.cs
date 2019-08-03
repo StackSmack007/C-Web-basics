@@ -142,18 +142,20 @@
         #endregion
   
         #region MessagesForUser
-        protected virtual IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
             return ControllerMessage("danger", message, redirectAdress, redirectName, layoutName);
         }
 
-        protected virtual IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse MessageSuccess(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
             return ControllerMessage("success", message, redirectAdress, redirectName, layoutName);
         }
 
-        private IHttpResponse ControllerMessage(string alertType, string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "_importLayout.html")
+        private IHttpResponse ControllerMessage(string alertType, string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
+            if (layoutName == "DefaultLayout")   layoutName = WebHost.Configurations.DefaultLayoutName;
+
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             string layout = File.ReadAllText(layoutPath);
@@ -164,8 +166,18 @@
             return this.Response;
         }
 
-        protected virtual IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "ByConvention", string layoutName = "_importLayout.html")
+        /// <summary>
+        /// You are in post method if the get method requires models you must fil ViewData with this models before calling the view
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isError">if not error then it is success</param>
+        /// <param name="viewSubPath">Provide if you dont wish to get the View from get method with the same name</param>
+        /// <param name="layoutName">Provide if you wish another layout but the default one</param>
+        /// <returns></returns>
+        protected virtual IHttpResponse MessageWithView(string message, bool isError = true, string viewSubPath = "Default", string layoutName = "DefaultLayout")
         {
+            if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
+
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             var alertType = "danger";
             if (!isError) alertType = "success";
@@ -183,7 +195,7 @@
             htmlContent = ViewEngine.GetHtmlImbued(htmlContent, ViewData)
                 + Environment.NewLine + WebHost.Configurations.KeywordForInsertingBodyInImportLayout; ;
 
-            if (viewSubPath == "ByConvention")
+            if (viewSubPath == "Default")
             {
                 View("void");
             }
@@ -199,7 +211,7 @@
 
         #endregion
 
-        protected virtual IHttpResponse View(string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse View(string layoutName = "DefaultLayout")
         {
             StackTrace stackTrace = new StackTrace();
             string actionMethodName = stackTrace.GetFrames()
@@ -212,8 +224,9 @@
             return ViewFilePath(subPath, layoutName);
         }
 
-        protected virtual IHttpResponse ViewFilePath(string subPath, string layoutName = "_importLayout.html")
+        protected virtual IHttpResponse ViewFilePath(string subPath, string layoutName = "DefaultLayout")
         {
+            if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
             ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
             if (subPath.StartsWith("/"))
             {

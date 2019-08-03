@@ -4,6 +4,7 @@
     {
         string DefaultAuthorisedRedirectAdress { get; set; }
         string LayoutsFolderPath { get; set; }
+        string DefaultLayoutName { get; set; }
         string KeywordForInsertingBodyInImportLayout { get; set; }
         string LocationOfViewsFolder { get; set; }
         string LocationOfRootFolder { get; set; }

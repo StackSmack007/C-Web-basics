@@ -77,7 +77,7 @@
         
                if (DB.Users.Any(x => x.Username == newUser.Username))
                {
-                   return this.MessageError($"Username {newUser.Username} already used", "/Users/Register", "Register");
+                   return this.MessageWithView($"Username {newUser.Username} already used!");
                }
                User user = new User
                {
