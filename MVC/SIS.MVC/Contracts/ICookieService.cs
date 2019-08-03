@@ -5,6 +5,6 @@
     {
         string LoginCookieName { get; }
 
-        HttpCookie MakeLoginCookie(string userName, int id, IEncrypter encrypter);
+        HttpCookie MakeLoginCookie(string userDataContent);
     }
 }

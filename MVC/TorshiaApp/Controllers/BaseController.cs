@@ -1,5 +1,6 @@
 ﻿using SIS.HTTP.Responses.Contracts;
 using SIS.MVC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TorshiaApp.Data;
@@ -28,7 +29,7 @@ namespace TorshiaApp.Controllers
             {
                 return UserRole.Guest;
             }
-            return DB.Users.First(x => x.Id == CurentUser.Id).Role;
+            return Enum.Parse<UserRole>(CurentUser.Role);
         }
 
         private string ChooseLayout()

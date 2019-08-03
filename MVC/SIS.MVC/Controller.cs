@@ -42,24 +42,31 @@
 
         private void SetUserFromRequest()
         {
-            LoggedUser logedUser = null;
             if (Request.Cookies.ContainsCookie(cookieService.LoginCookieName))
             {
                 var loginCookie = Request.Cookies.GetCookie(cookieService.LoginCookieName);
                 try
                 {
-                    string[] nameAndId = encrypter.Decrypt(loginCookie.Value).Split();
-                    DateTime expireDate = loginCookie.Expires;
-                    logedUser = new LoggedUser(nameAndId[0], int.Parse(nameAndId[1]), expireDate);
-
+                    this.curentUser = LoggedUser.Parse(loginCookie.Value);
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Invalid cookie!");
                     LogOffUser();
+                    this.curentUser = null;
                 }
             }
-            this.curentUser = logedUser;
+        }
+
+        protected Controller()
+        {
+            ViewEngine = (IViewEngine)WebHost.ServiceContainer.CreateInstance(typeof(IViewEngine));
+            curentUser = null;
+            hasher = new HashingManager();
+            Response = new HttpResponse(HttpStatusCode.OK);
+            cookieService = new CookieService();
+            encrypter = (IEncrypter)WebHost.ServiceContainer.CreateInstance(typeof(IEncrypter));
+            ViewData = new Dictionary<string, object>();
         }
 
         protected IDictionary<string, object> ViewData { get; set; }
@@ -70,16 +77,6 @@
 
         protected static ICookieService cookieService;
 
-        protected Controller()
-        {
-            ViewEngine = (IViewEngine)WebHost.ServiceContainer.CreateInstance(typeof(IViewEngine));
-            curentUser = null;
-            hasher = new HashingManager();
-            Response = new HttpResponse(HttpStatusCode.OK);
-            cookieService = new CookieService();
-            encrypter = new Encrypter();
-            ViewData = new Dictionary<string, object>();
-        }
 
         protected void LogOffUser()
         {
@@ -89,10 +86,10 @@
             this.Response.AddCookie(cookieDelete);
         }
 
-        protected void LogInUser(string userName, int id)
+        protected void LogInUser(string userName, int id,object Role=null)
         {
-            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1));
-            var loginCookie = cookieService.MakeLoginCookie(userName, id, encrypter);
+            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1),Role);
+            var loginCookie = cookieService.MakeLoginCookie(curentUser.EncryptUserData());
             this.Response.AddCookie(loginCookie);
         }
 

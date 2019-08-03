@@ -30,6 +30,7 @@
             serverRoutingTable = new ServerRoutingTable();
             serviceContainer = new ServiceCollection();
             serviceContainer.AddService<ILogger, ConsoleLogger>();
+            serviceContainer.AddService<IEncrypter, Encrypter>();
             logger = new ConsoleLogger();
             RouterEngine.Logger = logger;
             ClearTempFolder(tempLocation);

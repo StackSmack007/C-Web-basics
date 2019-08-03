@@ -48,7 +48,7 @@
                 return MessageWithView($"Username or password do not match. Please enter correct Data!");
             }
 
-            this.LogInUser(foundUser.Username, foundUser.Id);
+            this.LogInUser(foundUser.Username, foundUser.Id,foundUser.Role);
             logger.Log($"User {foundUser.Username} loged in at {DateTime.Now.ToString("R")}");
             return RedirectResult("/");
             //return this.MessageSuccess($"User {foundUser.Username} was successfully logged in!", "/Home/Index", "HomePage");
