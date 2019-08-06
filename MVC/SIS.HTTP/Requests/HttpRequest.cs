@@ -13,6 +13,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web;
 
     public class HttpRequest : IHttpRequest
     {
@@ -91,7 +92,7 @@
 
         private void ParseFormDataParameters(string formData)
         {
-            string[] forms = formData.Split('&');
+            string[] forms = formData.Split('&').Select(x=> HttpUtility.UrlDecode(x)).ToArray();
             foreach (string form in forms)
             {
                 AddRequestKVPtoDictionary(this.FormData, form);
@@ -107,7 +108,7 @@
                 return;
             }
 
-            string[] queries = queriesAll.Split('&');
+            string[] queries = queriesAll.Split('&').Select(x => HttpUtility.UrlDecode(x)).ToArray();
 
             foreach (string query in queries)
             {
@@ -126,9 +127,9 @@
             {
                  return;
             }
-            if (kvp[0].EndsWith("[]")||kvp[0].EndsWith("%5B%5D"))
+            if (kvp[0].EndsWith("[]"))
             {
-                string keyName = kvp[0].Replace("[]", "").Replace("%5B%5D","");
+                string keyName = kvp[0].Replace("[]", "");
                 if (!target.ContainsKey(keyName))
                 {
                     target[keyName] =new List<string> { kvp[1] };
