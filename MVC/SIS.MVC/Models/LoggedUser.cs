@@ -6,9 +6,14 @@
     {
         protected static IEncrypter encrypter;
         private static string Separator = "<--|-->";
-        public LoggedUser(string name, int id, DateTime expireDate, object role = null)
+
+        static LoggedUser()
         {
             encrypter = (IEncrypter)WebHost.ServiceContainer.CreateInstance(typeof(IEncrypter));
+        }
+
+        public LoggedUser(string name, int id, DateTime expireDate, object role = null)
+        {
             UserName = name;
             Id = id;
             CookieExpireDateTime = expireDate;
