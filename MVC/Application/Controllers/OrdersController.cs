@@ -135,7 +135,7 @@
                 Products = order.OrderProducts.OrderByDescending(x => x.Quantity * x.Product.Price).Select(x => new ProductDto()
                 {
                     ProductId = x.ProductID,
-                    ProductName = x.Product.ProductName.Replace("+", " "),
+                    ProductName = x.Product.ProductName,
                     Quantity = x.Quantity,
                     SinglePrice = x.Product.Price
                 }).ToArray()

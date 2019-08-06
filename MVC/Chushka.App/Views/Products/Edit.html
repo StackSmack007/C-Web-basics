@@ -1,0 +1,54 @@
+﻿{ string CheckIfSelected(string input) => (model.Product.Type==input ? "checked" : "");}
+<main class="mt-3 mb-5">
+    <h1 class="text-center">Edit Product</h1>
+    <hr class="hr-2 bg-dark" />
+
+    <form class="mx-auto half-width" method="post" action="/Products/Edit">
+        <input type="hidden" name="id" value="@model.Product.Id" />
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" value="@model.Product.Name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" value="@model.Product.Price" name="price" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" rows="7" name="description" required>@model.Product.Description</textarea>
+        </div>
+
+        <h2 class="text-center">Product Type</h2>
+        <br />
+        <hr class="hr-2 bg-dark w-50" />
+        <div class="d-flex justify-content-between">
+            <div class="form-check form-check-inline col">
+                <input class="form-check-input " type="radio" name="type" id="food" value="Food" @@CheckIfSelected("Food")##>           
+                       
+                <label class="form-check-label" for="food">Food</label>
+            </div>
+            <div class="form-check form-check-inline col">
+                <input class="form-check-input" type="radio" name="type" id="domestic" value="Domestic"@@CheckIfSelected("Domestic")##>
+                <label class="form-check-label" for="domestic">Domestic</label>
+            </div>
+            <div class="form-check form-check-inline col">
+                <input class="form-check-input" type="radio" name="type" id="health" value="Health" @@CheckIfSelected("Health")##>
+                <label class="form-check-label" for="health">Health</label>
+            </div>
+            <div class="form-check form-check-inline col">
+                <input class="form-check-input" type="radio" name="type" id="cosmetic" value="Cosmetic" @@CheckIfSelected("Cosmetic")##>
+                <label class="form-check-label" for="cosmetic">Cosmetic</label>
+            </div>
+            <div class="form-check form-check-inline col">
+                <input class="form-check-input" type="radio" name="type" id="other" value="Other" @@CheckIfSelected("Other")##>
+                <label class="form-check-label" for="other">Other</label>
+            </div>
+        </div>
+        <hr class="hr-2 bg-dark w-50" />
+        <center>
+            <input type="submit" class="btn chushka-bg-color" value="Edit" />
+        </center>
+    </form>
+</main>

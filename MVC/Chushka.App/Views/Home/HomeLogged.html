@@ -1,0 +1,33 @@
+﻿<main class="mt-3 mb-5">
+    <div class="container-fluid text-center">
+        <h2>Greetings, @model.USERNAME</h2>
+        <h4>Feel free to view and order any of our products.</h4>
+    </div>
+    <hr class="hr-2 bg-dark" />
+    <div class="container-fluid product-holder">
+        <div class="row d-flex justify-content-around">
+
+            @for(int i=0; i<model.Products.Count();i++)
+            {
+            {var product=model.Products[i];}
+            {var productDescription=(product.Description.Length<53?product.Description:(product.Description.Substring(0,50)+"..."));}
+            @if(i>1&& i%5==0)
+            {
+             </div>
+             <div class="row d-flex justify-content-around mt-4">
+            }
+            <a href="/Products/Details?id=@product.Id" class="col-md-2">
+            <div class="product p-1 chushka-bg-color rounded-top rounded-bottom">
+            <h5 class="text-center mt-3">@product.Name</h5>
+            <hr class="hr-1 bg-white"/>
+            <p class="text-white text-center">
+                @productDescription
+            </p>
+            <hr class="hr-1 bg-white"/>
+            <h6 class="text-center text-white mb-3">$@product.Price.ToString("F2")</h6>
+            </div>
+            </a>
+            }
+            </div>
+    </div>
+</main>
