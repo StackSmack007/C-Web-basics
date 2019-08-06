@@ -128,6 +128,8 @@
                                   MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(string).GetTypeInfo().Assembly.Location),
+                                  ///  MetadataReference.CreateFromFile(typeof(decimal).GetTypeInfo().Assembly.Location),
+                                  ///  MetadataReference.CreateFromFile(typeof(Enum).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Runtime.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Collections.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Text.RegularExpressions.dll")),
@@ -142,7 +144,7 @@
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(classContent));
             #endregion
-    
+
             string fullPath = Locator.GetPathOfFile(@"SIS.MVC/ViewEngine/GeneratedModels", className + ".dll");
             EmitResult emitResult = compilation.Emit(fullPath);
             if (emitResult.Success)
@@ -174,6 +176,7 @@
             htmlNotRendered = htmlNotRendered.Replace("\n\n", "\r\n");
             htmlNotRendered = htmlNotRendered.Replace("\n", "\r\n");
 
+            string patternOfDeclaredMethodsUsage = @"(?<=\@\@)(.+?)(?=\#\#)";
             string patternOfInnerDataCode = @"@[^><\""\\\s]+\.ToString\(\\\"".+?\\\""\)|@[^><\""\\\s\?\&]+";
             string[] commandsPosibleRow = { "{", "}", "@if", "@else", "@for", "@while", "@when" };
             string[] rawHtmlRows = htmlNotRendered.Split(Environment.NewLine)
@@ -185,10 +188,24 @@
             for (int i = 0; i < rawHtmlRows.Length; i++)
             {
                 string currentRow = rawHtmlRows[i];
+                #region DeclaredMethodsProcessing
+                //Declaration/'R { string CheckIfSelected(string input) => (model.Product.Type==input ? "checked" : "");}
+                //Usage/'R  @@CheckIfSelected("Food")##;}
+                MatchCollection methodsMatchCollection = Regex.Matches(currentRow, patternOfDeclaredMethodsUsage);
+                if (methodsMatchCollection.Any())
+                {
+                    foreach (Match match in methodsMatchCollection)
+                    {
+                        string replacement =$"\");sb.AppendLine({match.Value.Replace("\\\"", "\"")});sb.AppendLine(\"";
+                        currentRow = currentRow.Replace("@@" + match.Value + "##", replacement);
+                    }
+                }
+                #endregion
+
                 if (currentRow.StartsWith('{') && currentRow.EndsWith('}'))
                 {
                     currentRow = currentRow.Replace("\\\"", "\"");
-                    currentRow = currentRow.Replace("\\\"","\"").Substring(1, currentRow.Length - 2);
+                    currentRow = currentRow.Replace("\\\"", "\"").Substring(1, currentRow.Length - 2);
                 }
                 else if (commandsPosibleRow.Any(x => currentRow.StartsWith(x)))
                 {

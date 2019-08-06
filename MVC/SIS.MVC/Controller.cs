@@ -47,11 +47,12 @@
                 var loginCookie = Request.Cookies.GetCookie(cookieService.LoginCookieName);
                 try
                 {
-                    this.curentUser = LoggedUser.Parse(loginCookie.Value);
+                    string loginCookieValue = loginCookie.Value;
+                    this.curentUser = LoggedUser.Parse(loginCookieValue);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid cookie!");
+                    Console.WriteLine("Invalid cookie!"+Environment.NewLine+ex.Message);
                     LogOffUser();
                     this.curentUser = null;
                 }
