@@ -40,9 +40,10 @@
             #region C#ClassAsString implementing IViewEngine 
 @"namespace SIS.MVC.ViewEngine.GeneratedModels
 {
-     using System.Linq;
-     using System.Text;
+    using System.Linq;
+    using System.Text;
     using System.Collections;
+    using System.Globalization;
     using System.Collections.Generic;"
 
     + $"{GenerateViewDataClassString(ViewModelClassName, viewData)}" + @"
@@ -177,7 +178,7 @@
             htmlNotRendered = htmlNotRendered.Replace("\n", "\r\n");
 
             string patternOfDeclaredMethodsUsage = @"(?<=\@\@)(.+?)(?=\#\#)";
-            string patternOfInnerDataCode = @"@[^><\""\\\s]+\.ToString\(\\\"".+?\\\""\)|@[^><\""\\\s\?\&]+";
+            string patternOfInnerDataCode = @"\@[^><\""\\\s]+\.ToString\([^)]+\)|\@[^><\""\\\s\?\&]+";   //@"@[^><\""\\\s]+\.ToString\(\\\"".+?\\\""\)|@[^><\""\\\s\?\&]+";
             string[] commandsPosibleRow = { "{", "}", "@if", "@else", "@for", "@while", "@when" };
             string[] rawHtmlRows = htmlNotRendered.Split(Environment.NewLine)
                                                   .Where(x => !string.IsNullOrEmpty(x) && !string.IsNullOrWhiteSpace(x))
@@ -189,14 +190,12 @@
             {
                 string currentRow = rawHtmlRows[i];
                 #region DeclaredMethodsProcessing
-                //Declaration/'R { string CheckIfSelected(string input) => (model.Product.Type==input ? "checked" : "");}
-                //Usage/'R  @@CheckIfSelected("Food")##;}
                 MatchCollection methodsMatchCollection = Regex.Matches(currentRow, patternOfDeclaredMethodsUsage);
                 if (methodsMatchCollection.Any())
                 {
                     foreach (Match match in methodsMatchCollection)
                     {
-                        string replacement =$"\");sb.AppendLine({match.Value.Replace("\\\"", "\"")});sb.AppendLine(\"";
+                        string replacement = $"\");sb.AppendLine({match.Value.Replace("\\\"", "\"")});sb.AppendLine(\"";
                         currentRow = currentRow.Replace("@@" + match.Value + "##", replacement);
                     }
                 }

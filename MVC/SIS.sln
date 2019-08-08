@@ -29,11 +29,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorshiaApp", "TorshiaApp\To
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chushka", "Chushka", "{BFFEA868-3A63-4C24-BEDE-9116EBB52FF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.App", "Chushka.App\Chushka.App.csproj", "{4FEC8F8B-EC24-40E3-8221-6DD90887CEB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chushka.App", "Chushka.App\Chushka.App.csproj", "{4FEC8F8B-EC24-40E3-8221-6DD90887CEB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.Data", "Chushka.Data\Chushka.Data.csproj", "{D545FFDD-A7E5-4FC1-B982-8E0651BFD43D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chushka.Data", "Chushka.Data\Chushka.Data.csproj", "{D545FFDD-A7E5-4FC1-B982-8E0651BFD43D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.Models", "Chushka.Models\Chushka.Models.csproj", "{20BD4467-B66E-4605-96E5-056C81E43CA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chushka.Models", "Chushka.Models\Chushka.Models.csproj", "{20BD4467-B66E-4605-96E5-056C81E43CA2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Airport", "Airport", "{04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.App", "Airport.App\Airport.App.csproj", "{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.Infrastructure.Data", "Airport.Infrastructure.Data\Airport.Infrastructure.Data.csproj", "{26A23092-45FA-4578-B290-D631F599DACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.Infrastructure.Models", "Airport.Infrastructure.Models\Airport.Infrastructure.Models.csproj", "{F4249C1E-189F-4220-AE7A-D9563EF141C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +97,18 @@ Global
 		{20BD4467-B66E-4605-96E5-056C81E43CA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20BD4467-B66E-4605-96E5-056C81E43CA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20BD4467-B66E-4605-96E5-056C81E43CA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26A23092-45FA-4578-B290-D631F599DACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26A23092-45FA-4578-B290-D631F599DACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26A23092-45FA-4578-B290-D631F599DACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26A23092-45FA-4578-B290-D631F599DACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +122,9 @@ Global
 		{4FEC8F8B-EC24-40E3-8221-6DD90887CEB4} = {BFFEA868-3A63-4C24-BEDE-9116EBB52FF1}
 		{D545FFDD-A7E5-4FC1-B982-8E0651BFD43D} = {BFFEA868-3A63-4C24-BEDE-9116EBB52FF1}
 		{20BD4467-B66E-4605-96E5-056C81E43CA2} = {BFFEA868-3A63-4C24-BEDE-9116EBB52FF1}
+		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
+		{26A23092-45FA-4578-B290-D631F599DACA} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
+		{F4249C1E-189F-4220-AE7A-D9563EF141C4} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33498451-F045-4A66-A59D-61A932A8CA81}
