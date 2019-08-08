@@ -52,7 +52,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid cookie!"+Environment.NewLine+ex.Message);
+                    Console.WriteLine("Invalid cookie!" + Environment.NewLine + ex.Message);
                     LogOffUser();
                     this.curentUser = null;
                 }
@@ -83,13 +83,13 @@
         {
             var logDataCookie = Request.Cookies.GetCookie(cookieService.LoginCookieName);
             var cookieDelete = new HttpCookie(logDataCookie.Key, logDataCookie.Value, true, -1, true, false);
-            curentUser = null;
+            curentUser.IsLogged = false;
             this.Response.AddCookie(cookieDelete);
         }
 
-        protected void LogInUser(string userName, int id,object Role=null)
+        protected void LogInUser(string userName, int id, object Role = null)
         {
-            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1),Role);
+            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1), Role);
             var loginCookie = cookieService.MakeLoginCookie(curentUser.EncryptUserData());
             this.Response.AddCookie(loginCookie);
         }
@@ -138,7 +138,7 @@
             return this.Response;
         }
         #endregion
-  
+
         #region MessagesForUser
         protected virtual IHttpResponse MessageError(string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
@@ -152,10 +152,9 @@
 
         private IHttpResponse ControllerMessage(string alertType, string message, string redirectAdress = "/", string redirectName = "HomePage", string layoutName = "DefaultLayout")
         {
-            if (layoutName == "DefaultLayout")   layoutName = WebHost.Configurations.DefaultLayoutName;
+            if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
 
-            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
-            ViewData["ROLE"] = this.CurentUser is null ? null : this.CurentUser.Role;
+            AddUserInfoToViewData();
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             string layout = File.ReadAllText(layoutPath);
             string warninghtml = $"<div class=\"alert alert-{alertType}\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
@@ -177,7 +176,7 @@
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
 
-            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
+            AddUserInfoToViewData();
             var alertType = "danger";
             if (!isError) alertType = "success";
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
@@ -226,8 +225,9 @@
         protected virtual IHttpResponse ViewFilePath(string subPath, string layoutName = "DefaultLayout")
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
-            ViewData["USERNAME"] = this.CurentUser is null ? null : this.CurentUser.UserName;
-            ViewData["ROLE"] = this.CurentUser is null ? null : this.CurentUser.Role;
+
+            AddUserInfoToViewData();
+
             if (subPath.StartsWith("/"))
             {
                 subPath = subPath.Substring(1).Replace(".html", "") + ".html";
@@ -251,6 +251,12 @@
         {
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             return File.ReadAllText(layoutPath);
+        }
+
+        private void AddUserInfoToViewData()
+        {
+            ViewData["USERNAME"] = this.curentUser is null || !curentUser.IsLogged ? string.Empty : this.curentUser.UserName;
+            ViewData["ROLE"] = this.curentUser is null || !curentUser.IsLogged || string.IsNullOrEmpty(curentUser.Role) ? string.Empty : this.curentUser.Role;
         }
     }
 }

@@ -26,13 +26,14 @@
             {
                 Role = string.Empty;
             }
+            IsLogged = true;
         }
 
         public int Id { get; }
         public string UserName { get; }
         public string Role { get; }
         public DateTime CookieExpireDateTime { get; }
-
+        public bool IsLogged { get; set; }
         internal string EncryptUserData()
         {
             string data = $"{Id}{Separator}{UserName}{Separator}{CookieExpireDateTime}{Separator}{Role}";
