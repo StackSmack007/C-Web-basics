@@ -7,6 +7,7 @@
     using SIS.HTTP.Responses.Contracts;
     using SIS.MVC.Attributes;
     using SIS.MVC.Contracts;
+    using SIS.MVC.Models;
     using SIS.MVC.Services;
     using SIS.WebServer.Routing;
     using System;
@@ -118,8 +119,11 @@
                 #region AuthorisedAttributeCheckAndRedirect
                 Type baseControllerType = typeof(Controller);
                 AuthorisedAttribute attributeFound = methodInfo.GetCustomAttributes<AuthorisedAttribute>().FirstOrDefault();
-                bool noLoggedInUser = baseControllerType.GetProperty("CurentUser", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(controllerInstance) is null;
-                if (attributeFound != null && noLoggedInUser)
+                var currentUser = (LoggedUser)baseControllerType.GetProperty("CurentUser", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(controllerInstance);
+                bool noLoggedInUser = currentUser is null;
+
+                if ((attributeFound != null && noLoggedInUser) ||
+                     attributeFound != null && attributeFound.Role != null && attributeFound.Role != currentUser.Role)
                 {
                     string redirectString = attributeFound.AltPath;
                     if (redirectString is null)
