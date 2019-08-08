@@ -1,0 +1,14 @@
+﻿    <h2>Add new flight</h2>
+    <form action="/Flights/Add" method="post">
+        <label>Destination:</label>
+        <input type="text" placeholder="Destination" name="destination" required>
+        <label>Origin:</label>
+        <input type="text" placeholder="Origin" name="origin" required>
+        <label>Date:</label>
+        <input type="date" name="date" required>
+        <label>Time:</label>
+        <input type="time" name="time" required>
+        <label>Image:</label>
+        <input type="url" name="image" required>
+        <input type="submit" class="create" value="Create">
+    </form>

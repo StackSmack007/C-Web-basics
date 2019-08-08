@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Airport</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/Styles.css">
+</head>
+<body>
+    <nav>
+        @if(model.ROLE =="")
+        {
+        <div>
+            <ul>
+                <li><a href="/Home/Index">Flights</a></li>
+                <li><a href="/Users/Login">Login</a></li>
+                <li><a href="/Users/Register">Register</a></li>
+            </ul>
+        </div>
+        }
+        @else
+        {
+        <div class="float-left">
+            <ul>
+                <li><a href="/Home/Index">Flights</a></li>
+                <li><a href="/Tickets/MyTickets">My Tickets</a></li>
+            </ul>
+        </div>
+        <div class="float-right">
+            <span>Welcome, @model.USERNAME </span>
+            <a href="/Users/Logoff" class="log-out">Logout</a>
+            <a href="/Tickets/Cart"><img src="/cart.png" alt="cart" class="cart mt-2 ml-3"></a>
+        </div>
+        }
+    </nav>
+    <main>
+        @BodyContent@
+        <footer>SoftUni Airlines</footer>
+    </main>
+</body>
+</html>

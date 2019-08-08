@@ -1,0 +1,26 @@
+﻿<form action="/Flights/Search" class="form-group">
+    <label>Destination:</label>
+    <input type="text" placeholder="Destination">
+    <label>Origin:</label>
+    <input type="text" placeholder="Origin">
+    <label>Departure:</label>
+    <input type="text" placeholder="Departure">
+    <input type="submit" class="search" value="Search">
+    @if(model.ROLE=="Admin")
+    {
+    <a href="/Flights/Add" class="add-flight">Add Flight +</a>
+    }
+</form>
+
+<section class="added-flights">
+
+    @foreach(var flight in model.Flights)
+    {
+    <a class="added-flight" href="/Flights/Details?id=@flight.Id">
+        <img src="@flight.ImgURL" alt="imageOfDestinatione" class="picture-added-flight">
+        <h3>@flight.Destination</h3>
+        <span>from @flight.Origin</span><span>@flight.Date.ToString("dd MMM",CultureInfo.InvariantCulture)</span>
+    </a>
+    }
+
+</section>

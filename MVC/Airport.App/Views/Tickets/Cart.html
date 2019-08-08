@@ -1,0 +1,27 @@
+﻿    @foreach(var order in model.Orders)
+{
+<section class="single-ticket">
+    <div class="left-ticket-container">
+        <img src="@order.ImgURL" alt="destination img" class="destination-img">
+        <div class="flight-parameters">
+            <span class="ticket-price">Price: @order.Price.ToString("F2")$</span>
+            <span class="ticket-class">Class: @order.Class</span>
+        </div>
+    </div>
+    <div class="right-ticket-container">
+        <h2>@order.Destination</h2>
+        <p>from @order.Origin</p>
+        <p>@order.Date.ToString("dd MMMM")</p>
+        <p>@order.Date.ToString("H:mm")</p>
+        <div>
+            <span class="number-of-tickets">@order.TicketsCount</span>
+            <a href="/Tickets/Remove?id=@order.Id" class="remove">REMOVE</a>
+        </div>
+    </div>
+</section>
+}
+
+<section class="ticket-checkout">
+    <div class="total">Sub total: @model.TotalPrice $</div>
+    <a href="/Tickets/CheckOut" class="checkout">Checkout</a>
+</section>

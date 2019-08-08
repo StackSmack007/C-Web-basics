@@ -1,0 +1,74 @@
+﻿<section class="ticket-area">
+    <div class="ticket-area-left">
+        <img style="width:25rem" src="@model.Flight.ImgURL" alt="town Img">
+    </div>
+    <div class="ticket-area-right">
+        <h3>@model.Flight.Destination</h3>
+        <div>from @model.Flight.Origin</div>
+        <div class="data-and-time">
+            @model.Flight.Date
+            @if(model.ROLE=="Admin")
+            {
+            <span> &nbsp </span> <a href="/Flights/Edit?flightId=@model.Flight.Id"><i class="fa fa-edit" style="font-size:2rem"></i></a>
+            @if(!model.Flight.IsPublic)
+            {
+            <div style="display:inline-block; margin-left:2rem">
+                <form action="/Flights/Publish" method="post">
+                    <input type="hidden" name="flightId" value="@model.Flight.Id" />
+                    <input type="submit" value="Publish Flight" />
+                </form>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</section>
+<center>
+    <div class="w-50">
+        @if(model.ROLE=="Admin")
+        {
+        <form action="/Flights/AddSeats" method="post" class="form-inline">
+            <input type="number" placeholder="Price..." step="0.01" name="price">
+            <input type="text" placeholder="Type" name="type">
+            <input type="hidden" value="@model.Flight.Id" name="flightId">
+            <input type="number" name="count" min="1" max="999" placeholder="Tickets Count...">
+            <input type="submit" class="btn btn-primary" value="Create Seats">
+        </form>
+    </div>
+    }
+    <table class="table w-50">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seat in model.Flight.Seats)
+            {
+            {string isAllowed=seat.SeatsAvailable==0?"disabled":"";}
+            <tr>
+                <th> <h4 class="mt-2"><strong>@seat.Price.ToString("F2") $</strong></h4></th>
+                <th> <h4 class="mt-2"><strong>@seat.Class</strong></h4></th>
+                <form action="/Tickets/Book" class="form-group" method="post">
+                    <td> <input type="number" name="ticketCount" placeholder="Add Number 1~@seat.SeatsAvailable ..." max="@seat.SeatsAvailable" min="1" @isAllowed required></td>
+                    <input type="hidden" value="@seat.Class" name="seatClass">
+                    <input type="hidden" value="@model.Flight.Id" name="flightId">
+                    <td> <input type="submit" class="btn btn-primary" value="Add to Cart" @isAllowed></td>
+                </form>
+                @if(model.ROLE=="Admin")
+                {
+                <td >   <a class="" href="/Flights/RemoveSeat?flightId=@model.Flight.Id&seatClass=@seat.Class" @isAllowed><i style="font-size:2rem" class="text-left fa fa-minus-circle mt-2 text-danger"></i></a>  </td>
+                }
+                @else
+                {
+                <td></td>
+                }
+                }
+            </tr>
+        </tbody>
+    </table>
+</center>

@@ -1,0 +1,22 @@
+﻿<h3>Your Flights</h3>
+
+@foreach(var location in @model.Locations)
+{
+<section class="purchased-ticket">
+    <div class="purchased-left">
+        <img src="@location.ImgURL" alt="destination Image">
+    </div>
+    <div class="purchased-right">
+        <div>
+            <h3>@location.Destination</h3><span>@location.Date.ToString("dd MMMM")</span>
+        </div>
+        <div>
+            from @location.Origin <span>@location.Date.ToString("H:mm")14:00</span>
+        </div>
+        @foreach(var ticket in location.Tickets)
+        {
+        <p>@ticket.Quantity x @ticket.Price.ToString("F2") $(@ticket.Class ) </p>
+        }
+    </div>
+</section>
+ }
