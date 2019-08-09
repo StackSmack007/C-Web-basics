@@ -1,7 +1,6 @@
 ﻿namespace SIS.HTTP.Cookies
 {
     using SIS.HTTP.Cookies.Contracts;
-    using System;
     using System.Collections.Generic;
     using System.Text;
 
@@ -41,6 +40,15 @@
         {
             return cookies.Count > 0;
         }
+
+        public void Remove(string key)
+        {
+            if (ContainsCookie(key))
+            {
+                cookies.Remove(key);
+            }
+        }
+
         public override string ToString()
         {
             return string.Join("; ",cookies.Values);

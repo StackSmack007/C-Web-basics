@@ -36,9 +36,9 @@
                 {//case of no HttpAttribute
                     HttpRequestMethod defaultMethod = HttpRequestMethod.Get;
                     string path = "/" + viewFolderName + "/" + methodInfo.Name;
-                    if (serverRoutingTable.Routes[defaultMethod].Keys.Any(x => x == path)) continue; //the route is registered manually so it is skipped!
-
+                    if (serverRoutingTable.ContainsRoute(defaultMethod, path)) continue; //the route is registered manually so it is skipped!       
                     EnlistRoute(defaultMethod, path, controllerType, methodInfo, serverRoutingTable);
+
                 }
 
                 foreach (MethodInfo methodInfo in controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
@@ -47,7 +47,7 @@
                     string path = "/" + viewFolderName + "/" + methodInfo.Name;
                     foreach (var methodType in methodInfo.GetCustomAttributes<HttpAttribute>().Where(x => x.Path == null).Select(x => x.MethodType))
                     {
-                        if (serverRoutingTable.Routes[methodType].Keys.Any(x => x == path))
+                        if (serverRoutingTable.ContainsRoute(methodType, path))
                         {
                             continue;
                         } //the route is registered manually so it is skipped!
@@ -92,25 +92,27 @@
             foreach (var file in filePaths)
             {
                 string fileName = Regex.Match(file, @".+[\/\\](.+)").Groups[1].Value;
-                if (serverRoutingTable.Routes[HttpRequestMethod.Get].ContainsKey(fileName))
+                if (serverRoutingTable.ContainsRoute(HttpRequestMethod.Get, fileName))
                 {
                     Logger.Log($"File with name <{fileName}> occures more than once in the root folder. If content of it differs change its name!");
                 }
 
-                serverRoutingTable.Routes[HttpRequestMethod.Get]["/" + fileName] = (request) =>
-                  {
-                      IHttpResponse response = new HttpResponse(System.Net.HttpStatusCode.OK);
-                      response.Content = File.ReadAllBytes(file);
-                      response.Headers.Add(new HttpHeader(HttpHeader.ContentLengthKey, response.Content.Length.ToString()));
-                      response.Headers.Add(new HttpHeader(HttpHeader.ContentDispositionKey, "inline"));
-                      return response;
-                  };
+                serverRoutingTable.RegisterRoute(HttpRequestMethod.Get, "/" + fileName,
+                    (request) =>
+                {
+                    IHttpResponse response = new HttpResponse(System.Net.HttpStatusCode.OK);
+                    response.Content = File.ReadAllBytes(file);
+                    response.Headers.Add(new HttpHeader(HttpHeader.ContentLengthKey, response.Content.Length.ToString()));
+                    response.Headers.Add(new HttpHeader(HttpHeader.ContentDispositionKey, "inline"));
+                    return response;
+                });
             }
         }
 
         private static void EnlistRoute(HttpRequestMethod methodType, string path, Type controllerType, MethodInfo methodInfo, ServerRoutingTable serverRoutingTable)
         {
-            serverRoutingTable.Routes[methodType][path] = (IHttpRequest request) =>
+            serverRoutingTable.RegisterRoute(methodType, path,
+            (IHttpRequest request) =>
             {
                 var controllerInstance = WebHost.ServiceContainer.CreateInstance(controllerType);
                 PropertyInfo requestProperty = controllerType.GetProperty("Request");
@@ -159,7 +161,7 @@
                 #endregion
 
                 return (IHttpResponse)methodInfo.Invoke(controllerInstance, parametersData.ToArray());
-            };
+            });
         }
 
         private static void FillData(List<object> parametersData, Queue<ParameterInfo> requiredParametersByMethod, Dictionary<string, object> providedParameters)

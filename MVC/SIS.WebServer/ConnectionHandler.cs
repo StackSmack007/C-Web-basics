@@ -59,7 +59,7 @@
                 string bytesAsString = Encoding.UTF8.GetString(data.Array, 0, numberOfBytesRead);
                 result.Append(bytesAsString);
 
-                if (numberOfBytesRead < 1023)
+                if (numberOfBytesRead < 1024)
                 {
                     break;
                 }

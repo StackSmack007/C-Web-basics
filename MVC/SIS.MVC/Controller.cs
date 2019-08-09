@@ -83,7 +83,8 @@
         {
             var logDataCookie = Request.Cookies.GetCookie(cookieService.LoginCookieName);
             var cookieDelete = new HttpCookie(logDataCookie.Key, logDataCookie.Value, true, -1, true, false);
-            curentUser.IsLogged = false;
+            curentUser = null;
+            Request.Cookies.Remove(logDataCookie.Key);
             this.Response.AddCookie(cookieDelete);
         }
 
@@ -255,8 +256,8 @@
 
         private void AddUserInfoToViewData()
         {
-            ViewData["USERNAME"] = this.curentUser is null || !curentUser.IsLogged ? string.Empty : this.curentUser.UserName;
-            ViewData["ROLE"] = this.curentUser is null || !curentUser.IsLogged || string.IsNullOrEmpty(curentUser.Role) ? string.Empty : this.curentUser.Role;
+            ViewData["USERNAME"] = this.curentUser is null? string.Empty : this.curentUser.UserName;
+            ViewData["ROLE"] = this.curentUser is null  || string.IsNullOrEmpty(curentUser.Role) ? string.Empty : this.curentUser.Role;
         }
     }
 }

@@ -19,13 +19,12 @@ namespace SIS.WebServer.Api
 
         public IHttpResponse Handle(IHttpRequest httpRequest)
         {
-              if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) ||
-                    !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
+              if (!this.serverRoutingTable.ContainsRoute(httpRequest.RequestMethod,httpRequest.Path))
                 {
                     return ReturnIfResource(httpRequest.Path);
 
                 }
-                return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
+            return this.serverRoutingTable.GetFunc(httpRequest.RequestMethod, httpRequest.Path).Invoke(httpRequest);
         }
 
         private IHttpResponse ReturnIfResource(string path)
