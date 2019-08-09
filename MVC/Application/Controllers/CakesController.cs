@@ -33,7 +33,7 @@
             {
                 return MessageError("Admin must be loged in to add cakes!");
             }
-            if (this.CurentUser.UserName.StartsWith(specialUserPrefix))
+            if (this.CurentUser.Username.StartsWith(specialUserPrefix))
             {
                 return View();
             }

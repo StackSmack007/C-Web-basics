@@ -1,12 +1,12 @@
 ﻿<main>
     <div class="text-torshia text-center">
-        @if(model.UserStatus=="Admin")
+        @if(model.USER.Role=="Admin")
         {
-        <h2>Welcome, <span class="text-danger">@model.UserStatus</span>- @model.USERNAME<span>!</span></h2>
+        <h2>Welcome, <span class="text-danger">@model.UserStatus</span>- @model.USER.Username<span>!</span></h2>
         }
         @else
         {
-        <h2>Welcome, @model.USERNAME<span>!</span></h2>
+        <h2>Welcome, @model.USER.Username<span>!</span></h2>
         }
         <h2>Have a nice tasking experience</h2>
     </div>

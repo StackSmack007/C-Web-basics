@@ -6,7 +6,7 @@
     <label>Departure:</label>
     <input type="text" placeholder="Departure">
     <input type="submit" class="search" value="Search">
-    @if(model.ROLE=="Admin")
+    @if(model.USER.Role =="Admin")
     {
     <a href="/Flights/Add" class="add-flight">Add Flight +</a>
     }

@@ -7,7 +7,7 @@
         <div>from @model.Flight.Origin</div>
         <div class="data-and-time">
             @model.Flight.Date
-            @if(model.ROLE=="Admin")
+            @if(model.USER.Role=="Admin")
             {
             <span> &nbsp </span> <a href="/Flights/Edit?flightId=@model.Flight.Id"><i class="fa fa-edit" style="font-size:2rem"></i></a>
             @if(!model.Flight.IsPublic)
@@ -25,7 +25,7 @@
 </section>
 <center>
     <div class="w-50">
-        @if(model.ROLE=="Admin")
+        @if(model.USER.Role=="Admin")
         {
         <form action="/Flights/AddSeats" method="post" class="form-inline">
             <input type="number" placeholder="Price..." step="0.01" name="price">
@@ -59,9 +59,9 @@
                     <input type="hidden" value="@model.Flight.Id" name="flightId">
                     <td> <input type="submit" class="btn btn-primary" value="Add to Cart" @isAllowed></td>
                 </form>
-                @if(model.ROLE=="Admin")
+                @if(model.USER.Role=="Admin")
                 {
-                <td >   <a class="" href="/Flights/RemoveSeat?flightId=@model.Flight.Id&seatClass=@seat.Class" @isAllowed><i style="font-size:2rem" class="text-left fa fa-minus-circle mt-2 text-danger"></i></a>  </td>
+                <td>   <a class="" href="/Flights/RemoveSeat?flightId=@model.Flight.Id&seatClass=@seat.Class" @isAllowed><i style="font-size:2rem" class="text-left fa fa-minus-circle mt-2 text-danger"></i></a>  </td>
                 }
                 @else
                 {

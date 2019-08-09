@@ -4,6 +4,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
     using SIS.MVC.Contracts;
+    using SIS.MVC.Models;
     using SIS.MVC.Services;
     using System;
     using System.Collections;
@@ -129,8 +130,7 @@
                                   MetadataReference.CreateFromFile(typeof(Console).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(typeof(string).GetTypeInfo().Assembly.Location),
-                                  ///  MetadataReference.CreateFromFile(typeof(decimal).GetTypeInfo().Assembly.Location),
-                                  ///  MetadataReference.CreateFromFile(typeof(Enum).GetTypeInfo().Assembly.Location),
+                               //  MetadataReference.CreateFromFile(typeof(LoggedUser).GetTypeInfo().Assembly.Location),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Runtime.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Collections.dll")),
                                   MetadataReference.CreateFromFile(Path.Combine(dotnetCoreDirectory, "System.Text.RegularExpressions.dll")),
@@ -156,7 +156,7 @@
             {
                 foreach (var compilerMessage in compilation.GetDiagnostics())
                 {
-                    Console.WriteLine(compilerMessage);
+                    Console.WriteLine("Cant create the class"+compilerMessage);
                 }
             }
         }

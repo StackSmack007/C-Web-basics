@@ -1,6 +1,6 @@
 ﻿<main>
 
-    @if(model.USERNAME is null)
+    @if(model.USER is null)
     {
     <div class="jumbotron mt-3 bg-mishmash">
         <h1 class="text-white">Welcome to Mish-Mash Media Channels</h1>
@@ -13,9 +13,9 @@
     {
     <div class="text-mishmash">
         <center>
-            {string role=model.UserRole=="Admin"?"Admin-":"";}
+            {string role=model.USER.Role=="Admin"?"Admin-":"";}
             <div>
-                <h2>Welcome, @role<span>@model.USERNAME</span>!</h2>
+                <h2>Welcome, @role<span>@model.USER.Username</span>!</h2>
             </div>
         </center>
         <br />

@@ -19,7 +19,7 @@
         </li>
     </ul>
     <div>
-        @if(model.USERNAME is null)
+        @if(model.USER.Username=="")
         {
         <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/LogIn" role="button">Log In</a>
         <a style="margin-right:10px;margin-bottom:10px" class="btn btn-primary" href="/Authentication/Register" role="button">Register</a>
@@ -33,13 +33,13 @@
     <p>
         <em>
             <strong>Cake store ultimate &#174 </strong>
-            @if (model.USERNAME is null)
+            @if (model.USER.Username=="")
             {
             No curently loged On user!
             }
             @else
             {
-            <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model.USERNAME</strong></span>
+            <em>Currently loged on as user: </em><span style="color: darkblue"><strong>@Model.USER.Username</strong></span>
             }
         </em>
     </p>

@@ -23,7 +23,7 @@
                 return MessageError("Guests are not authorised to make purchases", @"/Authentication/LogIn", "LogIn");//Redundant but still
             }
             User buyer = db.Users.Include(x => x.Orders).ThenInclude(x => x.OrderProducts)
-                .FirstOrDefault(x => x.Username == this.CurentUser.UserName);
+                .FirstOrDefault(x => x.Username == this.CurentUser.Username);
             if (buyer is null) return MessageError("User not found in database");//Redundant but still
 
             Order currentOrder = buyer.Orders.OrderBy(x => x.Id).LastOrDefault();
@@ -55,7 +55,7 @@
                 });
             }
             db.SaveChanges();
-            string userName = this.CurentUser.UserName;
+            string userName = this.CurentUser.Username;
             string cakeName = db.Products.First(x => x.Id == product.ProductId).ProductName;
             return MessageSuccess($"Success: User {userName} ordered {product.Quantity} pieces of cake {cakeName}", "/Cakes/Browse", "Browse Cakes");
         }
@@ -77,7 +77,7 @@
                     CreatedOn = x.DateOfCreation,
                     Products = x.OrderProducts.Select(y => new ProductDto() { SinglePrice = y.Product.Price, Quantity = y.Quantity }).ToList()
                 }).ToArray();
-            ViewData["Username"] = this.CurentUser.UserName;
+            ViewData["Username"] = this.CurentUser.Username;
             ViewData["Orders"] = userOrders;
 
             return View();
@@ -86,10 +86,10 @@
         [HttpPost("/Orders/FinaliseOrder")]
         public IHttpResponse FinaliseOrder(int orderId)
         {
-            var order = db.Orders.Include(x => x.OrderProducts).Last();
+            var order = db.Orders.Where(x=>x.UserId==CurentUser.Id).Include(x => x.OrderProducts).Last();
             if (order.Id != orderId)
             {
-                return MessageError("Order is not cart it is finished!");
+                return MessageError("Order is not cart, Order already finished!");
             }
             if (order.UserId != this.CurentUser.Id)
             {
@@ -106,7 +106,7 @@
                 DateOfCreation = DateTime.UtcNow
             });
             db.SaveChanges();
-            return MessageSuccess($"Successfully added new order to user {CurentUser.UserName}", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
+            return MessageSuccess($"Successfully added new order to user {CurentUser.Username}", "/Orders/DisplayOrders", $"{CurentUser.Username}'s Orders");
         }
 
         [HttpGet("/Orders/DisplayOrder")]
@@ -119,9 +119,9 @@
                 order = db.Orders.Include(o => o.User).Include(o => o.OrderProducts)
                                  .ThenInclude(op => op.Product).First(x => x.Id == orderId);
 
-                if (order.User.Username != this.CurentUser.UserName)
+                if (order.User.Username != this.CurentUser.Username)
                 {
-                    return MessageError($"User {this.CurentUser.UserName} is not outhorised to view another user's orders");
+                    return MessageError($"User {this.CurentUser.Username} is not outhorised to view another user's orders");
                 }
             }
             catch (Exception)
@@ -147,7 +147,7 @@
         [HttpPost("/Orders/DeleteOrderProducts")]
         public IHttpResponse DeleteOrderProducts(int orderId)
         {
-            var order = db.Orders.Include(x => x.OrderProducts).Last();
+            var order = db.Orders.Where(x => x.UserId == CurentUser.Id).Include(x => x.OrderProducts).Last();
             if (order.Id != orderId)
             {
                 return MessageError("Order is not cart it is finished!");
@@ -162,7 +162,7 @@
             }
             db.OrdersProducts.RemoveRange(db.OrdersProducts.Where(x => x.OrderID == orderId));
             db.SaveChanges();
-            return MessageSuccess($"Successfully cleared all products from {CurentUser.UserName}'s cart", "/Orders/DisplayOrders", $"{CurentUser.UserName}'s Orders");
+            return MessageSuccess($"Successfully cleared all products from {CurentUser.Username}'s cart", "/Orders/DisplayOrders", $"{CurentUser.Username}'s Orders");
         }
     }
 }

@@ -24,7 +24,7 @@
         {
             if (this.CurentUser != null)
             {
-                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
+                return this.MessageError($"User with name {CurentUser.Username} is already loged in. Please log out first");
             }
             return View();
         }
@@ -36,7 +36,7 @@
 
             if (CurentUser != null)
             {
-                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first before registering new user!");
+                return this.MessageError($"User with name {CurentUser.Username} is already loged in. Please log out first before registering new user!");
             }
 
             if (newUser.Password != newUser.PasswordVerify)
@@ -86,7 +86,7 @@
         {
             if (this.CurentUser != null)
             {
-                return this.MessageError($"User with name {CurentUser.UserName} is already loged in. Please log out first");
+                return this.MessageError($"User with name {CurentUser.Username} is already loged in. Please log out first");
             }
             return View();
         }

@@ -12,30 +12,35 @@
             encrypter = (IEncrypter)WebHost.ServiceContainer.CreateInstance(typeof(IEncrypter));
         }
 
-        public LoggedUser(string name, int id, DateTime expireDate, object role = null)
+        public LoggedUser()
         {
-            UserName = name;
+            Username = string.Empty;
+            Role = string.Empty;
+            Info = string.Empty;
+        }
+
+        public LoggedUser(string name, int id, DateTime expireDate,  object role = null,string info = null)
+        {
+            Username = name;
             Id = id;
             CookieExpireDateTime = expireDate;
 
-            if (role != null)
-            {
-                Role = role.ToString();
-            }
-            else
-            {
-                Role = string.Empty;
-            }
+            if (role != null) Role = role.ToString();
+            else Role = string.Empty;
+
+            if (info != null) Info = info.ToString();
+            else Info = string.Empty;
         }
 
-        public int Id { get; }
-        public string UserName { get; }
-        public string Role { get; }
-        public DateTime CookieExpireDateTime { get; }
+        public int Id { get; set; }
+        public string Info { get; set; }
+        public string Username { get; set; }
+        public string Role { get; set; }
+        public DateTime CookieExpireDateTime { get; set; }
 
         internal string EncryptUserData()
         {
-            string data = $"{Id}{Separator}{UserName}{Separator}{CookieExpireDateTime}{Separator}{Role}";
+            string data = $"{Id}{Separator}{Username}{Separator}{CookieExpireDateTime}{Separator}{Role}{Separator}{Info}";
             string encryptedData = encrypter.Encrypt(data);
             return encryptedData;
         }
@@ -46,8 +51,9 @@
             int id = int.Parse(data[0]);
             string name = data[1];
             DateTime expireDate = DateTime.Parse(data[2]);
-            string role = data[3];
-            return new LoggedUser(name, id, expireDate, role);
+            string role = data[3]==string.Empty?null: data[3];
+            string info = data[4] == string.Empty ? null : data[4];
+            return new LoggedUser(name, id, expireDate, role,info);
         }
     }
 }

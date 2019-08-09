@@ -22,7 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/Home/Index">Home</a>
                         </li>
-                        @if(model.USERNAME is null)
+                        @if(model.USER.Username=="")
                         {
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/Users/Login">Login</a>

@@ -23,7 +23,7 @@
             {
                 return this.MessageError($"No user loged in Log in first");
             }
-            User user = db.Users.FirstOrDefault(x => x.Username == this.CurentUser.UserName);
+            User user = db.Users.FirstOrDefault(x => x.Username == this.CurentUser.Username);
             if (user is null)
             {
                 return MessageError("User not found in the database");
@@ -31,7 +31,7 @@
             db.Entry(user).Collection(u => u.Orders).Load();
             this.ViewData["Profile"] = new ProfileDto_exp()
             {
-                Username = this.CurentUser.UserName,
+                Username = this.CurentUser.Username,
                 RegisteredOn = user.RegisteredOn.ToString("dd-MM-yyyy hh:mm:ss", CultureInfo.InvariantCulture),
                 OrdersCount = user.Orders.Count
             };

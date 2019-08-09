@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav>
-        @if(model.ROLE =="")
+        @if(model.USER.Username=="")
         {
         <div>
             <ul>
@@ -28,7 +28,7 @@
             </ul>
         </div>
         <div class="float-right">
-            <span>Welcome, @model.USERNAME </span>
+            <span>Welcome, @model.USER.Username </span>
             <a href="/Users/Logoff" class="log-out">Logout</a>
             <a href="/Tickets/Cart"><img src="/cart.png" alt="cart" class="cart mt-2 ml-3"></a>
         </div>

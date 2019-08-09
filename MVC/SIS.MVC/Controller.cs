@@ -88,9 +88,9 @@
             this.Response.AddCookie(cookieDelete);
         }
 
-        protected void LogInUser(string userName, int id, object Role = null)
+        protected void LogInUser(string userName, int id, object role = null,string infoTag=null)
         {
-            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1), Role);
+            curentUser = new LoggedUser(userName, id, DateTime.UtcNow.AddDays(1), role,infoTag);
             var loginCookie = cookieService.MakeLoginCookie(curentUser.EncryptUserData());
             this.Response.AddCookie(loginCookie);
         }
@@ -155,7 +155,7 @@
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
 
-            AddUserInfoToViewData();
+            ViewData["USER"] = this.curentUser is null ? new LoggedUser() : this.curentUser;
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
             string layout = File.ReadAllText(layoutPath);
             string warninghtml = $"<div class=\"alert alert-{alertType}\" role=\"alert\">{message}! Go back to <a href=\"{redirectAdress}\"class=\"alert-link\">{redirectName}</a>.</div>";
@@ -177,7 +177,7 @@
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
 
-            AddUserInfoToViewData();
+            ViewData["USER"] = this.curentUser is null ? new LoggedUser() : this.curentUser;
             var alertType = "danger";
             if (!isError) alertType = "success";
             string layoutPath = Locator.GetPathOfFile(WebHost.Configurations.LayoutsFolderPath, layoutName);
@@ -227,7 +227,7 @@
         {
             if (layoutName == "DefaultLayout") layoutName = WebHost.Configurations.DefaultLayoutName;
 
-            AddUserInfoToViewData();
+            ViewData["USER"] = this.curentUser is null? new LoggedUser(): this.curentUser;
 
             if (subPath.StartsWith("/"))
             {
@@ -254,10 +254,5 @@
             return File.ReadAllText(layoutPath);
         }
 
-        private void AddUserInfoToViewData()
-        {
-            ViewData["USERNAME"] = this.curentUser is null? string.Empty : this.curentUser.UserName;
-            ViewData["ROLE"] = this.curentUser is null  || string.IsNullOrEmpty(curentUser.Role) ? string.Empty : this.curentUser.Role;
-        }
     }
 }
