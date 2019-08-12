@@ -1,0 +1,53 @@
+﻿<main class="mt-3">
+    <h1 class="text-center">Hello, @model.USER.Username<span>!</span></h1>
+    <hr class="hr-2 bg-panda">
+    <div class="row justify-content-between">
+        <div class="col-3">
+            <h2 class="text-center mb-3"> Pending</h2>
+            @if(model.Packages.Any(x=>x.Status=="Pending"))
+            {
+            <div class="rounded border-panda p-3">
+                @foreach (var pack in model.Packages.Where(x=>x.Status=="Pending"))
+                {
+                <div class="row  justify-content-between mt-1 mb-1">
+                    <div class="col-8"><h2>@pack.Description</h2></div>
+                    <div class="col-2 mr-4"><a href="/Packages/Details?id=@pack.Id" class="btn bg-panda text-white">Details</a></div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="col-3">
+            <h2 class="text-center mb-3">Shipped</h2>
+            @if(model.Packages.Any(x=>x.Status=="Shipped"))
+            {
+            <div class="rounded border-panda p-3">
+                @foreach (var pack in model.Packages.Where(x=>x.Status=="Shipped"))
+                {
+                <div class="row  justify-content-between mt-1 mb-1">
+                    <div class="col-8"><h2>@pack.Description</h2></div>
+                    <div class="col-2 mr-4"><a href="/Packages/Details?id=@pack.Id" class="btn bg-panda text-white">Details</a></div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="col-3">
+            <h2  class="text-center mb-3"> Delivered</h2>
+            @if(model.Packages.Any(x=>x.Status=="Delivered"))
+            {
+            <div class="rounded border-panda p-3">
+                @foreach (var pack in model.Packages.Where(x=>x.Status=="Delivered"))
+                {
+                <div class="row  justify-content-between mt-1 mb-1">
+                    <div class="col-8"><h2>@pack.Description</h2></div>
+                    <div class="col-2 mr-4"><a href="/Packages/Acquire?id=@pack.Id" class="btn bg-panda text-white">Acquire</a></div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</main>

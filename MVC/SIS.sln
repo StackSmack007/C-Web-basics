@@ -37,11 +37,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chushka.Models", "Chushka.M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Airport", "Airport", "{04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.App", "Airport.App\Airport.App.csproj", "{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airport.App", "Airport.App\Airport.App.csproj", "{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.Infrastructure.Data", "Airport.Infrastructure.Data\Airport.Infrastructure.Data.csproj", "{26A23092-45FA-4578-B290-D631F599DACA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airport.Infrastructure.Data", "Airport.Infrastructure.Data\Airport.Infrastructure.Data.csproj", "{26A23092-45FA-4578-B290-D631F599DACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport.Infrastructure.Models", "Airport.Infrastructure.Models\Airport.Infrastructure.Models.csproj", "{F4249C1E-189F-4220-AE7A-D9563EF141C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airport.Infrastructure.Models", "Airport.Infrastructure.Models\Airport.Infrastructure.Models.csproj", "{F4249C1E-189F-4220-AE7A-D9563EF141C4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PandaApp (04.11.2018 )", "PandaApp (04.11.2018 )", "{C33AD4E7-7303-40FC-A76E-E017862905F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Panda.App", "Panda.App\Panda.App.csproj", "{64985019-BEF7-492F-A046-BBD9E6C38EEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Panda.Infrastructure.Data", "Panda.Infrastructure.Data\Panda.Infrastructure.Data.csproj", "{07518E09-3650-4EDE-9E6C-2A2635F52D64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Panda.Infrastructure.Models", "Panda.Infrastructure.Models\Panda.Infrastructure.Models.csproj", "{087AE90F-9C0D-4FDA-84FD-41CACB48D611}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +117,18 @@ Global
 		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4249C1E-189F-4220-AE7A-D9563EF141C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64985019-BEF7-492F-A046-BBD9E6C38EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64985019-BEF7-492F-A046-BBD9E6C38EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64985019-BEF7-492F-A046-BBD9E6C38EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64985019-BEF7-492F-A046-BBD9E6C38EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07518E09-3650-4EDE-9E6C-2A2635F52D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07518E09-3650-4EDE-9E6C-2A2635F52D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07518E09-3650-4EDE-9E6C-2A2635F52D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07518E09-3650-4EDE-9E6C-2A2635F52D64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087AE90F-9C0D-4FDA-84FD-41CACB48D611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087AE90F-9C0D-4FDA-84FD-41CACB48D611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087AE90F-9C0D-4FDA-84FD-41CACB48D611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087AE90F-9C0D-4FDA-84FD-41CACB48D611}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +145,9 @@ Global
 		{81C7E35C-8CD0-4112-A7F3-FC84CF2A9757} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
 		{26A23092-45FA-4578-B290-D631F599DACA} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
 		{F4249C1E-189F-4220-AE7A-D9563EF141C4} = {04D13DF0-A8A0-427F-B5C7-7A9715A94AEA}
+		{64985019-BEF7-492F-A046-BBD9E6C38EEE} = {C33AD4E7-7303-40FC-A76E-E017862905F5}
+		{07518E09-3650-4EDE-9E6C-2A2635F52D64} = {C33AD4E7-7303-40FC-A76E-E017862905F5}
+		{087AE90F-9C0D-4FDA-84FD-41CACB48D611} = {C33AD4E7-7303-40FC-A76E-E017862905F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33498451-F045-4A66-A59D-61A932A8CA81}
